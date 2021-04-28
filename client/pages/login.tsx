@@ -9,7 +9,9 @@ export const LoginPage = () => {
   const [formData, update, reset] = useForm({username: '', password: ''})
   return <Page>
     <Form>
-      <FormInput value={formData.username} set={update('username')} placeholder="Username" m />
+      <FormInput value={formData.username} set={update('username')} placeholder="Username" validate={[
+        ['mlen', 'Max length: 24', str => str.length > 24]
+      ]} m />
       <FormInput value={formData.password} set={update('password')} placeholder="Password" type="password" m />
       <FormSubmit sendText="LOG IN" />
     </Form>

@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react'
 import st from './FormInput.sass'
 import { Component, IComponent } from '../Component'
+import colors from '../../colors.sass'
 
-interface IErrorEl { msg?: string, key: string }
-const ErrorEl = ({msg, key}: IErrorEl) => <div className={st.el} key={key}>{msg}</div>
+interface IErrorEl { msg?: string }
+const ErrorEl = ({msg}: IErrorEl) => <div className={st.el}>{msg}</div>
 
 type TValidateEl = [string, string, (value: string) => boolean]
 type TErrorEl = [boolean, string, string]
@@ -26,7 +27,7 @@ export const FormInput = ({value = '', set, type, placeholder, validate, ...prop
         .filter(([checked]) => checked))
       set(target.value)
     }} {...{value, placeholder, ref, type}} />
-    <div className={st.border} />
+    <div className={st.border} style={{background: errors.length ? colors.red : null}} />
     <div className={st.errors}>
       {errors.map(([_, key, msg]: TErrorEl) => <ErrorEl msg={msg} key={key} />)}
     </div>
