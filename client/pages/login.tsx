@@ -4,10 +4,12 @@ import { FormInput } from '../components/form/FormInput'
 import { FormSubmit } from '../components/form/FormSubmit'
 import { Page } from '../components/Page'
 import { useForm } from '../hooks/form.hook'
+import { Helmet } from 'react-helmet'
 
-export const LoginPage = () => {
+export const LoginPage: React.FC = () => {
   const [formData, update, reset] = useForm({username: '', password: ''})
   return <Page>
+    <Helmet><title>Login - Docs</title></Helmet>
     <Form>
       <FormInput value={formData.username} set={update('username')} placeholder="Username" validate={[
         ['mlen', 'Max length: 24', str => str.length > 24]

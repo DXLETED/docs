@@ -11,7 +11,7 @@ export interface IComponent {
   m?: boolean,
   flex?: boolean
 }
-export const Component = ({className, children, ...props}: IComponent) =>
+export const Component: React.FC<IComponent> = ({className, children, ...props}: IComponent) =>
   <div
   className={cn(className, Object.fromEntries(classes.map(cl => [[st[cl]], (props as any)[cl]])))}
   {...Object.fromEntries(events.filter(e => e in props).map(e => [e, (props as any)[e]]))}>

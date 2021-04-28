@@ -16,7 +16,7 @@ interface IFormInput extends IComponent {
   placeholder?: string,
   validate?: Array<TValidateEl>
 }
-export const FormInput = ({value = '', set, type, placeholder, validate, ...props}: IFormInput) => {
+export const FormInput: React.FC<IFormInput> = ({value = '', set, type, placeholder, validate, ...props}: IFormInput) => {
   const [errors, setErrors] = useState<Array<TErrorEl>>([])
   const ref = useRef<HTMLInputElement>(null)
   return <Component className={st.input} {...props}>
