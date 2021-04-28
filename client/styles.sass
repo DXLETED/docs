@@ -1,0 +1,51 @@
+@import client/colors.sass
+
+html, body
+  padding: 0
+  margin: 0
+
+*
+  flex: none
+  box-sizing: border-box
+  scrollbar-width: thin
+  outline: none
+
+body
+  height: 100vh
+  color: $white
+  background: $bg
+  user-select: none
+  font-family: 'Roboto'
+
+root
+  display: flex
+  width: 100%
+  height: 100%
+  flex-direction: column
+
+div
+  display: flex
+
+a
+  display: flex
+  text-decoration: none
+  color: inherit
+
+input
+  background: none
+  border: none
+  font: inherit
+  color: inherit
+  &::selection
+    background: rgba($white, 0.5)
+
+button
+  background: none
+  font: inherit
+  color: inherit
+  border: none
+  cursor: pointer
+
+@font-face
+  font-family: 'Roboto'
+  src: url("/static/fonts/Roboto-Regular.ttf")
