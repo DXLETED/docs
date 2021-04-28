@@ -2,7 +2,8 @@ import st from './Header.sass'
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
-const HeaderLink = ({to, children, exact}) => <NavLink className={st.link} to={to} exact={exact} activeClassName={st.active}>{children}</NavLink>
+interface IHeaderLink { to: string, children?: React.ReactNode, exact?: boolean }
+const HeaderLink = ({to, children, exact}: IHeaderLink) => <NavLink className={st.link} to={to} exact={exact} activeClassName={st.active}>{children}</NavLink>
 
 export const Header = () => {
   return <header>

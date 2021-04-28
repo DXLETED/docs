@@ -4,7 +4,7 @@ const path = require('path')
 
 module.exports = {
   entry: {
-    main: './client/app.js'
+    main: './client/app.tsx'
   },
   mode: 'development',
   output: {
@@ -13,6 +13,11 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
       {
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,
@@ -34,7 +39,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.json'],
+    extensions: ['.tsx', '.ts', '.js', '.json'],
   },
   plugins: [
     new NodemonPlugin({

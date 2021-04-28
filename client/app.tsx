@@ -7,8 +7,10 @@ import { Header } from './components/Header'
 import { LoginPage } from './pages/login'
 import { MainPage } from './pages/main'
 
-ReactDOM.render(<BrowserRouter>
+const App: React.FC = () => <BrowserRouter>
   <Header />
   <Route exact path="/"><MainPage /></Route>
   <Route exact path="/login"><LoginPage /></Route>
-</BrowserRouter>, document.getElementsByTagName('root')[0])
+</BrowserRouter>
+
+ReactDOM.render(<App />, document.getElementsByTagName('root')[0])

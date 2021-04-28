@@ -3,7 +3,7 @@ const path = require('path')
 
 module.exports = {
   entry: {
-    main: './client/app.js'
+    main: './client/app.tsx'
   },
   mode: 'production',
   output: {
