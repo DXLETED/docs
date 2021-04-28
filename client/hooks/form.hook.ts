@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-export const useForm = (defaultState: {[propName: string]: any}) => {
+interface IuseForm { [propName: string]: any }
+export const useForm = (defaultState: IuseForm) : [{[propName: string]: any}, (key: string) => (value: string) => void, () => void] => {
   const [state, setState] = useState(defaultState)
   const update = (key: string) => (value: string) => setState({...state, [key]: value})
   const reset = () => setState(defaultState)
