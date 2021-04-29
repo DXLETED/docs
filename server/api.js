@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const { readFileSync } = require('fs')
 const { db } = require('./shared')
 
-const privateKey = readFileSync('server/jwt.key')
+const privateKey = readFileSync('./jwt.key')
 
 module.exports = Router()
   .get('/@me', (req, res) => zzz)
