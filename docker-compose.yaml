@@ -1,0 +1,7 @@
+services:
+  static:
+    build: client/
+    ports:
+      - 8081:3000
+  api:
+    build: server/
