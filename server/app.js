@@ -14,7 +14,4 @@ const app = express()
 
 app
   .use('/api/v1', require('./api'))
-  .use('/dist/', express.static('dist/'))
-  .use('/static/', express.static('static/'))
-  .get('*', (req, res) => res.sendFile(path.join(__dirname, '/index.html')))
   .listen(process.env.PORT)
