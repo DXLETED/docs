@@ -8,10 +8,10 @@ const blank: IBlank = {
   field1: { t: BlankElTypes.field, defaultValue: 'default' },
   fullname: {
     t: BlankElTypes.group,
-    groupName: 'Group 1',
+    groupName: 'Full name',
     els: {
       name: { t: BlankElTypes.field, placeholder: 'Name' },
-      lastname: { t: BlankElTypes.field, placeholder: 'Lastname' },
+      lastname: { t: BlankElTypes.field, placeholder: 'Last name' },
       nested: {
         t: BlankElTypes.group,
         groupName: 'Nested group',

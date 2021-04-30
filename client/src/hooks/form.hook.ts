@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { BlankElTypes, IBlank, IFormData, IFormDataEl } from 'types'
 import { blankFormData } from 'utils/blankFormData'
 import { set } from 'object-path-immutable'
@@ -13,8 +13,11 @@ const submit = (formData: IFormData) =>
   )
 
 export const useForm = (blank: IBlank): [IFormData, () => any, () => void] => {
-  const update = (path: string[], val: string) =>
-    setState((state) => set(state, [...path, 'value'], val))
+  const update = useCallback(
+    (path: string[], val: string) =>
+      setState((state) => set(state, [...path, 'value'], val)),
+    []
+  )
   const formData = blankFormData(blank, update)
   const [state, setState] = useState(formData)
   const reset = () => setState(formData)

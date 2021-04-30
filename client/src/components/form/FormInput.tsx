@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { memo } from 'react'
 import cn from 'classnames'
 import st from 'styles/FormInput.module.sass'
+import { isEqual } from 'lodash'
 
 interface IErrorEl {
   msg?: string
@@ -17,34 +18,29 @@ interface IFormInput {
   placeholder?: string
   validate?: TValidateEl[]
 }
-export const FormInput: React.FC<IFormInput> = ({
+export const FormInput: React.FC<IFormInput> = memo(({
   value = '',
   set,
   type,
   placeholder,
   validate,
 }: IFormInput) => {
-  const [errors, setErrors] = useState<Array<TErrorEl>>([])
-  const ref = useRef<HTMLInputElement>(null)
+  const errors = (validate || [])
+        .map(
+          ([msg, check]: TValidateEl): TErrorEl => [
+            !value.match(check),
+            msg,
+          ]
+        )
+        .filter(([checked]) => checked)
   return (
     <div className={cn(st.input, { [st.hasErrors]: errors.length })}>
       <input
         onInput={(e: React.FormEvent): void => {
           const target = e.target as HTMLInputElement
-          validate &&
-            setErrors(
-              (validate || [])
-                .map(
-                  ([msg, check]: TValidateEl): TErrorEl => [
-                    !target.value.match(check),
-                    msg,
-                  ]
-                )
-                .filter(([checked]) => checked)
-            )
           set(target.value)
         }}
-        {...{ value, placeholder, ref, type }}
+        {...{ value, placeholder, type }}
       />
       <div className={st.border} />
       <div className={st.errors}>
@@ -53,9 +49,9 @@ export const FormInput: React.FC<IFormInput> = ({
             <ErrorEl msg={msg} key={msg + checked} />
           ))
         ) : (
-          <ErrorEl msg="No errors" />
+          <ErrorEl msg="" />
         )}
       </div>
     </div>
   )
-}
+}, isEqual)
