@@ -29,9 +29,9 @@ export const DocumentPage: React.FC = () => {
       <FormEditor blank={blank} sendText="Publish" />
       <Signers
         list={[
-          { name: 'Name Patronymic Surname', position: 'Head of compotech' },
-          { name: 'Name Patronymic Surname', position: 'Head of compotech' },
-          { name: 'Name Patronymic Surname', position: 'Head of compotech' },
+          { name: 'Name Surname Lastname', position: 'Head of compotech' },
+          { name: 'Name Surname Lastname', position: 'Head of compotech' },
+          { name: 'Name Surname Lastname', position: 'Head of compotech' },
         ]}
       />
     </Page>
