@@ -4,6 +4,11 @@
 .input
   width: 100%
   flex-direction: column
+  &.hasErrors
+    .border
+      background: $red
+    .errors .el
+      background: $red
   input
     width: 100%
     height: 40px
@@ -18,7 +23,7 @@
     .el
       align-items: center
       padding: 0 10px
-      background: $red
+      background: $main
       color: $black
       &:not(:last-child)
         margin-right: 10px

@@ -1,8 +1,9 @@
 import React from 'react'
 import st from 'styles/Form.module.sass'
-import { Component, IComponent } from '../Component'
 
-interface IForm extends IComponent {
+interface IForm {
   children: React.ReactNode
 }
-export const Form: React.FC<IForm> = ({ children }: IForm) => <Component className={st.form}>{children}</Component>
+export const Form: React.FC<IForm> = ({ children }: IForm) => (
+  <div className={st.form}>{children}</div>
+)

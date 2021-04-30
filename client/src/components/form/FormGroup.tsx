@@ -1,5 +1,19 @@
 import React from 'react'
 import st from 'styles/FormGroup.module.sass'
-import { Component } from '../Component'
+import { IFormData } from 'types'
+import { FormElements } from './FormElements'
 
-//export const FormGroup: React.FC = () => <Component className={st.group}></Component>
+interface IFormGroup {
+  groupName?: string
+  els: IFormData
+}
+export const FormGroup: React.FC<IFormGroup> = ({
+  groupName,
+  els,
+  ...props
+}) => (
+  <div className={st.group} {...props}>
+    <div className={st.groupName}>{groupName}</div>
+    <FormElements els={els} />
+  </div>
+)

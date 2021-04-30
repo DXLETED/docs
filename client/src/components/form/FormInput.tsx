@@ -1,47 +1,61 @@
 import React, { useRef, useState } from 'react'
+import cn from 'classnames'
 import st from 'styles/FormInput.module.sass'
-import { Component, IComponent } from '../Component'
-import colors from 'styles/colors.sass'
 
 interface IErrorEl {
   msg?: string
 }
 const ErrorEl = ({ msg }: IErrorEl) => <div className={st.el}>{msg}</div>
 
-type TValidateEl = [string, string, (value: string) => boolean]
-type TErrorEl = [boolean, string, string]
+type TValidateEl = [string, RegExp]
+type TErrorEl = [boolean, string]
 
-interface IFormInput extends IComponent {
+interface IFormInput {
   value: string
   set: (value: string) => void
   type?: string
   placeholder?: string
-  validate?: Array<TValidateEl>
+  validate?: TValidateEl[]
 }
-export const FormInput: React.FC<IFormInput> = ({ value = '', set, type, placeholder, validate, ...props }: IFormInput) => {
+export const FormInput: React.FC<IFormInput> = ({
+  value = '',
+  set,
+  type,
+  placeholder,
+  validate,
+}: IFormInput) => {
   const [errors, setErrors] = useState<Array<TErrorEl>>([])
   const ref = useRef<HTMLInputElement>(null)
   return (
-    <Component className={st.input} {...props}>
+    <div className={cn(st.input, { [st.hasErrors]: errors.length })}>
       <input
         onInput={(e: React.FormEvent): void => {
           const target = e.target as HTMLInputElement
           validate &&
             setErrors(
               (validate || [])
-                .map(([key, msg, check]: TValidateEl): TErrorEl => [check(target.value), key, msg])
+                .map(
+                  ([msg, check]: TValidateEl): TErrorEl => [
+                    !target.value.match(check),
+                    msg,
+                  ]
+                )
                 .filter(([checked]) => checked)
             )
           set(target.value)
         }}
         {...{ value, placeholder, ref, type }}
       />
-      <div className={st.border} style={{ background: errors.length ? colors.red : null }} />
+      <div className={st.border} />
       <div className={st.errors}>
-        {errors.map(([_, key, msg]: TErrorEl) => (
-          <ErrorEl msg={msg} key={key} />
-        ))}
+        {errors.length ? (
+          errors.map(([checked, msg]: TErrorEl) => (
+            <ErrorEl msg={msg} key={msg + checked} />
+          ))
+        ) : (
+          <ErrorEl msg="No errors" />
+        )}
       </div>
-    </Component>
+    </div>
   )
 }

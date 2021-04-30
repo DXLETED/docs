@@ -1,12 +1,13 @@
 import React from 'react'
 import st from 'styles/Page.module.sass'
-import { Component, IComponent } from './Component'
 
-interface IPage extends IComponent {
+interface IPage {
   children: React.ReactNode
 }
 export const Page: React.FC<IPage> = ({ children, ...props }: IPage) => (
-  <Component className={st.page} {...props}>
-    <div className={st.inner}>{children}</div>
-  </Component>
+  <div className={st.page}>
+    <div className={st.inner} {...props}>
+      {children}
+    </div>
+  </div>
 )

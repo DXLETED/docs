@@ -8,7 +8,12 @@ interface IHeaderLink {
   exact?: boolean
 }
 const HeaderLink = ({ to, children, exact }: IHeaderLink) => (
-  <NavLink className={st.link} to={to} exact={exact} activeClassName={st.active}>
+  <NavLink
+    className={st.link}
+    to={to}
+    exact={exact}
+    activeClassName={st.active}
+  >
     {children}
   </NavLink>
 )
