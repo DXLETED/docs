@@ -12,9 +12,21 @@ const initialState: IAuthState = {
 }
 
 const handlers = {
-  'auth/set': (state: IAuthState, action: { type: 'auth/set'; data: { accessToken: string | null } }) => ({
+  'auth/set': (state: IAuthState, action: { type: 'auth/set'; data: IAuthState }) => ({
     ...state,
     ...action.data,
+  }),
+  'auth/set/tokens': (
+    state: IAuthState,
+    action: { type: 'auth/set/tokens'; data: { accessToken: string | null; refreshToken: string | null } }
+  ) => ({
+    ...state,
+    accessToken: action.data.accessToken,
+    refreshToken: action.data.refreshToken,
+  }),
+  'auth/reset': (state: IAuthState, action: { type: 'auth/reset' }) => ({
+    ...state,
+    ...initialState,
   }),
 }
 

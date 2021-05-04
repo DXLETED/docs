@@ -7,10 +7,14 @@ const authRequired = (req, res, next) => {
   try {
     decoded = jwt.verify(req.headers.authorization.replace('Bearer ', ''), privateKey, { algorithms: ['RS256'] })
   } catch (e) {
-    return res.sendStatus(401)
+    res.status(401)
+    if (e.message === 'jwt expired')
+      return res.json({err: 'jwt_expired'})
+    else if (e.message === 'invalid token')
+      return res.json({err: 'invalid_token'})
+    return res.send()
   }
   if (decoded.type !== 'access') return res.sendStatus(401)
-  console.log(decoded)
   req.auth = { userId: decoded.userId, username: decoded.username }
   next()
 }
