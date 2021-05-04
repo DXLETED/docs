@@ -1,8 +1,9 @@
 import st from 'styles/FormElements.module.sass'
 import React, { Fragment } from 'react'
-import { BlankElTypes, IFormData, IFormDataEl } from 'types'
 import { FormGroup } from './FormGroup'
 import { FormInput } from './FormInput'
+import { BlankElTypes } from 'types/blank'
+import { IFormData, IFormDataEl } from 'types/formData'
 
 const elements: { [key in BlankElTypes]: any } = {
   field: (el: IFormDataEl) => (
@@ -11,6 +12,7 @@ const elements: { [key in BlankElTypes]: any } = {
       set={el.set || (() => {})}
       validate={el.validate}
       placeholder={el.placeholder}
+      required={el.required}
     />
   ),
   group: (el: IFormDataEl) => (

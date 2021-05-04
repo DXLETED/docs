@@ -1,16 +1,14 @@
-import { Nav } from 'components/Nav'
 import React from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
-import { Header } from './components/Header'
-import { MainPage } from './pages/main'
 import { LoginPage } from './pages/login'
 import { DocumentPage } from './pages/document'
+import { MainPage } from 'pages/main'
+import { Provider } from 'react-redux'
+import { store } from 'store'
 
 export const App: React.FC = () => (
-  <BrowserRouter>
-    <Nav />
-    <main>
-      <Header />
+  <Provider store={store}>
+    <BrowserRouter>
       <Route exact path="/">
         <MainPage />
       </Route>
@@ -20,6 +18,6 @@ export const App: React.FC = () => (
       <Route exact path="/document/:id">
         <DocumentPage />
       </Route>
-    </main>
-  </BrowserRouter>
+    </BrowserRouter>
+  </Provider>
 )

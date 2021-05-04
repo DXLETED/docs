@@ -1,13 +1,13 @@
+import { MainLayout } from 'layouts/MainLayout'
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { Page } from '../components/Page'
 import { Placeholder } from '../components/Placeholder'
 
 export const MainPage: React.FC = () => (
-  <Page>
+  <MainLayout>
     <Helmet>
       <title>Docs</title>
     </Helmet>
     <Placeholder>MAIN</Placeholder>
-  </Page>
+  </MainLayout>
 )

@@ -1,21 +1,19 @@
 import { useCallback, useState } from 'react'
-import { BlankElTypes, IBlank, IFormData, IFormDataEl } from 'types'
 import { blankFormData } from 'utils/blankFormData'
 import { set } from 'object-path-immutable'
+import { BlankElTypes, IBlank } from 'types/blank'
+import { IFormData, IFormDataEl } from 'types/formData'
 
 const submitEls: { [key in BlankElTypes]: any } = {
   [BlankElTypes.field]: (el: IFormDataEl) => el.value,
   [BlankElTypes.group]: (el: IFormDataEl) => submit(el.els || {}),
 }
 const submit = (formData: IFormData) =>
-  Object.fromEntries(
-    Object.entries(formData).map(([key, el]) => [key, submitEls[el.t](el)])
-  )
+  Object.fromEntries(Object.entries(formData).map(([key, el]) => [key, submitEls[el.t](el)]))
 
 export const useForm = (blank: IBlank): [IFormData, () => any, () => void] => {
   const update = useCallback(
-    (path: string[], val: string) =>
-      setState((state) => set(state, [...path, 'value'], val)),
+    (path: string[], val: string) => setState(state => set(state, [...path, 'value'], val)),
     []
   )
   const formData = blankFormData(blank, update)

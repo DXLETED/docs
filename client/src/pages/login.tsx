@@ -1,25 +1,26 @@
 import React from 'react'
-import { Page } from '../components/Page'
 import { Helmet } from 'react-helmet'
-import { BlankElTypes, IBlank } from 'types'
 import { FormEditor } from 'components/FormEditor'
+import { LoginLayout } from 'layouts/LoginLayout'
+import { IBlank } from 'types/blank'
 
 const blank: IBlank = {
   username: {
-    t: BlankElTypes.field,
-    validate: [['Max length: 10', /^.{0,10}$/g]],
+    t: 'field',
+    validate: [[/^.{0,10}$/g, 'Max length: 10'], [/^.{0,10}$/g, 'Max length: 10']],
     placeholder: 'Username',
+    required: true,
   },
-  password: { t: BlankElTypes.field, placeholder: 'Password' },
+  password: { t: 'field', placeholder: 'Password', required: true },
 }
 
 export const LoginPage: React.FC = () => {
   return (
-    <Page>
+    <LoginLayout>
       <Helmet>
         <title>Login - Docs</title>
       </Helmet>
       <FormEditor blank={blank} sendText="LOG IN" />
-    </Page>
+    </LoginLayout>
   )
 }

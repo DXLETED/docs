@@ -1,22 +1,22 @@
 import React from 'react'
-import { Page } from 'components/Page'
-import { Signers } from 'components/Signers'
-import { IBlank, BlankElTypes } from 'types'
 import { FormEditor } from 'components/FormEditor'
+import { MainLayout } from 'layouts/MainLayout'
+import { useParams } from 'react-router'
+import { IBlank } from 'types/blank'
 
 const blank: IBlank = {
-  field1: { t: BlankElTypes.field, defaultValue: 'default' },
+  field1: { t: 'field', defaultValue: 'default' },
   fullname: {
-    t: BlankElTypes.group,
+    t: 'group',
     groupName: 'Full name',
     els: {
-      name: { t: BlankElTypes.field, placeholder: 'Name' },
-      lastname: { t: BlankElTypes.field, placeholder: 'Last name' },
+      name: { t: 'field', placeholder: 'Name' },
+      lastname: { t: 'field', placeholder: 'Last name' },
       nested: {
-        t: BlankElTypes.group,
+        t: 'group',
         groupName: 'Nested group',
         els: {
-          field2: { t: BlankElTypes.field },
+          field2: { t: 'field' },
         },
       },
     },
@@ -24,16 +24,10 @@ const blank: IBlank = {
 }
 
 export const DocumentPage: React.FC = () => {
+  const { id } = useParams() as { id: string }
   return (
-    <Page>
+    <MainLayout title={`Document ${id}`}>
       <FormEditor blank={blank} sendText="Publish" />
-      <Signers
-        list={[
-          { name: 'Name Surname Lastname', position: 'Head of compotech' },
-          { name: 'Name Surname Lastname', position: 'Head of compotech' },
-          { name: 'Name Surname Lastname', position: 'Head of compotech' },
-        ]}
-      />
-    </Page>
+    </MainLayout>
   )
 }

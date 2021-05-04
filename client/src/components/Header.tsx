@@ -8,24 +8,18 @@ interface IHeaderLink {
   exact?: boolean
 }
 const HeaderLink = ({ to, children, exact }: IHeaderLink) => (
-  <NavLink
-    className={st.link}
-    to={to}
-    exact={exact}
-    activeClassName={st.active}
-  >
+  <NavLink className={st.link} to={to} exact={exact} activeClassName={st.active}>
     {children}
   </NavLink>
 )
 
-export const Header: React.FC = () => {
+interface IHeader {
+  title?: string
+}
+export const Header: React.FC<IHeader> = ({ title = '' }) => {
   return (
     <header>
-      <div className={st.l}>
-        <HeaderLink to="/" exact>
-          MAIN
-        </HeaderLink>
-      </div>
+      <div className={st.title}>{title}</div>
       <div className={st.r}>
         <HeaderLink to="/login" exact>
           LOG IN

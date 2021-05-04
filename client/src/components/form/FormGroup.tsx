@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash'
 import React, { memo } from 'react'
 import st from 'styles/FormGroup.module.sass'
-import { IFormData } from 'types'
+import { IFormData } from 'types/formData'
 import { FormElements } from './FormElements'
 
 interface IFormGroup {

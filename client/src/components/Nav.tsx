@@ -1,38 +1,34 @@
 import st from 'styles/Nav.module.sass'
 import React, { useState } from 'react'
-import cn from 'classnames'
+import clsx from 'clsx'
 import { NavLink } from 'react-router-dom'
 
-import imgDocument from 'assets/img/document.png'
-import imgMenu from 'assets/img/menu.png'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBars, faFileAlt, faHome, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 interface INavItem {
-  id: string
+  to: string
   title: string
-  isOpen: boolean
+  icon: IconDefinition
 }
-const NavItem: React.FC<INavItem> = ({ id, title, isOpen }: INavItem) => (
-  <NavLink to={`/document/${id}`} className={st.navItem}>
-    <img src={imgDocument} alt="document" />
-    {isOpen && <div className={st.title}>{title}</div>}
+const NavItem: React.FC<INavItem> = ({ to, title, icon }: INavItem) => (
+  <NavLink to={to} className={st.navItem}>
+    <FontAwesomeIcon className={st.icon} icon={icon} />
+    <div className={st.title}>{title}</div>
   </NavLink>
 )
 
 export const Nav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   return (
-    <nav className={cn({ [st.open]: isOpen })}>
-      <div className={st.navMenu} onClick={() => setIsOpen(!isOpen)}>
-        <img src={imgMenu} alt="Open/Close" />
+    <nav className={clsx({ [st.open]: isOpen })}>
+      <div className={st.navMenu}>
+        <div className={st.switch} onClick={() => setIsOpen(!isOpen)}>
+          <FontAwesomeIcon icon={faBars} size="lg" />
+        </div>
       </div>
-      {[...Array(5)].map((_, i) => (
-        <NavItem
-          id={i.toString()}
-          title={`Document ${i + 1}`}
-          isOpen={isOpen}
-          key={i}
-        />
-      ))}
+      <NavItem to="/" title="Main" icon={faHome} />
+      <NavItem to="/document/Iydvfe3hF6" title="Iydvfe3hF6" icon={faFileAlt} />
     </nav>
   )
 }

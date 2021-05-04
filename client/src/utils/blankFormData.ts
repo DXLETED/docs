@@ -1,4 +1,5 @@
-import { IFormData, IFormDataEl, IBlank, IBlankEl } from 'types'
+import { IBlank, IBlankEl } from "types/blank"
+import { IFormData, IFormDataEl } from "types/formData"
 
 export const blankFormData = (
   blank: IBlank,
@@ -9,7 +10,7 @@ export const blankFormData = (
     field: (key: string, el: IBlankEl): IFormDataEl => ({
       ...el,
       value: el.defaultValue || '',
-      set: (val) => update([...path, key], val),
+      set: val => update([...path, key], val),
     }),
     group: (key: string, el: IBlankEl): IFormDataEl => ({
       t: el.t,
@@ -17,10 +18,5 @@ export const blankFormData = (
       els: blankFormData(el.els || {}, update, [...path, key, 'els']),
     }),
   }
-  return Object.fromEntries(
-    Object.entries(blank).map(([key, el]: [string, IBlankEl]) => [
-      key,
-      els[el.t](key, el),
-    ])
-  )
+  return Object.fromEntries(Object.entries(blank).map(([key, el]: [string, IBlankEl]) => [key, els[el.t](key, el)]))
 }
