@@ -26,12 +26,13 @@ class Requests {
   private next() {
     this.queue.length && this.makeRequest(this.queue[0])
   }
-  private async handleError(e: AxiosError) {
+  private handleError(e: AxiosError) {
     if (e.response?.status === 401) {
-      if (e.response.data?.err === 'jwt_expired') return api.auth.refresh()
-      return store.dispatch(authActions.reset())
+      if (e.response.data?.err === 'jwt_expired') api.auth.refresh()
+      store.dispatch(authActions.reset())
     }
     // Error notification
+    alert(e)
     console.log(e)
   }
   private async makeRequest(req: IRequest) {
@@ -44,7 +45,7 @@ class Requests {
       })
       res(result)
     } catch (e) {
-      await this.handleError(e)
+      this.handleError(e)
       rej(e)
     }
     this.queue = this.queue.filter(rq => rq !== req)

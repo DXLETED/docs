@@ -1,6 +1,5 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { LoginLayout } from 'layouts/LoginLayout'
 import { FormInput } from 'components/form/FormInput'
 import { useForm } from 'hooks/form.hook'
 import { FormContainer } from 'components/form/FormContainer'
@@ -12,7 +11,7 @@ export const LoginPage: React.FC = () => {
   const [formData, update] = useForm({ username: '', password: '' })
   const history = useHistory()
   return (
-    <LoginLayout>
+    <>
       <Helmet>
         <title>Login - Docs</title>
       </Helmet>
@@ -27,6 +26,6 @@ export const LoginPage: React.FC = () => {
           }}
         />
       </FormContainer>
-    </LoginLayout>
+    </>
   )
 }
