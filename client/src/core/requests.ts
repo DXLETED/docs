@@ -3,7 +3,7 @@ import { store } from 'store'
 import { authActions } from 'store/auth'
 import { api } from './api'
 
-const Axios = axios.create({ proxy: { host: 'http://locahost', port: 3001 } })
+const Axios = axios.create()
 
 interface IRequest extends AxiosRequestConfig {
   res: (res: AxiosResponse) => void

@@ -2,6 +2,8 @@ services:
   static:
     build: client/
     ports:
-      - 8081:3000
+      - 8081:80
   api:
     build: server/
+    ports:
+      - 3001:3001

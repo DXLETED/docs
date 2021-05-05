@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { loadState } from 'utils/localStorage'
 
 export interface IAuthState {
   accessToken: string | null
@@ -13,7 +14,7 @@ const initialState: IAuthState = {
 
 const slice = createSlice({
   name: 'auth',
-  initialState,
+  initialState: loadState('auth') || initialState,
   reducers: {
     set: (state, action) => action.payload,
     setUser: (state, action) => (state.user = action.payload),

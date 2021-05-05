@@ -6,6 +6,6 @@ interface IFormSubmit {
 }
 export const FormSubmit = ({ sendText, submit }: IFormSubmit) => (
   <div className={st.submit} onClick={() => submit()}>
-    <button>{sendText || 'SEND'}</button>
+    <button type="submit">{sendText || 'SEND'}</button>
   </div>
 )

@@ -2,8 +2,10 @@ FROM node:14 as builder
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-RUN npm i
+COPY package.json yarn.lock ./
+RUN yarn
 COPY . .
 
-CMD ["npm", "start"]
+EXPOSE 3001
+
+CMD ["yarn", "start"]

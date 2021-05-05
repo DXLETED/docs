@@ -4,10 +4,18 @@ $sides: ('top': 't', 'right': 'r', 'bottom': 'b', 'left': 'l')
   $px: $i * 5
   .p-#{$px}
     padding: #{$px}px
+  .pv-#{$px}
+    padding: 0 #{$px}px
+  .ph-#{$px}
+    padding: #{$px}px 0
   .m-#{$px}
     margin: #{$px}px
+  .mv-#{$px}
+    margin: 0 #{$px}px
+  .mh-#{$px}
+    margin: #{$px}px 0
   @each $side, $l in $sides
     .p#{$l}-#{$px}
-      padding-#{side}: #{$px}px
+      padding-#{$side}: #{$px}px
     .m#{$l}-#{$px}
-      margin-#{side}: #{$px}px
+      margin-#{$side}: #{$px}px
