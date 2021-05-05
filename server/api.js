@@ -36,8 +36,10 @@ module.exports = Router()
       const user = await db.collection('users').findOne({ username: req.body.username, password: req.body.password })
       if (!user) return res.sendStatus(401)
       res.json({
-        userId: user._id,
-        username: user.username,
+        user: {
+          userId: user._id,
+          username: user.username,
+        },
         ...generateTokens({ userId: user._id, username: user.username }),
       })
     }

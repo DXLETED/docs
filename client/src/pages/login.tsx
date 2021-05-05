@@ -6,9 +6,11 @@ import { useForm } from 'hooks/form.hook'
 import { FormContainer } from 'components/form/FormContainer'
 import { FormSubmit } from 'components/form/FormSubmit'
 import { api } from 'core/api'
+import { useHistory } from 'react-router'
 
 export const LoginPage: React.FC = () => {
   const [formData, update] = useForm({ username: '', password: '' })
+  const history = useHistory()
   return (
     <LoginLayout>
       <Helmet>
@@ -19,7 +21,10 @@ export const LoginPage: React.FC = () => {
         <FormInput label="Password" value={formData.password} set={update('password')} />
         <FormSubmit
           sendText="LOG IN"
-          submit={() => api.auth.login(formData as { username: string; password: string })}
+          submit={async () => {
+            await api.auth.login(formData as { username: string; password: string })
+            history.push('/')
+          }}
         />
       </FormContainer>
     </LoginLayout>

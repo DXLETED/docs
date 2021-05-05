@@ -3,7 +3,7 @@ import { store } from 'store'
 import { authActions } from 'store/auth'
 import { api } from './api'
 
-const Axios = axios.create({ baseURL: process.env.BASE_URL })
+const Axios = axios.create({ proxy: { host: 'http://locahost', port: 3001 } })
 
 interface IRequest extends AxiosRequestConfig {
   res: (res: AxiosResponse) => void
@@ -13,9 +13,10 @@ interface IRequest extends AxiosRequestConfig {
 class Requests {
   queue: IRequest[] = []
   isAuthorized: boolean = false
-  create(config: AxiosRequestConfig) {
+  create(config: AxiosRequestConfig, { force = false } = {}) {
     return new Promise((res: (res: AxiosResponse) => void, rej: (res: AxiosError) => void) => {
-      this.queue.push({ ...config, res, rej })
+      const req = { ...config, res, rej }
+      force ? this.queue.unshift(req) : this.queue.push(req)
       this.start()
     })
   }
@@ -33,7 +34,8 @@ class Requests {
     // Error notification
     console.log(e)
   }
-  private async makeRequest({ res, rej, ...params }: IRequest) {
+  private async makeRequest(req: IRequest) {
+    const { res, rej, ...params } = req
     const accessToken = store.getState().auth.accessToken
     try {
       const result = await Axios.request({
@@ -45,6 +47,7 @@ class Requests {
       await this.handleError(e)
       rej(e)
     }
+    this.queue = this.queue.filter(rq => rq !== req)
     this.next()
   }
 }
