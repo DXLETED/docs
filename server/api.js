@@ -25,7 +25,7 @@ module.exports = Router()
     res.json({ userId: req.auth.userId, username: req.auth.username })
   })
   .post(
-    '/token',
+    '/login',
     validate(
       Joi.object({
         username: Joi.string().required(),

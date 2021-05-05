@@ -1,4 +1,4 @@
-import { reducerFactory } from 'utils/reducerFactory'
+import { createSlice } from '@reduxjs/toolkit'
 
 export interface IAuthState {
   accessToken: string | null
@@ -11,23 +11,18 @@ const initialState: IAuthState = {
   user: null,
 }
 
-const handlers = {
-  'auth/set': (state: IAuthState, action: { type: 'auth/set'; data: IAuthState }) => ({
-    ...state,
-    ...action.data,
-  }),
-  'auth/set/tokens': (
-    state: IAuthState,
-    action: { type: 'auth/set/tokens'; data: { accessToken: string | null; refreshToken: string | null } }
-  ) => ({
-    ...state,
-    accessToken: action.data.accessToken,
-    refreshToken: action.data.refreshToken,
-  }),
-  'auth/reset': (state: IAuthState, action: { type: 'auth/reset' }) => ({
-    ...state,
-    ...initialState,
-  }),
-}
+const slice = createSlice({
+  name: 'auth',
+  initialState,
+  reducers: {
+    set: (state, action) => action.payload,
+    setUser: (state, action) => (state.user = action.payload),
+    setTokens: (state, action) => {
+      state.accessToken = action.payload.accessToken
+      state.refreshToken = action.payload.refreshToken
+    },
+    reset: () => initialState,
+  },
+})
 
-export const authReducer = reducerFactory(initialState, handlers)
+export const { reducer: authReducer, actions: authActions } = slice

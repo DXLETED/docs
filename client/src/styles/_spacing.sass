@@ -1,0 +1,15 @@
+$sides: ('top': 't', 'right': 'r', 'bottom': 'b', 'left': 'l')
+
+@each $side, $l in $sides
+  @for $px from 0 through 10
+    .p#{$l}-#{$px * 5}
+      padding-#{side}: #{$px * 5}px
+    .m#{$l}-#{$px * 5}
+      margin-#{side}: #{$px * 5}px
+
+      
+@for $px from 0 through 10
+  .p-#{$px * 5}
+    padding: #{$px * 5}px
+  .m-#{$px * 5}
+    margin: #{$px * 5}px
