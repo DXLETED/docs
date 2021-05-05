@@ -2,6 +2,7 @@ import React, { memo } from 'react'
 import clsx from 'clsx'
 import st from 'styles/FormInput.module.sass'
 import { isEqual } from 'lodash'
+import { Label } from 'components/Label'
 
 interface IErrorEl {
   msg?: string
@@ -12,7 +13,8 @@ type TValidateEl = [RegExp, string]
 type TErrorEl = string
 
 interface IFormInput {
-  value: string
+  label?: string
+  value?: string
   set: (value: string) => void
   type?: string
   placeholder?: string
@@ -21,7 +23,7 @@ interface IFormInput {
   required?: boolean
 }
 export const FormInput: React.FC<IFormInput> = memo(
-  ({ value = '', set, type, placeholder, validate, limit = 20, required = false }: IFormInput) => {
+  ({ label, value = '', set, type, placeholder, validate, limit = 20, required = false }: IFormInput) => {
     const errors: TErrorEl[] = [
       ...(required && !value.length ? (['Required'] as TErrorEl[]) : []),
       ...(validate || [])
@@ -31,6 +33,7 @@ export const FormInput: React.FC<IFormInput> = memo(
     ]
     return (
       <div className={clsx(st.input, { [st.hasErrors]: errors.length })}>
+        <Label text={label} />
         <input
           onInput={(e: React.FormEvent): void => {
             const target = e.target as HTMLInputElement

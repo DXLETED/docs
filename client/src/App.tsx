@@ -6,6 +6,8 @@ import { MainPage } from 'pages/main'
 import { Provider } from 'react-redux'
 import { store } from 'store'
 
+console.log(process.env)
+
 export const App: React.FC = () => (
   <Provider store={store}>
     <BrowserRouter>

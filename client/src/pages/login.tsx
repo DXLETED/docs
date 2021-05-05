@@ -1,32 +1,27 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { FormEditor } from 'components/FormEditor'
 import { LoginLayout } from 'layouts/LoginLayout'
-import { IBlank } from 'types/blank'
-import { Container } from 'components/Container'
-
-const blank: IBlank = {
-  username: {
-    t: 'field',
-    validate: [
-      [/^.{0,10}$/g, 'Max length: 10'],
-      [/^.{0,10}$/g, 'Max length: 10'],
-    ],
-    placeholder: 'Username',
-    required: true,
-  },
-  password: { t: 'field', placeholder: 'Password', required: true },
-}
+import { FormInput } from 'components/form/FormInput'
+import { useForm } from 'hooks/form.hook'
+import { FormContainer } from 'components/form/FormContainer'
+import { FormSubmit } from 'components/form/FormSubmit'
+import { api } from 'core/api'
 
 export const LoginPage: React.FC = () => {
+  const [formData, update] = useForm({ username: '', password: '' })
   return (
     <LoginLayout>
       <Helmet>
         <title>Login - Docs</title>
       </Helmet>
-      <Container p20 bg>
-        <FormEditor blank={blank} sendText="LOG IN" />
-      </Container>
+      <FormContainer p20 bg>
+        <FormInput label="Login" value={formData.username} set={update('username')} />
+        <FormInput label="Password" value={formData.password} set={update('password')} />
+        <FormSubmit
+          sendText="LOG IN"
+          submit={() => api.auth.login(formData as { username: string; password: string })}
+        />
+      </FormContainer>
     </LoginLayout>
   )
 }
