@@ -11,7 +11,7 @@ import { LoginLayout } from 'layouts/LoginLayout'
 export const App: React.FC = () => (
   <Provider store={store}>
     <BrowserRouter>
-      <Route path={['/', '/document/:id']}>
+      <Route exact path={['/', '/document/:id']}>
         <MainLayout>
           <Route exact path="/">
             <MainPage />

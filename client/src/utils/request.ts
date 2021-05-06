@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { store } from 'store'
 import { authActions } from 'store/auth'
 
 const Axios = axios.create({ baseURL: 'http://localhost:3001' })
@@ -15,8 +14,8 @@ class Request {
   async withoutToken(config: AxiosRequestConfig) {
     return await this.create(config)
   }
-  async withToken(config: AxiosRequestConfig) {
-    const accessToken = store.getState().auth.accessToken as string | null
+  async withToken(config: AxiosRequestConfig, thunkApi: any) {
+    const accessToken = thunkApi.getState().auth.accessToken
     try {
       return await this.create({
         ...config,
@@ -24,16 +23,16 @@ class Request {
       })
     } catch (err) {
       if (err.status === 401) {
-        await this.refreshTokens()
+        !this.isRefreshing && await this.refreshTokens(thunkApi)
         return this.create(config)
       }
-      if (err.status === 403) this.logout()
+      if (err.status === 403) this.logout(thunkApi)
       throw err
     }
   }
-  async refreshTokens() {
+  async refreshTokens(thunkApi: any) {
     this.isRefreshing = true
-    await this.create({ data: { refreshToken: store.getState().auth.refreshToken } })
+    await this.create({ data: { refreshToken: thunkApi.getState().auth.refreshToken } })
     this.isRefreshing = false
     this.queue.forEach(req => this.makeRequest(req))
   }
@@ -53,8 +52,8 @@ class Request {
     }
     this.queue = this.queue.filter(rq => rq !== req)
   }
-  private logout() {
-    store.dispatch(authActions.reset())
+  private logout(thunkApi: any) {
+    thunkApi.dispatch(authActions.reset())
   }
 }
 
