@@ -6,7 +6,7 @@ import { FormContainer } from 'components/form/FormContainer'
 import { FormSubmit } from 'components/form/FormSubmit'
 import { useHistory } from 'react-router'
 import { login } from 'store/auth'
-import { useDispatchTyped } from 'hooks/dispatchTyped'
+import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 
 export const LoginPage: React.FC = () => {
   const [formData, update] = useForm({ username: '', password: '' })
