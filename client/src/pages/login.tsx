@@ -10,6 +10,10 @@ import { useHistory } from 'react-router'
 export const LoginPage: React.FC = () => {
   const [formData, update] = useForm({ username: '', password: '' })
   const history = useHistory()
+  const onSubmit = async () => {
+    await api.auth.login(formData as { username: string; password: string })
+    history.push('/')
+  }
   return (
     <>
       <Helmet>
@@ -17,13 +21,10 @@ export const LoginPage: React.FC = () => {
       </Helmet>
       <FormContainer p20 bg>
         <FormInput label="Login" value={formData.username} set={update('username')} />
-        <FormInput label="Password" value={formData.password} set={update('password')} />
+        <FormInput label="Password" type="password" value={formData.password} set={update('password')} />
         <FormSubmit
           sendText="LOG IN"
-          submit={async () => {
-            await api.auth.login(formData as { username: string; password: string })
-            history.push('/')
-          }}
+          onSubmit={onSubmit}
         />
       </FormContainer>
     </>

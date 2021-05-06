@@ -56,10 +56,16 @@ module.exports = Router()
       try {
         decoded = jwt.verify(req.body.refreshToken.replace('Bearer ', ''), privateKey, { algorithms: ['RS256'] })
       } catch (e) {
-        return res.sendStatus(401)
+        return res.sendStatus(403)
       }
       if (decoded.type !== 'refresh' || req.body.refreshToken !== refreshTokens[decoded.userId])
-        return res.sendStatus(401)
-      res.json({ userId: decoded.userId, ...generateTokens({ userId: decoded.userId, username: decoded.username }) })
+        return res.sendStatus(403)
+      res.json({
+        user: {
+          userId: user._id,
+          username: user.username,
+        },
+        ...generateTokens({ userId: decoded.userId, username: decoded.username }),
+      })
     }
   )

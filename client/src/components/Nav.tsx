@@ -24,7 +24,7 @@ export const Nav: React.FC = () => {
     <nav className={clsx({ [st.open]: isOpen })}>
       <div className={st.navMenu}>
         <div className={st.switch} onClick={() => setIsOpen(!isOpen)}>
-          <FontAwesomeIcon icon={faBars} size="lg" />
+          <FontAwesomeIcon icon={faBars} />
         </div>
       </div>
       <NavItem to="/" title="Main" icon={faHome} />

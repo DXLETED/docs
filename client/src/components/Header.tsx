@@ -23,7 +23,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ title = '' }) => {
   const { user, logout } = useAuth()
   return (
-    <header>
+    <header className={st.header}>
       <div className={st.title}>{title}</div>
       <div className={st.r}>
         {user ? (

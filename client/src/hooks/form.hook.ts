@@ -1,8 +1,10 @@
 import { useState } from 'react'
 
-interface FormData { [key: string]: string }
-export const useForm = (initialState: FormData): [FormData, (key: string) => (value: string) => void] => {
+type FormData = { [key: string]: string }
+type FormUpdate = (key: string) => (value: string) => void
+
+export const useForm = (initialState: FormData): [FormData, FormUpdate] => {
   const [state, setState] = useState(initialState)
-  const update = (key: string) => (value: string) => setState({...state, [key]: value})
+  const update: FormUpdate = key => value => setState({...state, [key]: value})
   return [state, update]
 }
