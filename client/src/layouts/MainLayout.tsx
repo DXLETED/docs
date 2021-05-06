@@ -6,11 +6,11 @@ import React from 'react'
 import { Redirect } from 'react-router'
 import st from 'styles/MainLayout.module.sass'
 
-interface IMainLayout {
+interface MainLayoutProps {
   title?: string
   children: React.ReactNode
 }
-export const MainLayout: React.FC<IMainLayout> = ({ title, children }) => {
+export const MainLayout: React.FC<MainLayoutProps> = ({ title, children }) => {
   const { isAuthorized } = useAuth()
   return isAuthorized ? (
     <>

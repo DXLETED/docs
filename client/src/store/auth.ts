@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { loadState } from 'utils/localStorage'
 
-export interface IAuthState {
+export interface AuthState {
   accessToken: string | null
   refreshToken: string | null
   user: { userId: string; username: string } | null
 }
-const initialState: IAuthState = {
+const initialState: AuthState = {
   accessToken: null,
   refreshToken: null,
   user: null,

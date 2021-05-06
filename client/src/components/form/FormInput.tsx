@@ -1,35 +1,33 @@
 import React, { memo } from 'react'
 import clsx from 'clsx'
 import st from 'styles/FormInput.module.sass'
-import { isEqual } from 'lodash'
 import { Label } from 'components/Label'
 
-interface IErrorEl {
+interface ErrorElProps {
   msg?: string
 }
-const ErrorEl = ({ msg }: IErrorEl) => <div className={st.el}>{msg}</div>
+const ErrorEl = ({ msg }: ErrorElProps) => <div className={st.el}>{msg}</div>
 
-type TValidateEl = [RegExp, string]
-type TErrorEl = string
+type ValidateEl = [RegExp, string]
 
-interface IFormInput {
+interface FormInputProps {
   label?: string
   value?: string
   set: (value: string) => void
   type?: string
   placeholder?: string
-  validate?: TValidateEl[]
+  validate?: ValidateEl[]
   limit?: number
   required?: boolean
 }
-export const FormInput: React.FC<IFormInput> = memo(
-  ({ label, value = '', set, type, placeholder, validate, limit = 20, required = false }: IFormInput) => {
-    const errors: TErrorEl[] = [
-      ...(required && !value.length ? (['Required'] as TErrorEl[]) : []),
+export const FormInput: React.FC<FormInputProps> = memo(
+  ({ label, value = '', set, type, placeholder, validate, limit = 20, required = false }: FormInputProps) => {
+    const errors: string[] = [
+      ...(required && !value.length ? (['Required'] as string[]) : []),
       ...(validate || [])
-        .map(([check, msg]: TValidateEl): [boolean, string] => [!!value.match(check), msg])
+        .map(([check, msg]: ValidateEl): [boolean, string] => [!!value.match(check), msg])
         .filter(([checked]) => !checked)
-        .map(([_, msg]): TErrorEl => msg),
+        .map(([_, msg]): string => msg),
     ]
     return (
       <div className={clsx(st.input, { [st.hasErrors]: errors.length })}>
@@ -51,6 +49,5 @@ export const FormInput: React.FC<IFormInput> = memo(
         </div>
       </div>
     )
-  },
-  isEqual
+  }
 )

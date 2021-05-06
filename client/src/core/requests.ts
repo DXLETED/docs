@@ -5,13 +5,13 @@ import { api } from './api'
 
 const Axios = axios.create()
 
-interface IRequest extends AxiosRequestConfig {
+interface Req extends AxiosRequestConfig {
   res: (res: AxiosResponse) => void
   rej: (res: AxiosError) => void
 }
 
 class Requests {
-  queue: IRequest[] = []
+  queue: Req[] = []
   isAuthorized: boolean = false
   create(config: AxiosRequestConfig, { force = false } = {}) {
     return new Promise((res: (res: AxiosResponse) => void, rej: (res: AxiosError) => void) => {
@@ -35,7 +35,7 @@ class Requests {
     alert(e)
     console.log(e)
   }
-  private async makeRequest(req: IRequest) {
+  private async makeRequest(req: Req) {
     const { res, rej, ...params } = req
     const accessToken = store.getState().auth.accessToken
     try {

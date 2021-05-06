@@ -6,21 +6,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { Container } from './Container'
 
-interface IHeaderLink {
+interface HeaderLinkProps {
   to: string
   children?: React.ReactNode
   exact?: boolean
 }
-const HeaderLink = ({ to, children, exact }: IHeaderLink) => (
+const HeaderLink: React.FC<HeaderLinkProps> = ({ to, children, exact }) => (
   <NavLink className={st.link} to={to} exact={exact} activeClassName={st.active}>
     {children}
   </NavLink>
 )
 
-interface IHeader {
+interface HeaderProps {
   title?: string
 }
-export const Header: React.FC<IHeader> = ({ title = '' }) => {
+export const Header: React.FC<HeaderProps> = ({ title = '' }) => {
   const { user, logout } = useAuth()
   return (
     <header>

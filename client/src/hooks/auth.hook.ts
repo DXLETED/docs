@@ -1,10 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from 'store'
-import { authActions, IAuthState } from 'store/auth'
+import { useDispatch } from 'react-redux'
+import { authActions, AuthState } from 'store/auth'
+import { useSelectorTyped } from './selectorTyped.hook'
 
-interface IUseAuthR extends IAuthState { isAuthorized: boolean, logout: () => void }
-export const useAuth = (): IUseAuthR => {
-  const state = useSelector((s: RootState) => s.auth)
+interface UseAuthState extends AuthState { isAuthorized: boolean, logout: () => void }
+export const useAuth = (): UseAuthState => {
+  const state = useSelectorTyped(s => s.auth)
   const dispatch = useDispatch()
   const logout = () => dispatch(authActions.reset())
   return { ...state, isAuthorized: !!state.user, logout }

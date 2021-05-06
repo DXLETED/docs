@@ -6,12 +6,12 @@ import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faFileAlt, faHome, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
-interface INavItem {
+interface NavItemProps {
   to: string
   title: string
   icon: IconDefinition
 }
-const NavItem: React.FC<INavItem> = ({ to, title, icon }: INavItem) => (
+const NavItem: React.FC<NavItemProps> = ({ to, title, icon }) => (
   <NavLink to={to} className={st.navItem}>
     <FontAwesomeIcon className={st.icon} icon={icon} />
     <div className={st.title}>{title}</div>
