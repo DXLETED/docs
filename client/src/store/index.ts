@@ -5,5 +5,6 @@ import { authReducer } from './auth'
 export const store = configureStore({ reducer: combineReducers({ auth: authReducer }) })
 
 export type RootState = ReturnType<typeof store.getState>
+export type RootDispatch = typeof store.dispatch
 
 store.subscribe(() => saveState('auth', store.getState().auth))

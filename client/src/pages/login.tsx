@@ -4,18 +4,15 @@ import { FormInput } from 'components/form/FormInput'
 import { useForm } from 'hooks/form.hook'
 import { FormContainer } from 'components/form/FormContainer'
 import { FormSubmit } from 'components/form/FormSubmit'
-//import { useHistory } from 'react-router'
+import { useHistory } from 'react-router'
 import { login } from 'store/auth'
-import { useDispatch } from 'react-redux'
+import { useDispatchTyped } from 'hooks/dispatchTyped'
 
 export const LoginPage: React.FC = () => {
   const [formData, update] = useForm({ username: '', password: '' })
-  const dispatch = useDispatch()
-  //const history = useHistory()
-  const onSubmit = async () => {
-    dispatch(login(formData))
-    //history.push('/')
-  }
+  const dispatch = useDispatchTyped()
+  const history = useHistory()
+  const onSubmit = () => dispatch(login(formData)).then(res => res.payload && history.push('/'))
   return (
     <>
       <Helmet>
@@ -24,10 +21,7 @@ export const LoginPage: React.FC = () => {
       <FormContainer p20 bg>
         <FormInput label="Username" value={formData.username} set={update('username')} />
         <FormInput label="Password" type="password" value={formData.password} set={update('password')} />
-        <FormSubmit
-          sendText="LOG IN"
-          onSubmit={onSubmit}
-        />
+        <FormSubmit sendText="LOG IN" onSubmit={onSubmit} />
       </FormContainer>
     </>
   )
