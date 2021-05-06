@@ -4,14 +4,14 @@ import { FormInput } from 'components/form/FormInput'
 import { useForm } from 'hooks/form.hook'
 import { FormContainer } from 'components/form/FormContainer'
 import { FormSubmit } from 'components/form/FormSubmit'
-import { api } from 'core/api'
 import { useHistory } from 'react-router'
+import { login } from 'store/auth'
 
 export const LoginPage: React.FC = () => {
   const [formData, update] = useForm({ username: '', password: '' })
   const history = useHistory()
   const onSubmit = async () => {
-    await api.auth.login(formData as { username: string; password: string })
+    login(formData as { username: string; password: string })
     history.push('/')
   }
   return (

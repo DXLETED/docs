@@ -1,7 +1,6 @@
 const { Router } = require('express')
 const jwt = require('jsonwebtoken')
 const { readFileSync } = require('fs')
-const { db } = require('./shared')
 const Joi = require('joi')
 const { authRequired } = require('./middlewares/auth')
 const validate = require('./middlewares/validate')

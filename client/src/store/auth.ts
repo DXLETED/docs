@@ -1,5 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { request } from 'core/requests'
 import { loadState } from 'utils/localStorage'
+
+const API_URL = process.env.REACT_APP_API_URL
 
 export interface AuthState {
   accessToken: string | null
@@ -12,6 +15,12 @@ const initialState: AuthState = {
   user: null,
 }
 
+export const login = createAsyncThunk(
+  'auth/login',
+  async ({ username, password }: { username: string; password: string }) =>
+    await request.withToken({ method: 'POST', url: `${API_URL}/login`, data: { username, password } })
+)
+
 const slice = createSlice({
   name: 'auth',
   initialState: loadState('auth') || initialState,
@@ -23,6 +32,9 @@ const slice = createSlice({
       state.refreshToken = action.payload.refreshToken
     },
     reset: () => initialState,
+  },
+  extraReducers: {
+    [login.fulfilled.type]: (state, action) => action.payload,
   },
 })
 

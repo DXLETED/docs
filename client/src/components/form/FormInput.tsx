@@ -15,13 +15,11 @@ interface FormInputProps {
   type?: string
   placeholder?: string
   errors?: string[]
-  limit?: number
 }
 export const FormInput: React.FC<FormInputProps> = memo(
-  ({ label, value = '', set, type, placeholder, limit = 20, errors = [] }: FormInputProps) => {
+  ({ label, value = '', set, type, placeholder, errors = [] }: FormInputProps) => {
     const onInput = (e: React.FormEvent): void => {
       const target = e.target as HTMLInputElement
-      if (target.value.length > limit && target.value.length > value.length) return
       set(target.value)
     }
     return (
