@@ -4,7 +4,7 @@ import { loadState } from 'utils/localStorage'
 
 const API_URL = process.env.REACT_APP_API_URL
 
-export interface AuthState {
+export type AuthState = {
   accessToken: string | null
   refreshToken: string | null
   user: { userId: string; username: string } | null
@@ -18,9 +18,11 @@ const initialState: AuthState = {
 export interface LoginPayload { username: string, password: string }
 export const login = createAsyncThunk(
   'auth/login',
-  async ({ username, password }: { username: string; password: string }, apiThunk) =>
-    await request.withToken({ method: 'POST', url: `${API_URL}/login`, data: { username, password } }, apiThunk)
-      .then(res => res.data)
+  async ({ username, password }: { username: string; password: string }, thunkAPI) => {
+    const res = await request.withToken({ method: 'POST', url: `${API_URL}/login`, data: { username, password } }, thunkAPI)
+    thunkAPI.dispatch(slice.actions.set(res))
+    return res
+  }
 )
 
 const slice = createSlice({
@@ -34,9 +36,6 @@ const slice = createSlice({
       state.refreshToken = action.payload.refreshToken
     },
     reset: () => initialState,
-  },
-  extraReducers: {
-    [login.fulfilled.type]: (state, action) => action.payload,
   },
 })
 

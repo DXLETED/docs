@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "name": "Бланк резюме",
+    "fields": [
+      {
+        "id": 1,
+        "name": "fio",
+        "label": "ФИО",
+        "type": "text",
+        "multiple": false,
+        "validations": ["required", "notContainWhiteSpaces", "notContainNumbers"]
+      },
+      {
+        "id": 2,
+        "name": "dateOfBirth",
+        "label": "Дата рождения",
+        "type": "date",
+        "multiple": false,
+        "validations": ["required"]
+      },
+      {
+        "id": 4,
+        "name": "contacts",
+        "label": "Контакты",
+        "type": "group",
+        "multiple": false,
+        "fields": [
+          {
+            "id": 5,
+            "name": "phone",
+            "label": "Номер телефона",
+            "type": "text",
+            "multiple": false,
+            "validations": ["required", "phone"]
+          },
+          {
+            "id": 6,
+            "name": "email",
+            "label": "Email",
+            "type": "text",
+            "multiple": false,
+            "validations": ["required", "email"]
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "skills",
+        "label": "Скиллы",
+        "type": "text",
+        "multiple": true,
+        "validations": ["required", "notContainWhiteSpaces", "notContainNumbers"]
+      },
+      {
+        "id": 8,
+        "name": "workExpirience",
+        "label": "Опыт работы",
+        "type": "group",
+        "multiple": true,
+        "fields": [
+          {
+            "id": 9,
+            "name": "nameOfCompany",
+            "label": "Название компании",
+            "type": "text",
+            "multiple": false,
+            "validations": ["required"]
+          },
+          {
+            "id": 10,
+            "name": "occupation",
+            "label": "Должность",
+            "type": "text",
+            "multiple": false,
+            "validations": ["required", "notContainNumbers"]
+          },
+          {
+            "id": 11,
+            "name": "description",
+            "label": "Описание",
+            "type": "text",
+            "multiple": false,
+            "validations": ["required"]
+          }
+        ]
+      }
+    ]
+  }
+]

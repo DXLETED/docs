@@ -4,6 +4,7 @@ const { readFileSync } = require('fs')
 const Joi = require('joi')
 const { authRequired } = require('./middlewares/auth')
 const validate = require('./middlewares/validate')
+const path = require('path')
 
 const privateKey = readFileSync('./jwt.key')
 
@@ -11,7 +12,7 @@ const refreshTokens = {}
 
 const generateTokens = ({ userId, username }) => {
   const accessToken = jwt.sign({ type: 'access', userId, username }, privateKey, {
-      expiresIn: 180,
+      expiresIn: 10,
       algorithm: 'RS256',
     }),
     refreshToken = jwt.sign({ type: 'refresh', userId, username }, privateKey, { algorithm: 'RS256' })
@@ -23,6 +24,7 @@ module.exports = Router()
   .get('/@me', authRequired, async (req, res) => {
     res.json({ userId: req.auth.userId, username: req.auth.username })
   })
+  .get('/blanks', authRequired, async (req, res) => res.sendFile(path.join(__dirname, 'blanks.json')))
   .post(
     '/login',
     validate(
@@ -50,7 +52,7 @@ module.exports = Router()
         refreshToken: Joi.string().required(),
       })
     ),
-    (req, res) => {
+    async (req, res) => {
       let decoded
       try {
         decoded = jwt.verify(req.body.refreshToken.replace('Bearer ', ''), privateKey, { algorithms: ['RS256'] })
@@ -59,10 +61,11 @@ module.exports = Router()
       }
       if (decoded.type !== 'refresh' || req.body.refreshToken !== refreshTokens[decoded.userId])
         return res.sendStatus(403)
+      await new Promise(res => setTimeout(res, 2000))
       res.json({
         user: {
-          userId: user._id,
-          username: user.username,
+          userId: decoded.userId,
+          username: decoded.username,
         },
         ...generateTokens({ userId: decoded.userId, username: decoded.username }),
       })

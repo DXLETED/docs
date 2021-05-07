@@ -3,57 +3,85 @@ import { authActions } from 'store/auth'
 
 const Axios = axios.create({ baseURL: 'http://localhost:3001' })
 
-interface Req extends AxiosRequestConfig {
+interface Req {
   res: (res: AxiosResponse) => void
   rej: (res: AxiosError) => void
+  config: AxiosRequestConfig
+  thunkAPI: any
+  withToken: boolean
 }
 
 class Request {
+  constructor() {
+    return Request._instance || this
+  }
+  static _instance: Request
   queue: Req[] = []
   isRefreshing: boolean = false
-  async withoutToken(config: AxiosRequestConfig) {
-    return await this.create(config)
+  async withoutToken<T>(config: AxiosRequestConfig, thunkAPI: any): Promise<T> {
+    return await this.create(config, thunkAPI)
   }
-  async withToken(config: AxiosRequestConfig, thunkApi: any) {
-    const accessToken = thunkApi.getState().auth.accessToken
+  async withToken<T>(config: AxiosRequestConfig, thunkAPI: any): Promise<T> {
+    let result
     try {
-      return await this.create({
-        ...config,
-        headers: { authorization: accessToken && `Bearer ${accessToken}`, ...config.headers },
-      })
+      result = await this.create(config, thunkAPI, { withToken: true })
     } catch (err) {
       if (err.status === 401) {
-        !this.isRefreshing && await this.refreshTokens(thunkApi)
-        return this.create(config)
+        !this.isRefreshing && (await this.refreshTokens(thunkAPI))
+        return this.create(config, thunkAPI, { withToken: true })
       }
-      if (err.status === 403) this.logout(thunkApi)
+      if (err.status === 403) this.logout(thunkAPI)
+      alert(`${err.status} | ${err.statusText}`)
       throw err
     }
+    return result
   }
-  async refreshTokens(thunkApi: any) {
+  private async refreshTokens(thunkAPI: any) {
+    if (this.isRefreshing) return
+    const req = this.create(
+      {
+        method: 'POST',
+        url: `${process.env.REACT_APP_API_URL}/refresh`,
+        data: { refreshToken: thunkAPI.getState().auth.refreshToken },
+      },
+      thunkAPI
+    )
     this.isRefreshing = true
-    await this.create({ data: { refreshToken: thunkApi.getState().auth.refreshToken } })
-    this.isRefreshing = false
+    let result
+    try {
+      result = await req
+    } catch (err) {
+      this.logout(thunkAPI)
+      this.queue.forEach(req => req.rej(err))
+    } finally {
+      this.isRefreshing = false
+    }
+    thunkAPI.dispatch(authActions.set(result))
     this.queue.forEach(req => this.makeRequest(req))
   }
-  private create(config: AxiosRequestConfig) {
-    return new Promise((res: (res: AxiosResponse) => void, rej: (res: AxiosError) => void) => {
-      const req = { ...config, res, rej }
+  private create(config: AxiosRequestConfig, thunkAPI: any, { withToken = false } = {}) {
+    return new Promise((res: (res: any) => void, rej: (res: AxiosError) => void) => {
+      const req = { config, res, rej, thunkAPI, withToken }
       this.isRefreshing ? this.queue.push(req) : this.makeRequest(req)
     })
   }
   private async makeRequest(req: Req) {
-    const { res, rej, ...config } = req
+    const { res, rej, config, thunkAPI, withToken } = req
     try {
-      res(await Axios.request(config))
+      const result = await Axios.request({
+        ...config,
+        headers: withToken
+          ? { authorization: `Bearer ${thunkAPI.getState().auth.accessToken}`, ...config.headers }
+          : config.headers,
+      })
+      res(result.data)
     } catch (e) {
-      alert(e)
-      rej(e)
+      rej(e.response)
     }
     this.queue = this.queue.filter(rq => rq !== req)
   }
-  private logout(thunkApi: any) {
-    thunkApi.dispatch(authActions.reset())
+  private logout(thunkAPI: any) {
+    thunkAPI.dispatch(authActions.reset())
   }
 }
 
