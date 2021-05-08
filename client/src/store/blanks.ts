@@ -3,20 +3,22 @@ import { request } from 'utils/request'
 
 const API_URL = process.env.REACT_APP_API_URL
 
-type Validation = 'required' | 'notContainWhiteSpaces' | 'email' | 'phone' | 'notContainNumbers'
-export type Field = {
+export type BlankFieldType = 'text' | 'date' | 'group'
+export type Validation = 'required' | 'notContainWhiteSpaces' | 'email' | 'phone' | 'notContainNumbers'
+export type BlankField = {
   id: number
   name: string
   label: string
-  type: 'text' | 'date' | 'group'
+  type: BlankFieldType
   multiple: boolean
   validations?: Validation[]
-  fields?: Field[]
+  fields?: BlankFields
 }
+export type BlankFields = BlankField[]
 export type Blank = {
   id: number
   name: string
-  fields: Field[]
+  fields: BlankFields
 }
 export type BlanksState = Blank[]
 
@@ -32,7 +34,7 @@ const slice = createSlice({
   name: 'blanks',
   initialState,
   reducers: {
-    set: (statte, action) => action.payload,
+    set: (state, action) => action.payload,
   },
 })
 

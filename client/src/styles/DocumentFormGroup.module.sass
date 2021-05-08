@@ -1,0 +1,16 @@
+@import styles/colors.sass
+@import styles/mixins.sass
+
+.group
+  flex-direction: column
+  &:not(:last-child)
+    margin-bottom: 10px
+  .label
+    font-weight: 700
+    font-size: 0.8rem
+    color: $text
+    margin-bottom: 10px
+  .inner
+    flex-direction: column
+    background: $lighter
+    padding: 20px

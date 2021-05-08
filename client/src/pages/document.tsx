@@ -4,22 +4,34 @@ import { Select } from 'components/Select'
 import { useRequest } from 'hooks/request.hook'
 import { Helmet } from 'react-helmet'
 import { getBlanks } from 'store/blanks'
-import { useSelectorTyped } from 'hooks/selectorTyped.hook'
+import { DocumentForm } from 'components/document/DocumentForm'
+import { Container } from 'components/Container'
 
 export const DocumentPage: React.FC = () => {
-  const [isLoaded] = useRequest(getBlanks())
-  const blanks = useSelectorTyped(s => s.blanks)
+  const [blanks, isLoaded] = useRequest(
+    s => s.blanks,
+    () => getBlanks()
+  )
   const [blankI, setBlankI] = useState(0)
-  const blank = blanks[blankI]
-  console.log(blank)
+  const blank = blanks?.[blankI]
   return (
     <>
       <Helmet>
         <title>Document - Docs</title>
       </Helmet>
       <div className={st.document}>
-        {isLoaded && 'Blanks loaded'}
-        <Select selected={blankI} options={['Blank #1']} set={setBlankI} />
+        {isLoaded ? (
+          <>
+            <Container classNames={['mb-30']}>
+              <Select label="Blank" selected={blankI} options={blanks.map(b => b.name)} set={setBlankI} />
+            </Container>
+            <Container classNames={['column']}>
+              <DocumentForm blank={blank} />
+            </Container>
+          </>
+        ) : (
+          'Loading'
+        )}
       </div>
     </>
   )

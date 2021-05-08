@@ -5,15 +5,19 @@ $sides: ('top': 't', 'right': 'r', 'bottom': 'b', 'left': 'l')
   .p-#{$px}
     padding: #{$px}px
   .pv-#{$px}
-    padding: 0 #{$px}px
+    padding-left: #{$px}px
+    padding-right: #{$px}px
   .ph-#{$px}
-    padding: #{$px}px 0
+    padding-top: #{$px}px
+    padding-bottom: #{$px}px
   .m-#{$px}
     margin: #{$px}px
   .mv-#{$px}
-    margin: 0 #{$px}px
+    margin-left: #{$px}px
+    margin-right: #{$px}px
   .mh-#{$px}
-    margin: #{$px}px 0
+    margin-top: #{$px}px
+    margin-bottom: #{$px}px
   @each $side, $l in $sides
     .p#{$l}-#{$px}
       padding-#{$side}: #{$px}px

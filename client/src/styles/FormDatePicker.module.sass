@@ -1,0 +1,45 @@
+@import styles/colors.sass
+@import styles/mixins.sass
+
+.datePicker
+  flex-direction: column
+  &:not(:last-child)
+    margin-bottom: 20px
+  &.open
+    .inner .dropdown
+      visibility: visible
+  .inner
+    position: relative
+    flex-direction: column
+    .selected
+      width: 100%
+      height: 40px
+      position: relative
+      justify-content: space-between
+      align-items: center
+      cursor: pointer
+      @include line
+      .button
+        margin-right: 10px
+    .dropdown
+      visibility: hidden
+      position: absolute
+      left: 0
+      top: 0
+      width: 100%
+      height: 240px
+      background: $highlight
+      .month
+        width: 100%
+        height: 40px
+        justify-content: space-between
+        align-items: center
+        font-weight: 600
+        .monthButton
+          width: 80px
+          height: 100%
+          justify-content: center
+          align-items: center
+          cursor: pointer
+          &:hover
+            background: $text
