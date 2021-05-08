@@ -4,7 +4,11 @@
 .group
   flex-direction: column
   &:not(:last-child)
-    margin-bottom: 10px
+    margin-bottom: 20px
+  &.multiple .inner
+    border: none
+    background: $lighter
+    padding: 10px 20px
   .label
     font-weight: 700
     font-size: 0.8rem
@@ -12,5 +16,5 @@
     margin-bottom: 10px
   .inner
     flex-direction: column
-    background: $lighter
-    padding: 20px
+    padding: 10px 0 10px 18px
+    border-left: 2px solid $lighter

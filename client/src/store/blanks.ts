@@ -1,17 +1,17 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { request } from 'utils/request'
+import { Validations } from 'utils/validate'
 
 const API_URL = process.env.REACT_APP_API_URL
 
 export type BlankFieldType = 'text' | 'date' | 'group'
-export type Validation = 'required' | 'notContainWhiteSpaces' | 'email' | 'phone' | 'notContainNumbers'
 export type BlankField = {
   id: number
   name: string
   label: string
   type: BlankFieldType
   multiple: boolean
-  validations?: Validation[]
+  validations?: Validations
   fields?: BlankFields
 }
 export type BlankFields = BlankField[]

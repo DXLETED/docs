@@ -71,3 +71,4 @@ module.exports = Router()
       })
     }
   )
+  .post('/documents', authRequired, async (req, res) => res.sendStatus(200))

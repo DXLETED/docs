@@ -3,6 +3,7 @@ import { FormInput } from 'components/form/FormInput'
 import { store } from 'store'
 import { BlankField, BlankFields, BlankFieldType } from 'store/blanks'
 import { documentActions } from 'store/document'
+import { validate } from 'utils/validate'
 import { DocumentFormGroup } from './DocumentFormGroup'
 
 const update = (path: (string | number)[]) => (value: string | number) =>
@@ -16,10 +17,30 @@ const formFields: {
     path: (string | number)[]
   ) => React.ReactNode
 } = {
-  text: (el, label, value, path) => <FormInput label={label} value={value as string} set={update(path)} />,
-  date: (el, label, value, path) => <FormDatePicker label={label} value={value as number} set={update(path)} />,
+  text: (el, label, value, path) => (
+    <FormInput
+      label={label}
+      value={value as string}
+      set={update(path)}
+      errors={validate(value as string, el.validations)}
+    />
+  ),
+  date: (el, label, value, path) => (
+    <FormDatePicker
+      label={label}
+      value={value as number}
+      set={update(path)}
+      errors={validate(value?.toString(), el.validations)}
+    />
+  ),
   group: (el, label, value, path) => (
-    <DocumentFormGroup label={label} data={value} fields={el.fields as BlankFields} path={[...path]} />
+    <DocumentFormGroup
+      label={label}
+      data={value}
+      fields={el.fields as BlankFields}
+      path={path}
+      multiple={el.multiple}
+    />
   ),
 }
 

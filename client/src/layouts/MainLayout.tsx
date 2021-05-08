@@ -1,6 +1,5 @@
 import { Header } from 'components/Header'
 import { Nav } from 'components/Nav'
-import { Page } from 'components/Page'
 import { useAuth } from 'hooks/auth.hook'
 import React from 'react'
 import { Redirect } from 'react-router'
@@ -17,7 +16,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ title, children }) => {
       <Nav />
       <div className={st.main}>
         <Header title={title} />
-        <Page>{children}</Page>
+        <div className={st.page}>{children}</div>
       </div>
     </>
   ) : (
