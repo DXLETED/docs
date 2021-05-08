@@ -5,6 +5,8 @@ import { request } from 'utils/request'
 
 const API_URL = process.env.REACT_APP_API_URL
 
+export type DocumentPath = (string | number)[]
+
 const initialState: any = null
 
 export const sendDocument = createAsyncThunk('document/send', async ({blankId}: {blankId: number}, thunkAPI) => {

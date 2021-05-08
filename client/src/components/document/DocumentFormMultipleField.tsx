@@ -1,17 +1,17 @@
-import { useDispatchTyped } from "hooks/dispatchTyped.hook"
-import React from "react"
-import st from 'styles/DocumentFormFields.module.sass'
-import { BlankField } from "store/blanks"
-import { documentActions } from "store/document"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
-import { fieldData } from "./DocumentForm"
-import { DocumentFormField } from "./DocumentFormField"
+import React from 'react'
+import st from 'styles/components/document/DocumentFormFields.module.sass'
+import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
+import { BlankField } from 'store/blanks'
+import { documentActions, DocumentPath } from 'store/document'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { fieldData } from './DocumentForm'
+import { DocumentFormField } from './DocumentFormField'
 
 interface MultipleFieldsProps {
   label: string
   field: BlankField
-  path: (string | number)[]
+  path: DocumentPath
   data: any
 }
 export const DocumentFormMultipleField: React.FC<MultipleFieldsProps> = ({ label, field, path, data }) => {

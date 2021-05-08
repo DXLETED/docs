@@ -1,0 +1,10 @@
+@import styles/colors.sass
+@import styles/mixins.sass
+
+.page
+  width: calc(100% - 50px)
+  height: 100%
+  flex-direction: column
+  transition: 0.2s width
+  &.navOpen
+    width: calc(100% - 240px)

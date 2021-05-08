@@ -1,10 +1,10 @@
 import React from 'react'
+import { store } from 'store'
 import { BrowserRouter, Route } from 'react-router-dom'
 import { LoginPage } from './pages/login'
 import { DocumentPage } from './pages/document'
 import { MainPage } from 'pages/main'
 import { Provider } from 'react-redux'
-import { store } from 'store'
 import { MainLayout } from 'layouts/MainLayout'
 import { LoginLayout } from 'layouts/LoginLayout'
 

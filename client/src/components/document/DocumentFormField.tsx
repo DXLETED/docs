@@ -1,12 +1,12 @@
-import { FormDatePicker } from 'components/form/FormDatePicker'
-import { FormInput } from 'components/form/FormInput'
 import { store } from 'store'
-import { BlankField, BlankFields, BlankFieldType } from 'store/blanks'
-import { documentActions } from 'store/document'
-import { validate } from 'utils/validate'
+import { Input } from 'components/Input'
 import { DocumentFormGroup } from './DocumentFormGroup'
+import { DatePicker } from 'components/DatePicker'
+import { BlankField, BlankFields, BlankFieldType } from 'store/blanks'
+import { documentActions, DocumentPath } from 'store/document'
+import { validate } from 'utils/validate'
 
-const update = (path: (string | number)[]) => (value: string | number) =>
+const update = (path: DocumentPath) => (value: string | number) =>
   store.dispatch(documentActions.update({ path, value }))
 
 const formFields: {
@@ -14,11 +14,11 @@ const formFields: {
     el: BlankField,
     label: string | undefined,
     value: string | number,
-    path: (string | number)[]
+    path: DocumentPath
   ) => React.ReactNode
 } = {
   text: (el, label, value, path) => (
-    <FormInput
+    <Input
       label={label}
       value={value as string}
       set={update(path)}
@@ -26,7 +26,7 @@ const formFields: {
     />
   ),
   date: (el, label, value, path) => (
-    <FormDatePicker
+    <DatePicker
       label={label}
       value={value as number}
       set={update(path)}
@@ -47,7 +47,7 @@ const formFields: {
 interface FieldProps {
   el: BlankField
   label?: string
-  path: (string | number)[]
+  path: DocumentPath
   data: any
 }
 export const DocumentFormField: React.FC<FieldProps> = ({ el, label, path, data }) => (

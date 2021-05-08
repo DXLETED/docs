@@ -1,6 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { FormInput } from 'components/form/FormInput'
+import { Input } from 'components/Input'
 import { useForm } from 'hooks/form.hook'
 import { FormContainer } from 'components/form/FormContainer'
 import { FormSubmit } from 'components/form/FormSubmit'
@@ -22,9 +22,9 @@ export const LoginPage: React.FC = () => {
       <Helmet>
         <title>Login - Docs</title>
       </Helmet>
-      <FormContainer p20 bg>
-        <FormInput label="Username" value={formData.username} set={update('username')} />
-        <FormInput label="Password" type="password" value={formData.password} set={update('password')} />
+      <FormContainer classNames={['p-20']} bg>
+        <Input label="Username" value={formData.username} set={update('username')} />
+        <Input label="Password" type="password" value={formData.password} set={update('password')} />
         <FormSubmit sendText="LOG IN" onSubmit={onSubmit} />
       </FormContainer>
     </>

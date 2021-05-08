@@ -3,9 +3,10 @@ import { saveState } from 'utils/localStorage'
 import { authReducer } from './auth'
 import { blanksReducer } from './blanks'
 import { documentReducer } from './document'
+import { switchesReducer } from './switches'
 
 export const store = configureStore({
-  reducer: combineReducers({ auth: authReducer, blanks: blanksReducer, document: documentReducer }),
+  reducer: combineReducers({ auth: authReducer, blanks: blanksReducer, document: documentReducer, switches: switchesReducer }),
 })
 
 export type RootState = ReturnType<typeof store.getState>

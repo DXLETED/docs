@@ -1,6 +1,6 @@
-import { Container, ContainerProps } from 'components/Container'
 import React from 'react'
-import st from 'styles/FormContainer.module.sass'
+import st from 'styles/components/form/FormContainer.module.sass'
+import { Container, ContainerProps } from 'components/Container'
 
 export const FormContainer: React.FC<ContainerProps> = props => (
   <form onSubmit={e => e.preventDefault()}>

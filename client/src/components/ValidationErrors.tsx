@@ -1,6 +1,6 @@
-import clsx from 'clsx'
 import React from 'react'
-import st from 'styles/ValidationErrors.module.sass'
+import st from 'styles/components/ValidationErrors.module.sass'
+import clsx from 'clsx'
 
 interface ErrorElProps {
   msg?: string

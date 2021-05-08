@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom'
-import 'styles/_index.sass'
 import { App } from './App'
+import 'styles/_index.sass'
 
 ReactDOM.render(<App />, document.getElementById('root'))

@@ -1,5 +1,5 @@
-import st from 'styles/Placeholder.module.sass'
 import React from 'react'
+import st from 'styles/components/Placeholder.module.sass'
 
 interface PlaceholderProps {
   children: React.ReactNode

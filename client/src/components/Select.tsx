@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react'
 import clsx from 'clsx'
+import st from 'styles/components/Select.module.sass'
+import { Label } from './Label'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
-import st from 'styles/Select.module.sass'
 import { faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Label } from './Label'
 
 interface SelectProps {
   label?: string

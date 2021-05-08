@@ -1,21 +1,21 @@
 import React, { useMemo, useRef, useState } from 'react'
-import st from 'styles/FormDatePicker.module.sass'
-import { Label } from 'components/Label'
+import st from 'styles/components/DatePicker.module.sass'
+import clsx from 'clsx'
 import moment from 'moment'
+import { Input } from './Input'
+import { Label } from 'components/Label'
+import { ValidationErrors } from 'components/ValidationErrors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight, faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
-import clsx from 'clsx'
-import { FormInput } from './FormInput'
-import { ValidationErrors } from 'components/ValidationErrors'
 
-interface FormDatePickerProps {
+interface DatePickerProps {
   label?: string
   value: number
   set: (value: number) => void
   errors?: string[]
 }
-export const FormDatePicker: React.FC<FormDatePickerProps> = ({ label, value, set, errors = [] }) => {
+export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, errors = [] }) => {
   const ref = useRef<HTMLDivElement | any>(null)
   const [isOpen, setIsOpen] = useState(false)
   useOnClickOutside<HTMLDivElement>(ref, () => setIsOpen(false))
@@ -68,7 +68,7 @@ export const FormDatePicker: React.FC<FormDatePickerProps> = ({ label, value, se
               </div>
             </div>
             <div className={st.year}>
-              <FormInput value={year} set={setYear} center flex />
+              <Input value={year} set={setYear} center flex />
             </div>
           </div>
           <div className={st.days}>

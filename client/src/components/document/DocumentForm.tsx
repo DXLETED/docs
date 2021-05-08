@@ -1,6 +1,6 @@
+import React, { useEffect } from 'react'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
-import React, { useEffect } from 'react'
 import { Blank, BlankField, BlankFieldType } from 'store/blanks'
 import { documentActions } from 'store/document'
 import { DocumentFormFields } from './DocumentFormFields'

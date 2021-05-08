@@ -1,9 +1,10 @@
+import React from 'react'
+import st from 'styles/layouts/MainLayout.module.sass'
 import { Header } from 'components/Header'
 import { Nav } from 'components/Nav'
+import { Page } from 'components/Page'
 import { useAuth } from 'hooks/auth.hook'
-import React from 'react'
 import { Redirect } from 'react-router'
-import st from 'styles/MainLayout.module.sass'
 
 interface MainLayoutProps {
   title?: string
@@ -14,10 +15,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ title, children }) => {
   return isAuthorized ? (
     <>
       <Nav />
-      <div className={st.main}>
+      <Page>
         <Header title={title} />
-        <div className={st.page}>{children}</div>
-      </div>
+        <div className={st.main}>{children}</div>
+      </Page>
     </>
   ) : (
     <Redirect to="/login" />

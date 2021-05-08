@@ -1,12 +1,13 @@
 import React, { Fragment } from 'react'
 import { BlankFields } from 'store/blanks'
+import { DocumentPath } from 'store/document'
 import { DocumentFormField } from './DocumentFormField'
 import { DocumentFormMultipleField } from './DocumentFormMultipleField'
 
 interface DocumentFormFieldsProps {
   data: any
   fields: BlankFields
-  path?: (string | number)[]
+  path?: DocumentPath
 }
 export const DocumentFormFields: React.FC<DocumentFormFieldsProps> = ({ data, fields, path = [] }) => {
   return (
