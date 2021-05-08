@@ -26,12 +26,11 @@ class Request {
     try {
       result = await this.create(config, thunkAPI, { withToken: true })
     } catch (err) {
-      if (err.status === 401) {
+      if (err.response?.status === 401) {
         !this.isRefreshing && (await this.refreshTokens(thunkAPI))
         return this.create(config, thunkAPI, { withToken: true })
       }
-      if (err.status === 403) this.logout(thunkAPI)
-      alert(`${err.status} | ${err.statusText}`)
+      if (err.response?.status === 403) this.logout(thunkAPI)
       throw err
     }
     return result
@@ -76,7 +75,7 @@ class Request {
       })
       res(result.data)
     } catch (e) {
-      rej(e.response)
+      rej(e)
     }
     this.queue = this.queue.filter(rq => rq !== req)
   }

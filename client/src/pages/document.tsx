@@ -6,9 +6,11 @@ import { Helmet } from 'react-helmet'
 import { getBlanks } from 'store/blanks'
 import { DocumentForm } from 'components/document/DocumentForm'
 import { Container } from 'components/Container'
+import { Loading } from 'Loading'
+import { Error } from 'components/Error'
 
 export const DocumentPage: React.FC = () => {
-  const [blanks, isLoaded] = useRequest(
+  const [blanks, status, error] = useRequest(
     s => s.blanks,
     () => getBlanks()
   )
@@ -20,7 +22,7 @@ export const DocumentPage: React.FC = () => {
         <title>Document - Docs</title>
       </Helmet>
       <div className={st.document}>
-        {isLoaded ? (
+        {status === 'fulfilled' && (
           <>
             <Container classNames={['mb-30']}>
               <Select label="Blank" selected={blankI} options={blanks.map(b => b.name)} set={setBlankI} />
@@ -29,9 +31,9 @@ export const DocumentPage: React.FC = () => {
               <DocumentForm blank={blank} />
             </Container>
           </>
-        ) : (
-          'Loading'
         )}
+        {status === 'loading' && <Loading />}
+        {status === 'error' && <Error msg={error} />}
       </div>
     </>
   )

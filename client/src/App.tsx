@@ -11,12 +11,12 @@ import { LoginLayout } from 'layouts/LoginLayout'
 export const App: React.FC = () => (
   <Provider store={store}>
     <BrowserRouter>
-      <Route exact path={['/', '/document/:id']}>
+      <Route exact path={['/', '/document']}>
         <MainLayout>
           <Route exact path="/">
             <MainPage />
           </Route>
-          <Route exact path="/document/:id">
+          <Route exact path="/document">
             <DocumentPage />
           </Route>
         </MainLayout>

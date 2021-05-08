@@ -7,9 +7,9 @@ interface DocumentFormGroupProps {
   label?: string
   data: any
   fields: BlankFields
-  path?: string
+  path?: (string | number)[]
 }
-export const DocumentFormGroup: React.FC<DocumentFormGroupProps> = ({ label, data, fields, path }) => {
+export const DocumentFormGroup: React.FC<DocumentFormGroupProps> = ({ label, data, fields, path = [] }) => {
   return (
     <div className={st.group}>
       {label && <div className={st.label}>{label.toUpperCase()}</div>}

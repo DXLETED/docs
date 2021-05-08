@@ -1,0 +1,47 @@
+@import styles/colors.sass
+@import styles/mixins.sass
+
+.multipleFields
+  flex-direction: column
+  &:not(:last-child)
+    margin-bottom: 10px
+  .head
+    width: 100%
+    height: 30px
+    justify-content: space-between
+    align-items: center
+    font-weight: 700
+    font-size: 0.8rem
+    background: $lighter
+    padding-left: 10px
+    color: $text
+    &:not(:last-child)
+      margin-bottom: 10px
+    .add
+      height: 100%
+      align-items: center
+      padding: 0 10px
+      cursor: pointer
+      &:hover
+        color: $white
+      .addIcon
+        margin-right: 7px
+  .field
+    width: 100%
+    position: relative
+    flex-direction: column
+    padding-right: 40px
+    &:not(:last-child)
+      margin-bottom: 10px
+    .remove
+      width: 30px
+      height: 100%
+      position: absolute
+      right: 0
+      top: 0
+      justify-content: center
+      align-items: center
+      border-left: 2px solid $lighter
+      cursor: pointer
+      &:hover
+        background: $lighter

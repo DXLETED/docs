@@ -1,7 +1,7 @@
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 import React, { useEffect } from 'react'
-import { Blank, BlankFieldType } from 'store/blanks'
+import { Blank, BlankField, BlankFieldType } from 'store/blanks'
 import { documentActions } from 'store/document'
 import { DocumentFormFields } from './DocumentFormFields'
 
@@ -10,10 +10,9 @@ const dataFields: { [key in BlankFieldType]: any } = {
   date: null,
   group: {},
 }
+export const fieldData = (field: BlankField) => dataFields[field.type]
 const dataFromBlank = (blank: Blank) =>
-  Object.fromEntries(
-    blank.fields.map(el => [el.type === 'group' ? el.name : el.id, el.multiple ? [] : dataFields[el.type]])
-  )
+  Object.fromEntries(blank.fields.map(el => [el.name, el.multiple ? [] : fieldData(el)]))
 
 interface DocumentFormProps {
   blank: Blank

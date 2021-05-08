@@ -9,7 +9,15 @@ const slice = createSlice({
   reducers: {
     init: (state, action) => action.payload,
     update: (state, action) => {
-      objectPath.set(state, action.payload.path ? [action.payload.path, action.payload.field] : action.payload.field, action.payload.value)
+      objectPath.set(state, action.payload.path, action.payload.value)
+      return state
+    },
+    push: (state, action) => {
+      objectPath.push(state, action.payload.path, action.payload.value)
+      return state
+    },
+    remove: (state, action) => {
+      objectPath.del(state, action.payload.path)
       return state
     }
   },

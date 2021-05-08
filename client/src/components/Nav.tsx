@@ -28,7 +28,7 @@ export const Nav: React.FC = () => {
         </div>
       </div>
       <NavItem to="/" title="Main" icon={faHome} />
-      <NavItem to="/document/Iydvfe3hF6" title="Iydvfe3hF6" icon={faFileAlt} />
+      <NavItem to="/document" title="Document" icon={faFileAlt} />
     </nav>
   )
 }

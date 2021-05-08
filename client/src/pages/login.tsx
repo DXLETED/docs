@@ -7,12 +7,16 @@ import { FormSubmit } from 'components/form/FormSubmit'
 import { useHistory } from 'react-router'
 import { login } from 'store/auth'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
+import { requestError } from 'utils/requestError'
 
 export const LoginPage: React.FC = () => {
   const [formData, update] = useForm({ username: '', password: '' })
   const dispatch = useDispatchTyped()
   const history = useHistory()
-  const onSubmit = () => dispatch(login(formData)).then(res => res.payload && history.push('/'))
+  const onSubmit = () =>
+    dispatch(login(formData)).then(res =>
+      res.meta.requestStatus === 'fulfilled' ? history.push('/') : requestError((res as any).error.message)
+    )
   return (
     <>
       <Helmet>
