@@ -4,7 +4,7 @@ import { Input } from 'components/Input'
 import { useForm } from 'hooks/form.hook'
 import { FormContainer } from 'components/form/FormContainer'
 import { FormSubmit } from 'components/form/FormSubmit'
-import { useHistory } from 'react-router'
+import { useHistory, useLocation } from 'react-router'
 import { login } from 'store/auth'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { requestError } from 'utils/requestError'
@@ -13,9 +13,12 @@ export const LoginPage: React.FC = () => {
   const [formData, update] = useForm({ username: '', password: '' })
   const dispatch = useDispatchTyped()
   const history = useHistory()
+  const query = new URLSearchParams(useLocation().search)
   const onSubmit = () =>
     dispatch(login(formData)).then(res =>
-      res.meta.requestStatus === 'fulfilled' ? history.push('/') : requestError((res as any).error.message)
+      res.meta.requestStatus === 'fulfilled'
+        ? history.push(query.get('to') || '/')
+        : requestError((res as any).error.message)
     )
   return (
     <>

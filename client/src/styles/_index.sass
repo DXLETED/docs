@@ -12,6 +12,14 @@ html, body
   box-sizing: border-box
   scrollbar-width: thin
   outline: none
+  &::-webkit-scrollbar
+    width: 7px
+  &::-webkit-scrollbar-thumb
+    background: $highlight
+    &:hover
+      background: $highlight-2
+  &::-webkit-scrollbar-track
+    background: $background
 
 body
   height: 100vh

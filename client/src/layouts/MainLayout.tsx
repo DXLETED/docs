@@ -4,13 +4,14 @@ import { Header } from 'components/Header'
 import { Nav } from 'components/Nav'
 import { Page } from 'components/Page'
 import { useAuth } from 'hooks/auth.hook'
-import { Redirect } from 'react-router'
+import { Redirect, useLocation } from 'react-router'
 
 interface MainLayoutProps {
   title?: string
   children: React.ReactNode
 }
 export const MainLayout: React.FC<MainLayoutProps> = ({ title, children }) => {
+  const location = useLocation()
   const { isAuthorized } = useAuth()
   return isAuthorized ? (
     <>
@@ -21,6 +22,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ title, children }) => {
       </Page>
     </>
   ) : (
-    <Redirect to="/login" />
+    <Redirect to={`/login?to=${location.pathname}`} />
   )
 }

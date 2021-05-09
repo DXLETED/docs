@@ -12,7 +12,6 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "object-path": "^0.11.5",
-    "object-path-immutable": "^4.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
