@@ -1,5 +1,5 @@
 import React from 'react'
-import st from 'styles/components/document/DocumentFormFields.module.sass'
+import st from 'styles/components/document/DocumentFormMultipleField.module.sass'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { BlankField } from 'store/blanks'
 import { documentActions, DocumentPath } from 'store/document'

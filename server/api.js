@@ -12,10 +12,13 @@ const refreshTokens = {}
 
 const generateTokens = ({ userId, username }) => {
   const accessToken = jwt.sign({ type: 'access', userId, username }, privateKey, {
-      expiresIn: 10,
+      expiresIn: parseInt(process.env.ACCESS_TOKEN_EXP),
       algorithm: 'RS256',
     }),
-    refreshToken = jwt.sign({ type: 'refresh', userId, username }, privateKey, { algorithm: 'RS256' })
+    refreshToken = jwt.sign({ type: 'refresh', userId, username }, privateKey, {
+      expiresIn: parseInt(process.env.REFRESH_TOKEN_EXP),
+      algorithm: 'RS256',
+    })
   refreshTokens[userId] = refreshToken
   return { accessToken, refreshToken }
 }
@@ -61,7 +64,7 @@ module.exports = Router()
       }
       if (decoded.type !== 'refresh' || req.body.refreshToken !== refreshTokens[decoded.userId])
         return res.sendStatus(403)
-      await new Promise(res => setTimeout(res, 2000))
+      await new Promise(res => setTimeout(res, parseInt(process.env.REFRESH_DELAY)))
       res.json({
         user: {
           userId: decoded.userId,
