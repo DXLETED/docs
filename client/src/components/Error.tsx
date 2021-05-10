@@ -5,5 +5,9 @@ interface ErrorProps {
   msg: React.ReactNode
 }
 export const Error: React.FC<ErrorProps> = ({ msg }) => {
-  return <div className={st.error}>{msg}</div>
+  return (
+    <div className={st.error}>
+      <div className={st.msg}>{msg}</div>
+    </div>
+  )
 }

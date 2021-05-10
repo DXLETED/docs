@@ -38,7 +38,7 @@ module.exports = Router()
     ),
     async (req, res) => {
       const user = await db.collection('users').findOne({ username: req.body.username, password: req.body.password })
-      if (!user) return res.sendStatus(403)
+      if (!user) return res.status(403).json({ err: 'no_user' })
       res.json({
         user: {
           userId: user._id,

@@ -20,15 +20,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, error
   const [isOpen, setIsOpen] = useState(false)
   useOnClickOutside<HTMLDivElement>(ref, () => setIsOpen(false))
   const [month, setMonth] = useState(moment(value || Date.now()).month())
-  const [year, setYear] = useState(
-    moment(value || Date.now())
-      .year()
-      .toString()
-  )
+  const [year, setYear] = useState(moment(value || Date.now()).year())
   const weeks = useMemo(() => {
     const days = []
-    let mdate = moment().year(parseInt(year)).month(month).startOf('M').day(0)
-    const end = moment().year(parseInt(year)).month(month).endOf('M').day(6).toDate().getTime()
+    let mdate = moment().year(year).month(month).startOf('M').day(0)
+    const end = moment().year(year).month(month).endOf('M').day(6).toDate().getTime()
     while (mdate.toDate().getTime() < end) {
       days.push([
         mdate.date(),
@@ -44,8 +40,21 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, error
       return acc
     }, [])
   }, [month, year])
+  const subMonth = () => {
+    const val = moment().month(month).subtract(1, 'month').month()
+    setMonth(val)
+    val === 11 && setYear(year - 1)
+  }
+  const addMonth = () => {
+    const val = moment().month(month).add(1, 'month').month()
+    setMonth(val)
+    val === 0 && setYear(year + 1)
+  }
   return (
-    <div className={clsx(st.datePicker, { [st.hasErrors]: errors.length, [st.open]: isOpen })} onClick={() => setIsOpen(true)} ref={ref}>
+    <div
+      className={clsx(st.datePicker, { [st.hasErrors]: errors.length, [st.open]: isOpen })}
+      onClick={() => setIsOpen(true)}
+      ref={ref}>
       <Label text={label} />
       <div className={st.inner}>
         <div className={st.value}>
@@ -57,23 +66,23 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, error
         <div className={st.dropdown}>
           <div className={st.head}>
             <div className={st.month}>
-              <div
-                className={st.monthButton}
-                onClick={() => setMonth(moment().month(month).subtract(1, 'month').month())}>
+              <div className={st.monthButton} onClick={subMonth}>
                 <FontAwesomeIcon icon={faArrowLeft} />
               </div>
               {moment().month(month).format('MMMM')}
-              <div className={st.monthButton} onClick={() => setMonth(moment().month(month).add(1, 'month').month())}>
+              <div className={st.monthButton} onClick={addMonth}>
                 <FontAwesomeIcon icon={faArrowRight} />
               </div>
             </div>
             <div className={st.year}>
-              <Input value={year} set={setYear} center flex />
+              <Input value={year.toString()} set={n => setYear(parseInt(n))} center flex />
             </div>
           </div>
           <div className={st.days}>
             {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(dotw => (
-              <div className={st.dotw} key={dotw}>{dotw}</div>
+              <div className={st.dotw} key={dotw}>
+                {dotw}
+              </div>
             ))}
           </div>
           <div className={st.weeks}>

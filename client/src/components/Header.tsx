@@ -28,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({ title = '' }) => {
       <div className={st.r}>
         {user ? (
           <div className={st.user}>
-            <Container classNames={['mv-20', 'aic']}>{user.username}</Container>
+            <Container classes={['mv-20', 'aic']}>{user.username}</Container>
             <div className={st.logout} onClick={logout}>
               <FontAwesomeIcon icon={faSignOutAlt} />
             </div>

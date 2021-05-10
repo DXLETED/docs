@@ -31,7 +31,9 @@ class Request {
         return this.create(config, thunkAPI, { withToken: true })
       }
       if (err.response?.status === 403) this.logout(thunkAPI)
-      throw err
+      throw Error(
+        `${err.response?.status || err}${err.response && ` | ${err.response?.data?.err || err.response?.statusText}`}`
+      )
     }
     return result
   }

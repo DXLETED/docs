@@ -10,7 +10,6 @@ import { Error } from 'components/Error'
 import { Container } from 'components/Container'
 import { sendDocument } from 'store/document'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
-import { requestError } from 'utils/requestError'
 
 export const DocumentPage: React.FC = () => {
   const dispatch = useDispatchTyped()
@@ -33,7 +32,7 @@ export const DocumentPage: React.FC = () => {
             </div>
           </div>
           <div className={st.side}>
-            <Container classNames={['m-10']}>
+            <Container classes={['m-10']}>
               <Select label="Blank" selected={blankI} options={blanks.map(b => b.name)} set={setBlankI} />
             </Container>
             <div className={st.signers} />
@@ -41,7 +40,7 @@ export const DocumentPage: React.FC = () => {
               className={st.send}
               onClick={() =>
                 dispatch(sendDocument({ blankId: blank.id })).then(res =>
-                  res.meta.requestStatus === 'fulfilled' ? alert('Sended') : requestError((res as any).error.message)
+                  res.meta.requestStatus === 'fulfilled' ? alert('Sended') : alert((res as any).error.message)
                 )
               }>
               SEND
