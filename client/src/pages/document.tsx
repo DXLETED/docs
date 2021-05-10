@@ -24,7 +24,7 @@ export const DocumentPage: React.FC = () => {
       <Helmet>
         <title>Document - Docs</title>
       </Helmet>
-      {status === 'fulfilled' && (
+      {status === 'fulfilled' && blank && (
         <div className={st.document}>
           <div className={st.form}>
             <div className={st.inner}>

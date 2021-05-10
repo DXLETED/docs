@@ -22,9 +22,8 @@ class Request {
     return await this.create(config, thunkAPI)
   }
   async withToken<T>(config: AxiosRequestConfig, thunkAPI: any): Promise<T> {
-    let result
     try {
-      result = await this.create(config, thunkAPI, { withToken: true })
+      return await this.create(config, thunkAPI, { withToken: true })
     } catch (err) {
       if (err.response?.status === 401) {
         !this.isRefreshing && (await this.refreshTokens(thunkAPI))
@@ -35,7 +34,6 @@ class Request {
         `${err.response?.status || err}${err.response && ` | ${err.response?.data?.err || err.response?.statusText}`}`
       )
     }
-    return result
   }
   private async refreshTokens(thunkAPI: any) {
     if (this.isRefreshing) return
@@ -48,17 +46,16 @@ class Request {
       thunkAPI
     )
     this.isRefreshing = true
-    let result
     try {
-      result = await req
+      const result = await req
+      thunkAPI.dispatch(authActions.set(result))
+      this.queue.forEach(req => this.makeRequest(req))
     } catch (err) {
       this.logout(thunkAPI)
       this.queue.forEach(req => req.rej(err))
     } finally {
       this.isRefreshing = false
     }
-    thunkAPI.dispatch(authActions.set(result))
-    this.queue.forEach(req => this.makeRequest(req))
   }
   private create(config: AxiosRequestConfig, thunkAPI: any, { withToken = false } = {}) {
     return new Promise((res: (res: any) => void, rej: (res: AxiosError) => void) => {
