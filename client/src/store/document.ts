@@ -9,12 +9,12 @@ export type DocumentPath = (string | number)[]
 
 const initialState: any = null
 
-export const sendDocument = createAsyncThunk('document/send', async ({blankId}: {blankId: number}, thunkAPI) => {
+export const sendDocument = createAsyncThunk('document/send', async ({ blankId }: { blankId: number }, thunkAPI) => {
   const data = {
     blankId,
-    document: (thunkAPI.getState() as RootState).document
+    document: (thunkAPI.getState() as RootState).document,
   }
-  await request.withToken({method: 'POST', url: `${API_URL}/documents`, data}, thunkAPI)
+  await request.withToken({ method: 'POST', url: `${API_URL}/documents`, data }, thunkAPI)
 })
 
 const slice = createSlice({
@@ -33,7 +33,7 @@ const slice = createSlice({
     remove: (state, action) => {
       objectPath.del(state, action.payload.path)
       return state
-    }
+    },
   },
 })
 

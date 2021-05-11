@@ -15,9 +15,7 @@ export const LoginPage: React.FC = () => {
   const query = new URLSearchParams(useLocation().search)
   const onSubmit = () =>
     dispatch(login(formData)).then(res =>
-      res.meta.requestStatus === 'fulfilled'
-        ? history.push(query.get('to') || '/')
-        : alert((res as any).error.message)
+      res.meta.requestStatus === 'fulfilled' ? history.push(query.get('to') || '/') : alert((res as any).error.message)
     )
   return (
     <>

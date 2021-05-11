@@ -31,7 +31,9 @@ class Request {
       }
       if (err.response?.status === 403) this.logout(thunkAPI)
       throw Error(
-        `${err.response?.status || err}${err.response && ` | ${err.response?.data?.err || err.response?.statusText}`}`
+        `${err.response?.status || err}${
+          err.response ? ` | ${err.response?.data?.err || err.response?.statusText}` : ''
+        }`
       )
     }
   }

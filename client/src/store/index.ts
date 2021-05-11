@@ -6,7 +6,12 @@ import { documentReducer } from './document'
 import { switchesReducer } from './switches'
 
 export const store = configureStore({
-  reducer: combineReducers({ auth: authReducer, blanks: blanksReducer, document: documentReducer, switches: switchesReducer }),
+  reducer: combineReducers({
+    auth: authReducer,
+    blanks: blanksReducer,
+    document: documentReducer,
+    switches: switchesReducer,
+  }),
 })
 
 export type RootState = ReturnType<typeof store.getState>

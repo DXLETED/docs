@@ -15,11 +15,17 @@ const initialState: AuthState = {
   user: null,
 }
 
-export interface LoginPayload { username: string, password: string }
+export interface LoginPayload {
+  username: string
+  password: string
+}
 export const login = createAsyncThunk(
   'auth/login',
   async ({ username, password }: { username: string; password: string }, thunkAPI) => {
-    const res = await request.withToken({ method: 'POST', url: `${API_URL}/login`, data: { username, password } }, thunkAPI)
+    const res = await request.withToken(
+      { method: 'POST', url: `${API_URL}/login`, data: { username, password } },
+      thunkAPI
+    )
     thunkAPI.dispatch(slice.actions.set(res))
     return res
   }

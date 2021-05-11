@@ -15,4 +15,4 @@ const validateDict: { [key in Validation]: (val?: string) => string | false | nu
 }
 
 export const validate = (value?: string, validations?: Validations): string[] =>
-  validations?.map(v => validateDict[v](value)).filter(Boolean) as string[]
+  validations?.map(v => validateDict[v](value)).filter((v): v is string => !!v) || []

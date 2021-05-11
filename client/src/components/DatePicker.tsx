@@ -23,15 +23,15 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, error
   const [year, setYear] = useState(moment(value || Date.now()).year())
   const weeks = useMemo(() => {
     const days = []
-    let mdate = moment().year(year).month(month).startOf('M').day(0)
+    let date = moment().year(year).month(month).startOf('M').day(0)
     const end = moment().year(year).month(month).endOf('M').day(6).toDate().getTime()
-    while (mdate.toDate().getTime() < end) {
+    while (date.toDate().getTime() < end) {
       days.push([
-        mdate.date(),
-        mdate.month() === month,
-        mdate.hour(0).minute(0).second(0).millisecond(0).toDate().getTime(),
+        date.date(),
+        date.month() === month,
+        date.hour(0).minute(0).second(0).millisecond(0).toDate().getTime(),
       ])
-      mdate = mdate.add(1, 'day')
+      date = date.add(1, 'day')
     }
     return days.reduce((acc: [number, boolean, number][][], day, i) => {
       const chunkIndex = Math.floor(i / 7)

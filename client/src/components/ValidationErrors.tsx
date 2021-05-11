@@ -12,7 +12,7 @@ interface ValidationErrorsProps {
   visible: boolean
 }
 export const ValidationErrors: React.FC<ValidationErrorsProps> = ({ errors = [], visible }) => (
-  <div className={clsx(st.validationErrors, {[st.visible]: visible})}>
+  <div className={clsx(st.validationErrors, { [st.visible]: visible })}>
     {errors.map(msg => (
       <ErrorEl msg={msg} key={msg} />
     ))}
