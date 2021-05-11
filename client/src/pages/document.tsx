@@ -17,8 +17,13 @@ export const DocumentPage: React.FC = () => {
     s => s.blanks,
     () => getBlanks()
   )
+  const blanksList = blanks.map(b => b.name)
   const [blankI, setBlankI] = useState(0)
   const blank = blanks?.[blankI]
+  const send = () =>
+    dispatch(sendDocument({ blankId: blank.id })).then(res =>
+      res.meta.requestStatus === 'fulfilled' ? alert('Sended') : alert((res as any).error.message)
+    )
   return (
     <>
       <Helmet>
@@ -33,16 +38,10 @@ export const DocumentPage: React.FC = () => {
           </div>
           <div className={st.side}>
             <Container classes={['m-10']}>
-              <Select label="Blank" selected={blankI} options={blanks.map(b => b.name)} set={setBlankI} />
+              <Select label="Blank" selected={blankI} options={blanksList} set={setBlankI} />
             </Container>
             <div className={st.signers} />
-            <div
-              className={st.send}
-              onClick={() =>
-                dispatch(sendDocument({ blankId: blank.id })).then(res =>
-                  res.meta.requestStatus === 'fulfilled' ? alert('Sended') : alert((res as any).error.message)
-                )
-              }>
+            <div className={st.send} onClick={send}>
               SEND
             </div>
           </div>
