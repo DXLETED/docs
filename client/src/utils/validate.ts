@@ -14,5 +14,7 @@ const validateDict: { [key in Validation]: (val?: string) => string | false | nu
   notContainNumbers: val => !!val && !NO_NUMBERS_RE.test(val) && 'The field must not contain numbers',
 }
 
-export const validate = (value?: string, validations?: Validations): string[] =>
-  validations?.map(v => validateDict[v](value)).filter((v): v is string => !!v) || []
+export const validate = (value?: string, validations?: Validations): { required: boolean; errors: string[] } => ({
+  required: !!validations?.includes('required'),
+  errors: validations?.map(v => validateDict[v](value)).filter((v): v is string => !!v) || [],
+})

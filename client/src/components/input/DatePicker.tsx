@@ -3,8 +3,8 @@ import st from 'styles/components/DatePicker.module.sass'
 import clsx from 'clsx'
 import moment from 'moment'
 import { Input } from './Input'
-import { Label } from 'components/Label'
-import { ValidationErrors } from 'components/ValidationErrors'
+import { Label } from 'components/input/Label'
+import { ValidationErrors } from 'components/input/ValidationErrors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight, faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
@@ -14,8 +14,9 @@ interface DatePickerProps {
   value: number
   set: (value: number) => void
   errors?: string[]
+  required?: boolean
 }
-export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, errors = [] }) => {
+export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, errors = [], required }) => {
   const ref = useRef<HTMLDivElement | any>(null)
   const [isOpen, setIsOpen] = useState(false)
   useOnClickOutside<HTMLDivElement>(ref, () => setIsOpen(false))
@@ -52,10 +53,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, error
   }
   return (
     <div
-      className={clsx(st.datePicker, { [st.hasErrors]: errors.length, [st.open]: isOpen })}
+      className={clsx(st.datePicker, { [st.hasErrors]: value && errors.length, [st.open]: isOpen })}
       onClick={() => setIsOpen(true)}
       ref={ref}>
-      <Label text={label} />
+      <Label text={label} required={required} />
       <div className={st.inner}>
         <div className={st.value}>
           <div className={st.date}>{value ? moment(value).format('DD MMM YYYY') : 'Choose a date'}</div>
@@ -101,7 +102,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, error
           </div>
         </div>
       </div>
-      <ValidationErrors errors={errors} visible={!!errors?.length} />
+      <ValidationErrors errors={errors} visible={!!value} />
     </div>
   )
 }

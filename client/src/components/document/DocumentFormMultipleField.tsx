@@ -2,10 +2,9 @@ import React from 'react'
 import st from 'styles/components/document/DocumentFormMultipleField.module.sass'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { BlankField } from 'store/blanks'
-import { documentActions, DocumentPath } from 'store/document'
+import { documentActions, DocumentPath, fieldData } from 'store/document'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { fieldData } from './DocumentForm'
+import { faEraser, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { DocumentFormField } from './DocumentFormField'
 
 interface MultipleFieldsProps {
@@ -33,7 +32,7 @@ export const DocumentFormMultipleField: React.FC<MultipleFieldsProps> = ({ label
           <div
             className={st.remove}
             onClick={() => dispatch(documentActions.remove({ path: [...path, field.name, i] }))}>
-            <FontAwesomeIcon icon={faTrash} size="sm" />
+            <FontAwesomeIcon icon={faEraser} size="sm" />
           </div>
           <DocumentFormField el={field} path={[...path, field.name, i]} data={el} />
         </div>

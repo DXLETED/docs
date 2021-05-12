@@ -1,10 +1,11 @@
 import React from 'react'
 import st from 'styles/layouts/MainLayout.module.sass'
-import { Header } from 'components/Header'
-import { Nav } from 'components/Nav'
-import { Page } from 'components/Page'
+import clsx from 'clsx'
+import { Header } from 'components/layout/Header'
+import { Nav } from 'components/layout/Nav'
 import { useAuth } from 'hooks/auth.hook'
 import { Redirect, useLocation } from 'react-router'
+import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 
 interface MainLayoutProps {
   title?: string
@@ -13,13 +14,14 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ title, children }) => {
   const location = useLocation()
   const { isAuthorized } = useAuth()
+  const isNavOpen = useSelectorTyped(s => s.switches.nav)
   return isAuthorized ? (
     <>
       <Nav />
-      <Page>
+      <div className={clsx(st.page, { [st.navOpen]: isNavOpen })}>
         <Header title={title} />
         <div className={st.main}>{children}</div>
-      </Page>
+      </div>
     </>
   ) : (
     <Redirect to={`/login?to=${location.pathname}`} />

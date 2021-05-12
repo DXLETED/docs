@@ -1,6 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { Input } from 'components/Input'
+import { Input } from 'components/input/Input'
 import { useForm } from 'hooks/form.hook'
 import { FormContainer } from 'components/form/FormContainer'
 import { FormSubmit } from 'components/form/FormSubmit'

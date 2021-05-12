@@ -23,3 +23,10 @@
 
 @mixin shadow
   box-shadow: 0 0 5px rgba($black, 0.5)
+
+@mixin padding-bottom($px)
+  &::after
+    content: ''
+    display: block
+    width: 100%
+    padding-bottom: $px

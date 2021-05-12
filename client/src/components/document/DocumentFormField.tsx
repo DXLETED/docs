@@ -1,7 +1,7 @@
 import { store } from 'store'
-import { Input } from 'components/Input'
+import { Input } from 'components/input/Input'
 import { DocumentFormGroup } from './DocumentFormGroup'
-import { DatePicker } from 'components/DatePicker'
+import { DatePicker } from 'components/input/DatePicker'
 import { BlankField, BlankFields, BlankFieldType } from 'store/blanks'
 import { documentActions, DocumentPath } from 'store/document'
 import { validate } from 'utils/validate'
@@ -22,7 +22,7 @@ const formFields: {
       label={label}
       value={value as string}
       set={update(path)}
-      errors={validate(value as string, el.validations)}
+      {...validate(value as string, el.validations)}
     />
   ),
   date: (el, label, value, path) => (
@@ -30,7 +30,7 @@ const formFields: {
       label={label}
       value={value as number}
       set={update(path)}
-      errors={validate(value?.toString(), el.validations)}
+      {...validate(value?.toString(), el.validations)}
     />
   ),
   group: (el, label, value, path) => (

@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 import { useAuth } from 'hooks/auth.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
-import { Container } from './Container'
+import { Container } from '../Container'
 
 interface HeaderLinkProps {
   to: string
