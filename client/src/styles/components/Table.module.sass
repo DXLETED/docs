@@ -3,6 +3,7 @@
 
 .table
   width: 100%
+  position: relative
   flex-direction: column
   .head
     width: 100%
@@ -49,8 +50,12 @@
       height: 30px
       font-weight: 700
       font-size: 0.9rem
-      td
+      th
+        position: sticky
+        top: 0
+        text-align: left
         padding: 0 10px
+        background: $background
     tbody
       user-select: text
       tr

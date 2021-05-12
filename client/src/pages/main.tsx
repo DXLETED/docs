@@ -4,6 +4,27 @@ import { Table } from 'components/Table'
 import { Helmet } from 'react-helmet'
 import { Button } from 'components/Button'
 
+const notificationsList = [...Array(5)].map(() => ({
+  description: 'Document signed',
+  name: 'NNNNNNNN',
+  author: 'AAAAA',
+  time: '15 minutes ago',
+}))
+
+const myDocumentsList = [...Array(10)].map(() => ({
+  description: 'Document signed',
+  name: 'NNNNNNNN',
+  author: 'AAAAA',
+  time: '15 minutes ago',
+}))
+
+const newDocumentsList = [...Array(10)].map(() => ({
+  description: 'Document signed',
+  name: 'NNNNNNNN',
+  author: 'AAAAA',
+  time: '15 minutes ago',
+}))
+
 export const MainPage: React.FC = () => {
   const myDocumentsRef = useRef<HTMLDivElement>(null)
   const newDocumentsRef = useRef<HTMLDivElement>(null)
@@ -33,12 +54,7 @@ export const MainPage: React.FC = () => {
             id="notificaitons"
             label="Notifications"
             head={{ description: 'Description', name: 'Name', author: 'Author', time: 'Time' }}
-            els={[...Array(5)].map(() => ({
-              description: 'Document signed',
-              name: 'NNNNNNNN',
-              author: 'AAAAA',
-              time: '15 minutes ago',
-            }))}
+            els={notificationsList}
           />
         </div>
         <div className={st.dashboardEl} ref={myDocumentsRef}>
@@ -46,12 +62,7 @@ export const MainPage: React.FC = () => {
             id="docs"
             label="My documents"
             head={{ description: 'Description', name: 'Name', author: 'Author', time: 'Time' }}
-            els={[...Array(10)].map(() => ({
-              description: 'Document signed',
-              name: 'NNNNNNNN',
-              author: 'AAAAA',
-              time: '15 minutes ago',
-            }))}
+            els={myDocumentsList}
           />
         </div>
         <div className={st.dashboardEl} ref={newDocumentsRef}>
@@ -59,12 +70,7 @@ export const MainPage: React.FC = () => {
             id="newdocs"
             label="New documents"
             head={{ description: 'Description', name: 'Name', author: 'Author', time: 'Time' }}
-            els={[...Array(10)].map(() => ({
-              description: 'Document signed',
-              name: 'NNNNNNNN',
-              author: 'AAAAA',
-              time: '15 minutes ago',
-            }))}
+            els={newDocumentsList}
           />
         </div>
       </div>

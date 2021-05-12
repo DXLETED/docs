@@ -24,6 +24,13 @@
 @mixin shadow
   box-shadow: 0 0 5px rgba($black, 0.5)
 
+@mixin padding-top($px)
+  &::before
+    content: ''
+    display: block
+    width: 100%
+    padding-top: $px
+
 @mixin padding-bottom($px)
   &::after
     content: ''

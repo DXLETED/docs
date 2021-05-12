@@ -42,7 +42,7 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els }) => {
         <thead>
           <tr>
             {headEntries.map(([key, el]) => (
-              <td key={key}>{el}</td>
+              <th key={key}>{el}</th>
             ))}
           </tr>
         </thead>
