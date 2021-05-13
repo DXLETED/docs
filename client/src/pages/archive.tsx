@@ -18,7 +18,7 @@ export const ArchivePage: React.FC = () => <>
 </Helmet>
 <div className={st.table}>
   <Table
-    id="mydocuments"
+    id="archive"
     label="Archive"
     head={{
       id: 'ID',

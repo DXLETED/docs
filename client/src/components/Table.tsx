@@ -19,50 +19,49 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els }) => {
     loadState(`tableSettings-${id}`) || Object.fromEntries(Object.keys(head).map(col => [col, true]))
   )
   const toggleSettings = (key: string) => {
-    setSettings({ ...settings, [key]: !settings[key] })
-    saveState(`tableSettings-${id}`, settings)
+    const newState = { ...settings, [key]: !settings[key] }
+    setSettings(newState)
+    saveState(`tableSettings-${id}`, newState)
   }
   useOnClickOutside<HTMLDivElement>(settingsRef, () => isSettingsVisible && setIsSettingsVisible(false))
   const headEntries = Object.entries(head).filter(([col]) => settings[col])
-  const render = {
-    head: () => (
-      <div className={st.head}>
-        <div className={st.label}>{label}</div>
-        <div className={st.settingsButton} onClick={() => setIsSettingsVisible(!isSettingsVisible)}>
-          <FontAwesomeIcon icon={faSlidersH} />
-        </div>
-        <div className={clsx(st.settings, { [st.visible]: isSettingsVisible })} ref={settingsRef}>
-          {Object.entries(head).map(([key, el]) => (
-            <div className={st.el} onClick={() => toggleSettings(key)} key={key}>
-              <div className={st.check}>
-                {settings[key] && <FontAwesomeIcon className={st.selected} icon={faCheck} size="sm" />}
-              </div>
-              {el}
-            </div>
-          ))}
-        </div>
+  const renderHead = () => (
+    <div className={st.head}>
+      <div className={st.label}>{label}</div>
+      <div className={st.settingsButton} onClick={() => setIsSettingsVisible(!isSettingsVisible)}>
+        <FontAwesomeIcon icon={faSlidersH} />
       </div>
-    ),
-    thead: () => (
-      <thead>
-        <tr>
-          {headEntries.map(([key, el]) => (
-            <th key={key}>{el}</th>
-          ))}
-        </tr>
-      </thead>
-    ),
-  }
+      <div className={clsx(st.settings, { [st.visible]: isSettingsVisible })} ref={settingsRef}>
+        {Object.entries(head).map(([key, el]) => (
+          <div className={st.el} onClick={() => toggleSettings(key)} key={key}>
+            <div className={st.check}>
+              {settings[key] && <FontAwesomeIcon className={st.selected} icon={faCheck} size="sm" />}
+            </div>
+            {el}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+  const renderTHead = () => (
+    <thead>
+      <tr>
+        {headEntries.map(([key, el]) => (
+          <th key={key}>{el}</th>
+        ))}
+      </tr>
+    </thead>
+  )
   return (
     <div className={st.table}>
-      {render.head()}
+      {renderHead()}
       <div className={st.inner}>
         <table>
-          {render.thead()}
+          {renderTHead()}
           <tbody>
             {els.map((el, i) => (
               <tr key={i}>
-                {headEntries.map(([key, val]) => (
+                {headEntries.map(([key]) => (
                   <td key={key}>{el[key]}</td>
                 ))}
               </tr>
