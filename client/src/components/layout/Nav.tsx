@@ -3,7 +3,15 @@ import st from 'styles/components/Nav.module.sass'
 import clsx from 'clsx'
 import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faFileAlt, faHome, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import {
+  faArchive,
+  faBars,
+  faFileUpload,
+  faFolderOpen,
+  faHome,
+  faListAlt,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { switchesActions } from 'store/switches'
@@ -32,7 +40,10 @@ export const Nav: React.FC = () => {
         </div>
       </div>
       <NavItem to="/" title="Main" icon={faHome} />
-      <NavItem to="/document" title="Document" icon={faFileAlt} />
+      <NavItem to="/documents" title="Documents" icon={faListAlt} />
+      <NavItem to="/mydocuments" title="My documents" icon={faFolderOpen} />
+      <NavItem to="/archive" title="Archive" icon={faArchive} />
+      <NavItem to="/documents/create" title="Create document" icon={faFileUpload} />
     </nav>
   )
 }

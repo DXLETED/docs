@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { authActions } from 'store/auth'
 
-const Axios = axios.create({ baseURL: 'http://localhost:3001' })
+const Axios = axios.create({ baseURL: process.env.REACT_APP_BASE_URL })
 
 interface Req {
   res: (res: AxiosResponse) => void

@@ -12,20 +12,8 @@ interface InputProps {
   placeholder?: string
   errors?: string[]
   required?: boolean
-  center?: boolean
-  flex?: boolean
 }
-export const Input: React.FC<InputProps> = ({
-  label,
-  value = '',
-  set,
-  type,
-  placeholder,
-  errors,
-  required,
-  center,
-  flex,
-}) => {
+export const Input: React.FC<InputProps> = ({ label, value = '', set, type, placeholder, errors, required }) => {
   const [isEdited, setIsEdited] = useState(false)
   const onInput = (e: React.FormEvent): void => {
     const target = e.target as HTMLInputElement
@@ -36,8 +24,6 @@ export const Input: React.FC<InputProps> = ({
     <div
       className={clsx(st.input, {
         [st.hasErrors]: isEdited && errors?.length,
-        [st.center]: center,
-        [st.flex]: flex,
       })}>
       <Label text={label} required={required} />
       <div className={st.inner}>

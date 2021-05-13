@@ -76,7 +76,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, error
               </div>
             </div>
             <div className={st.year}>
-              <Input value={year.toString()} set={n => setYear(parseInt(n))} center flex />
+              <Input value={year.toString()} set={n => setYear(parseInt(n))} />
             </div>
           </div>
           <div className={st.days}>

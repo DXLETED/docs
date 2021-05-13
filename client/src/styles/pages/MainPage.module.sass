@@ -3,20 +3,34 @@
 
 .container
   width: 100%
+  height: 100%
   flex-direction: column
   align-items: center
-  padding: 0 20px
-  overflow-y: auto
-  @include padding-top(20px)
-  @include padding-bottom(20px)
+  padding: 20px
   .links
     display: grid
     width: 100%
+    height: 80px
     grid-template-columns: 1fr 1fr 1fr
     grid-gap: 20px
     margin-bottom: 40px
-  .dashboardEl
+    .button
+      justify-content: center
+      align-items: center
+      background: $primary
+      font-weight: 700
+      .icon
+        margin-right: 10px
+      .count
+        width: 30px
+        justify-content: center
+        padding: 2px 0
+        margin-left: 10px
+        border-radius: 3px
+        background: $lighter
+  .notifications
     width: 100%
+    height: calc(100% - 120px)
     flex-direction: column
     &:not(:last-child)
       margin-bottom: 40px

@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react'
 import st from 'styles/components/Table.module.sass'
 import clsx from 'clsx'
-import { faCheckSquare, faSlidersH, faSquare } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faSlidersH } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
-import { useTableSettings } from 'hooks/tableSettings'
+import { loadState, saveState } from 'utils/localStorage'
 
 interface TableProps {
   id: string
@@ -15,11 +15,17 @@ interface TableProps {
 export const Table: React.FC<TableProps> = ({ id, label, head, els }) => {
   const settingsRef = useRef<HTMLDivElement | any>(null)
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
-  const [settings, toggleSettings] = useTableSettings(id, Object.keys(head))
+  const [settings, setSettings] = useState(
+    loadState(`tableSettings-${id}`) || Object.fromEntries(Object.keys(head).map(col => [col, true]))
+  )
+  const toggleSettings = (key: string) => {
+    setSettings({ ...settings, [key]: !settings[key] })
+    saveState(`tableSettings-${id}`, settings)
+  }
   useOnClickOutside<HTMLDivElement>(settingsRef, () => isSettingsVisible && setIsSettingsVisible(false))
   const headEntries = Object.entries(head).filter(([col]) => settings[col])
-  return (
-    <div className={st.table}>
+  const render = {
+    head: () => (
       <div className={st.head}>
         <div className={st.label}>{label}</div>
         <div className={st.settingsButton} onClick={() => setIsSettingsVisible(!isSettingsVisible)}>
@@ -28,34 +34,42 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els }) => {
         <div className={clsx(st.settings, { [st.visible]: isSettingsVisible })} ref={settingsRef}>
           {Object.entries(head).map(([key, el]) => (
             <div className={st.el} onClick={() => toggleSettings(key)} key={key}>
-              {settings[key] ? (
-                <FontAwesomeIcon className={st.selected} icon={faCheckSquare} size="sm" />
-              ) : (
-                <FontAwesomeIcon className={st.selected} icon={faSquare} size="sm" />
-              )}
+              <div className={st.check}>
+                {settings[key] && <FontAwesomeIcon className={st.selected} icon={faCheck} size="sm" />}
+              </div>
               {el}
             </div>
           ))}
         </div>
       </div>
-      <table>
-        <thead>
-          <tr>
-            {headEntries.map(([key, el]) => (
-              <th key={key}>{el}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {els.map((el, i) => (
-            <tr key={i}>
-              {headEntries.map(([key, val]) => (
-                <td key={key}>{el[key]}</td>
-              ))}
-            </tr>
+    ),
+    thead: () => (
+      <thead>
+        <tr>
+          {headEntries.map(([key, el]) => (
+            <th key={key}>{el}</th>
           ))}
-        </tbody>
-      </table>
+        </tr>
+      </thead>
+    ),
+  }
+  return (
+    <div className={st.table}>
+      {render.head()}
+      <div className={st.inner}>
+        <table>
+          {render.thead()}
+          <tbody>
+            {els.map((el, i) => (
+              <tr key={i}>
+                {headEntries.map(([key, val]) => (
+                  <td key={key}>{el[key]}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

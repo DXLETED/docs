@@ -6,4 +6,9 @@ services:
   api:
     build: server/
     ports:
-      - 3001:3001
+      - 8082:3001
+  mongodb:
+    image: mongo
+    volumes:
+      - ./data/:/data/db
+    command: mongod --dbpath /data/db --nojournal

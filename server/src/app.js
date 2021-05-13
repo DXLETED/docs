@@ -3,14 +3,11 @@ const { MongoClient } = require('mongodb')
 const express = require('express')
 const cors = require('cors')
 
-config()
+config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.development' })
 ;(async () => {
-  const dbClient = new MongoClient(
-    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}`,
-    { useUnifiedTopology: true }
-  )
+  const dbClient = new MongoClient(process.env.DB_CONNECT, { useUnifiedTopology: true })
   await dbClient.connect().catch(console.error)
-  global.db = dbClient.db(process.env.DB_DBNAME)
+  global.db = dbClient.db(process.env.DB_NAME)
 
   const app = express()
 

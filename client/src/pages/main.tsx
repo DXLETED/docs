@@ -1,8 +1,10 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import st from 'styles/pages/MainPage.module.sass'
 import { Table } from 'components/Table'
 import { Helmet } from 'react-helmet'
-import { Button } from 'components/Button'
+import { NavLink } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFileUpload, faFolderOpen, faListAlt } from '@fortawesome/free-solid-svg-icons'
 
 const notificationsList = [...Array(5)].map(() => ({
   description: 'Document signed',
@@ -26,8 +28,6 @@ const newDocumentsList = [...Array(10)].map(() => ({
 }))
 
 export const MainPage: React.FC = () => {
-  const myDocumentsRef = useRef<HTMLDivElement>(null)
-  const newDocumentsRef = useRef<HTMLDivElement>(null)
   return (
     <>
       <Helmet>
@@ -35,42 +35,25 @@ export const MainPage: React.FC = () => {
       </Helmet>
       <div className={st.container}>
         <div className={st.links}>
-          <Button label="Create document" to="/document" flex center />
-          <Button
-            label="My documents"
-            onClick={() => myDocumentsRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            flex
-            center
-          />
-          <Button
-            label="New documents"
-            onClick={() => newDocumentsRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            flex
-            center
-          />
+          <NavLink className={st.button} to="/documents/create">
+            <FontAwesomeIcon className={st.icon} icon={faFileUpload} />
+            Create document
+          </NavLink>
+          <NavLink className={st.button} to="/mydocuments">
+            <FontAwesomeIcon className={st.icon} icon={faFolderOpen} />
+            My documents<div className={st.count}>18</div>
+          </NavLink>
+          <NavLink className={st.button} to="/documents">
+            <FontAwesomeIcon className={st.icon} icon={faListAlt} />
+            New documents<div className={st.count}>4</div>
+          </NavLink>
         </div>
-        <div className={st.dashboardEl} ref={myDocumentsRef}>
+        <div className={st.notifications}>
           <Table
             id="notificaitons"
             label="Notifications"
             head={{ description: 'Description', name: 'Name', author: 'Author', time: 'Time' }}
             els={notificationsList}
-          />
-        </div>
-        <div className={st.dashboardEl} ref={myDocumentsRef}>
-          <Table
-            id="docs"
-            label="My documents"
-            head={{ description: 'Description', name: 'Name', author: 'Author', time: 'Time' }}
-            els={myDocumentsList}
-          />
-        </div>
-        <div className={st.dashboardEl} ref={newDocumentsRef}>
-          <Table
-            id="newdocs"
-            label="New documents"
-            head={{ description: 'Description', name: 'Name', author: 'Author', time: 'Time' }}
-            els={newDocumentsList}
           />
         </div>
       </div>
