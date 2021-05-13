@@ -13,20 +13,6 @@ const notificationsList = [...Array(5)].map(() => ({
   time: '15 minutes ago',
 }))
 
-const myDocumentsList = [...Array(10)].map(() => ({
-  description: 'Document signed',
-  name: 'NNNNNNNN',
-  author: 'AAAAA',
-  time: '15 minutes ago',
-}))
-
-const newDocumentsList = [...Array(10)].map(() => ({
-  description: 'Document signed',
-  name: 'NNNNNNNN',
-  author: 'AAAAA',
-  time: '15 minutes ago',
-}))
-
 export const MainPage: React.FC = () => {
   return (
     <>
