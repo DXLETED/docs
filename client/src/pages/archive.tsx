@@ -7,6 +7,6 @@ export const ArchivePage: React.FC = () => (
     <Helmet>
       <title>Archive - Docs</title>
     </Helmet>
-    <Documents id="archive" />
+    <Documents id="archive" label="Archive" />
   </>
 )

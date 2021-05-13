@@ -8,7 +8,7 @@ export const DocumentsPage: React.FC = () => {
       <Helmet>
         <title>Documents - Docs</title>
       </Helmet>
-      <Documents id="documents" />
+      <Documents id="documents" label="New documents" />
     </>
   )
 }

@@ -7,6 +7,6 @@ export const MyDocumentsPage: React.FC = () => (
     <Helmet>
       <title>My documents - Docs</title>
     </Helmet>
-    <Documents id="mydocuments" />
+    <Documents id="mydocuments" label="My documents" />
   </>
 )

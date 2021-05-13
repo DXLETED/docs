@@ -1,6 +1,6 @@
 import React from 'react'
 import st from 'styles/components/layout/Documents.module.sass'
-import { Table } from 'components/Table'
+import { Table, TableSearch } from 'components/Table'
 
 const documentsDemo = [...Array(20)].map(() => ({
   id: 'ID',
@@ -13,12 +13,14 @@ const documentsDemo = [...Array(20)].map(() => ({
 
 interface DocumentsProps {
   id: string
+  label: string
 }
-export const Documents: React.FC<DocumentsProps> = ({ id }) => {
+export const Documents: React.FC<DocumentsProps> = ({ id, label }) => {
   return (
     <div className={st.table}>
       <Table
         id={id}
+        label={label}
         head={{
           id: 'ID',
           title: 'Title',
@@ -28,6 +30,7 @@ export const Documents: React.FC<DocumentsProps> = ({ id }) => {
           updateDate: 'Update data',
         }}
         els={documentsDemo}
+        menu={<TableSearch />}
       />
     </div>
   )

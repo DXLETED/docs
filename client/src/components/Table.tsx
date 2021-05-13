@@ -6,13 +6,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 import { loadState, saveState } from 'utils/localStorage'
 
+export const TableSearch = () => (
+  <div className={st.tableSearch}>
+    <input value="" placeholder="Search" />
+  </div>
+)
+
 interface TableProps {
   id: string
   label?: string
   head: { [key: string]: string }
   els: { [key: string]: string }[]
+  menu?: React.ReactNode
 }
-export const Table: React.FC<TableProps> = ({ id, label, head, els }) => {
+export const Table: React.FC<TableProps> = ({ id, label, head, els, menu }) => {
   const settingsRef = useRef<HTMLDivElement | any>(null)
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
   const [settings, setSettings] = useState(
@@ -28,8 +35,11 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els }) => {
   const renderHead = () => (
     <div className={st.head}>
       <div className={st.label}>{label}</div>
-      <div className={st.settingsButton} onClick={() => setIsSettingsVisible(!isSettingsVisible)}>
-        <FontAwesomeIcon icon={faSlidersH} />
+      <div className={st.menu}>
+        {menu}
+        <div className={st.settingsButton} onClick={() => setIsSettingsVisible(!isSettingsVisible)}>
+          <FontAwesomeIcon icon={faSlidersH} />
+        </div>
       </div>
       <div className={clsx(st.settings, { [st.visible]: isSettingsVisible })} ref={settingsRef}>
         {Object.entries(head).map(([key, el]) => (
