@@ -36,6 +36,7 @@
       flex-direction: column
       overflow-y: auto
       background: $highlight
+      @include shadow
       &.visible
         visibility: visible
         opacity: 1
@@ -75,7 +76,7 @@
           background: $lighter
           @include hover-1
           td
-            padding: 0 10px
+            padding: 10px
 
 .tableSearch
   width: 200px

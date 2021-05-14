@@ -18,7 +18,7 @@ const initialState: DocumentState = {
   blankId: null,
   title: '',
   description: '',
-  data: null
+  data: null,
 }
 
 export const sendDocument = createAsyncThunk('document/send', async (_, thunkAPI) => {
@@ -60,6 +60,12 @@ const slice = createSlice({
     },
     remove: (state, action) => {
       objectPath.del(state.data, action.payload.path)
+    },
+    setTitle: (state, action) => {
+      state.title = action.payload
+    },
+    setDescription: (state, action) => {
+      state.description = action.payload
     },
   },
 })

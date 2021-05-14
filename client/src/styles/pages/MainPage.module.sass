@@ -34,3 +34,17 @@
     flex-direction: column
     &:not(:last-child)
       margin-bottom: 40px
+
+@media ( max-width: 800px )
+  .container
+    .links
+      height: 160px
+      grid-template-columns: 1fr
+    .notifications
+      height: calc(100% - 180px)
+
+@media ( max-height: 800px )
+  .container
+    overflow-y: auto
+    .notifications
+      height: auto

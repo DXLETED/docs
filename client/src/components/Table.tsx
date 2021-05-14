@@ -6,11 +6,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 import { loadState, saveState } from 'utils/localStorage'
 
-export const TableSearch = () => (
-  <div className={st.tableSearch}>
-    <input value="" placeholder="Search" />
-  </div>
-)
+interface TableSearchProps {
+  value: string
+  set: (value: string) => void
+}
+export const TableSearch: React.FC<TableSearchProps> = ({ value, set }) => {
+  const onInput = (e: React.FormEvent): void => set((e.target as HTMLInputElement).value)
+  return (
+    <div className={st.tableSearch}>
+      <input {...{ value, onInput }} placeholder="Search" />
+    </div>
+  )
+}
 
 interface TableProps {
   id: string
@@ -31,7 +38,7 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els, menu }) => {
     saveState(`tableSettings-${id}`, newState)
   }
   useOnClickOutside<HTMLDivElement>(settingsRef, () => isSettingsVisible && setIsSettingsVisible(false))
-  const headEntries = Object.entries(head).filter(([col]) => settings[col])
+  const headEntries = Object.entries(head).filter(([col]) => settings[col] !== false)
   const renderHead = () => (
     <div className={st.head}>
       <div className={st.label}>{label}</div>

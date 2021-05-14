@@ -6,11 +6,12 @@ import { Helmet } from 'react-helmet'
 import { getBlanks } from 'store/blanks'
 import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
-import { Container } from 'components/Container'
 import { documentActions, sendDocument } from 'store/document'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 import { DocumentFormFields } from 'components/document/DocumentFormFields'
+import { Input } from 'components/input/Input'
+import { Textarea } from 'components/input/Textarea'
 
 export const DocumentPage: React.FC = () => {
   const dispatch = useDispatchTyped()
@@ -22,12 +23,12 @@ export const DocumentPage: React.FC = () => {
   const blankId = useSelectorTyped(s => s.document.blankId)
   const blank = blanks?.find(b => b.id === blankId)
   const selectedBlank = blanks.findIndex(b => b.id === blankId)
-  const data = useSelectorTyped(s => s.document.data)
+  const document = useSelectorTyped(s => s.document)
   const blankSelect = (i: number | null) =>
     dispatch(documentActions.init({ blank: typeof i === 'number' ? blanks[i] : null }))
   const send = () =>
     dispatch(sendDocument()).then(res =>
-      res.meta.requestStatus === 'fulfilled' ? alert('Sended') : alert((res as any).error.message)
+      res.meta.requestStatus === 'fulfilled' ? alert(`Sended\n${JSON.stringify(document)}`) : alert((res as any).error.message)
     )
   useEffect(() => {
     return () => {
@@ -43,10 +44,10 @@ export const DocumentPage: React.FC = () => {
       {status === 'fulfilled' && (
         <div className={st.document}>
           <div className={st.form}>
-            <div className={st.inner}>{blank && data && <DocumentFormFields data={data} fields={blank.fields} />}</div>
+            <div className={st.inner}>{blank && document && <DocumentFormFields data={document.data} fields={blank.fields} />}</div>
           </div>
           <div className={st.side}>
-            <Container classes={['m-10']}>
+            <div className={st.container}>
               <Select
                 label="Blank"
                 selected={selectedBlank !== -1 ? selectedBlank : null}
@@ -54,7 +55,9 @@ export const DocumentPage: React.FC = () => {
                 set={blankSelect}
                 empty
               />
-            </Container>
+              <Input label="Title" value={document.title} set={n => dispatch(documentActions.setTitle(n))} />
+              <Textarea label="Description" set={n => dispatch(documentActions.setDescription(n))} />
+            </div>
             <div className={st.signers} />
             <div className={st.send} onClick={send}>
               SEND

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import st from 'styles/components/layout/Documents.module.sass'
 import { Table, TableSearch } from 'components/Table'
 
@@ -7,8 +7,8 @@ const documentsDemo = [...Array(20)].map(() => ({
   title: 'DOCUMENT TITLE',
   author: 'AAAAA',
   status: 'Archived',
-  createDate: '10 days ago',
-  updateDate: '7 days ago',
+  creationDate: '04.05.2021',
+  updateDate: '07.05.2021',
 }))
 
 interface DocumentsProps {
@@ -16,6 +16,7 @@ interface DocumentsProps {
   label: string
 }
 export const Documents: React.FC<DocumentsProps> = ({ id, label }) => {
+  const [search, setSearch] = useState('')
   return (
     <div className={st.table}>
       <Table
@@ -26,11 +27,11 @@ export const Documents: React.FC<DocumentsProps> = ({ id, label }) => {
           title: 'Title',
           author: 'Author',
           status: 'Status',
-          createDate: 'Create date',
-          updateDate: 'Update data',
+          creationDate: 'Creation date',
+          updateDate: 'Update date',
         }}
         els={documentsDemo}
-        menu={<TableSearch />}
+        menu={<TableSearch value={search} set={setSearch} />}
       />
     </div>
   )
