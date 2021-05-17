@@ -59,7 +59,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, error
       <Label text={label} required={required} />
       <div className={st.inner}>
         <div className={st.value}>
-          <div className={st.date}>{value ? moment(value).format('DD MMM YYYY') : 'Choose a date'}</div>
+          <div className={st.date}>{value ? moment(value).format('DD MMM YYYY') : 'Выбрать дату'}</div>
           <div className={st.button}>
             <FontAwesomeIcon icon={faCalendar} />
           </div>

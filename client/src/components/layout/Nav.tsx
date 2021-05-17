@@ -39,11 +39,11 @@ export const Nav: React.FC = () => {
           <FontAwesomeIcon icon={faBars} />
         </div>
       </div>
-      <NavItem to="/" title="Main" icon={faHome} />
-      <NavItem to="/documents" title="Documents" icon={faListAlt} />
-      <NavItem to="/mydocuments" title="My documents" icon={faFolderOpen} />
-      <NavItem to="/archive" title="Archive" icon={faArchive} />
-      <NavItem to="/documents/create" title="Create document" icon={faFileUpload} />
+      <NavItem to="/" title="Главная" icon={faHome} />
+      <NavItem to="/documents" title="Новые документы" icon={faListAlt} />
+      <NavItem to="/mydocuments" title="Мои документы" icon={faFolderOpen} />
+      <NavItem to="/archive" title="Архив" icon={faArchive} />
+      <NavItem to="/documents/create" title="Создать документ" icon={faFileUpload} />
     </nav>
   )
 }

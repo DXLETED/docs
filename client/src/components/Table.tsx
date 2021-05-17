@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react'
 import st from 'styles/components/Table.module.sass'
 import clsx from 'clsx'
-import { faCheck, faSlidersH } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faEllipsisV, faSlidersH } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 import { loadState, saveState } from 'utils/localStorage'
+import { onlyUnique } from 'utils/onlyUnoque'
 
 interface TableSearchProps {
   value: string
@@ -14,7 +15,40 @@ export const TableSearch: React.FC<TableSearchProps> = ({ value, set }) => {
   const onInput = (e: React.FormEvent): void => set((e.target as HTMLInputElement).value)
   return (
     <div className={st.tableSearch}>
-      <input {...{ value, onInput }} placeholder="Search" />
+      <input {...{ value, onInput }} placeholder="Поиск" />
+    </div>
+  )
+}
+
+interface TableFilterProps {
+  label: string
+  column: string
+  els: { [key: string]: string }[]
+  filter: { [el: string]: boolean }
+  set: (keys: { [key: string]: boolean }) => void
+}
+export const TableFilter: React.FC<TableFilterProps> = ({ label, column, els, filter, set }) => {
+  const ref = useRef<HTMLDivElement | any>(null)
+  const [isOpen, setIsOpen] = useState(false)
+  useOnClickOutside<HTMLDivElement>(ref, () => setIsOpen(false))
+  const variants = els.map(el => el[column]).filter(onlyUnique)
+  const toggle = (el: string) => set({ ...filter, [el]: !filter[el] })
+  return (
+    <div className={clsx(st.tableFilter, { [st.open]: isOpen })} ref={ref}>
+      <div className={st.inner} onClick={() => setIsOpen(true)}>
+        <FontAwesomeIcon className={st.icon} icon={faEllipsisV} />
+        {label}
+      </div>
+      <div className={st.dropdown}>
+        {variants.map(el => (
+          <div className={st.el} onClick={() => toggle(el)}>
+            <div className={st.check}>
+              {filter[el] && <FontAwesomeIcon className={st.selected} icon={faCheck} size="sm" />}
+            </div>
+            {el}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

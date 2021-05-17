@@ -12,11 +12,12 @@ interface SelectProps {
   options: string[]
   set: (n: number | null) => void
   empty?: boolean
+  open?: boolean
 }
-export const Select: React.FC<SelectProps> = ({ label, selected, options, set, empty }) => {
+export const Select: React.FC<SelectProps> = ({ label, selected, options, set, empty, open }) => {
   const ref = useRef<HTMLDivElement | any>(null)
-  const [isOpen, setIsOpen] = useState(false)
-  useOnClickOutside<HTMLDivElement>(ref, () => setIsOpen(false))
+  const [isOpen, setIsOpen] = useState(open || false)
+  useOnClickOutside<HTMLDivElement>(ref, () => !open && setIsOpen(false))
   const change = (i: number | null) => {
     set(i)
     setIsOpen(false)
@@ -25,10 +26,10 @@ export const Select: React.FC<SelectProps> = ({ label, selected, options, set, e
     <div className={clsx(st.select, { [st.open]: isOpen })} ref={ref}>
       <Label text={label} />
       <div className={st.inner} onClick={() => setIsOpen(!isOpen)}>
-        <div className={st.label}>{typeof selected === 'number' ? options[selected] : 'Not selected'}</div>
+        <div className={st.label}>{typeof selected === 'number' ? options[selected] : 'Не выбрано'}</div>
         <FontAwesomeIcon className={st.arrow} icon={faChevronDown} />
         <div className={st.dropdown}>
-          {empty && <div className={st.el} onClick={() => change(null)}>Not selected</div>}
+          {empty && <div className={st.el} onClick={() => change(null)}>Не выбрано</div>}
           {options.map((o, i) => (
             <div className={st.el} onClick={() => change(i)} key={o + i}>
               {i === selected && <FontAwesomeIcon className={st.selected} icon={faCheck} size="sm" />}

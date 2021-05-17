@@ -7,11 +7,11 @@ const PHONE_RE = /^\+?[0-9]{3}-?[0-9]{6,12}$/
 const NO_NUMBERS_RE = /^([^0-9]*)$/
 
 const validateDict: { [key in Validation]: (val?: string) => string | false | null } = {
-  required: val => !val && 'Required',
-  notContainWhiteSpaces: val => !!val && !NO_WHITESPACES_RE.test(val) && 'The field must not contain whitespaces',
-  email: val => !!val && !EMAIL_RE.test(val) && 'The field must contain email',
-  phone: val => !!val && !PHONE_RE.test(val) && 'The field must contain a phone number',
-  notContainNumbers: val => !!val && !NO_NUMBERS_RE.test(val) && 'The field must not contain numbers',
+  required: val => !val && 'Поле обязательно для заполнения',
+  notContainWhiteSpaces: val => !!val && !NO_WHITESPACES_RE.test(val) && 'Поле не должно содержать пробелов.',
+  email: val => !!val && !EMAIL_RE.test(val) && 'Поле должно содержать email',
+  phone: val => !!val && !PHONE_RE.test(val) && 'Поле должно содержать номер телефона',
+  notContainNumbers: val => !!val && !NO_NUMBERS_RE.test(val) && 'Поле не должно содержать цифр',
 }
 
 export const validate = (value?: string, validations?: Validations): { required: boolean; errors: string[] } => ({

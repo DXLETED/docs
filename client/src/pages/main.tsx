@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileUpload, faFolderOpen, faListAlt } from '@fortawesome/free-solid-svg-icons'
 
 const notificationsList = [...Array(5)].map(() => ({
-  description: 'Document signed',
+  description: 'Документ подписан',
   name: 'NNNNNNNN',
   author: 'AAAAA',
   time: '15 minutes ago',
@@ -23,22 +23,22 @@ export const MainPage: React.FC = () => {
         <div className={st.links}>
           <NavLink className={st.button} to="/documents/create">
             <FontAwesomeIcon className={st.icon} icon={faFileUpload} />
-            Create document
+            Создать документ
           </NavLink>
           <NavLink className={st.button} to="/mydocuments">
             <FontAwesomeIcon className={st.icon} icon={faFolderOpen} />
-            My documents<div className={st.count}>18</div>
+            Мои документы<div className={st.count}>18</div>
           </NavLink>
           <NavLink className={st.button} to="/documents">
             <FontAwesomeIcon className={st.icon} icon={faListAlt} />
-            New documents<div className={st.count}>4</div>
+            Новые документы<div className={st.count}>4</div>
           </NavLink>
         </div>
         <div className={st.notifications}>
           <Table
             id="notificaitons"
-            label="Notifications"
-            head={{ description: 'Description', name: 'Name', author: 'Author', time: 'Time' }}
+            label="Уведомления"
+            head={{ description: 'Описание', name: 'Название', author: 'Автор', time: 'Время' }}
             els={notificationsList}
           />
         </div>
