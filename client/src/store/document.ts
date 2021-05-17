@@ -9,16 +9,22 @@ const API_URL = process.env.REACT_APP_API_URL
 export type DocumentPath = (string | number)[]
 
 export interface DocumentState {
-  blankId: number | null
-  title: string
-  description: string
-  data: any
+  showErrors: boolean
+  document: {
+    blankId: number | null
+    title: string
+    description: string
+    data: any
+  }
 }
 const initialState: DocumentState = {
-  blankId: null,
-  title: '',
-  description: '',
-  data: null,
+  showErrors: false,
+  document: {
+    blankId: null,
+    title: '',
+    description: '',
+    data: null,
+  }
 }
 
 export const sendDocument = createAsyncThunk('document/send', async (_, thunkAPI) => {
@@ -41,32 +47,32 @@ const slice = createSlice({
   reducers: {
     init: (state, action) => {
       if (action.payload.blank) {
-        state.blankId = action.payload.blank.id
-        state.data = dataFromBlank(action.payload.blank)
+        state.document.blankId = action.payload.blank.id
+        state.document.data = dataFromBlank(action.payload.blank)
       } else {
-        state.blankId = null
-        state.data = null
+        state.document.blankId = null
+        state.document.data = null
       }
     },
-    clear: (state, action) => {
-      state.blankId = null
-      state.data = null
-    },
+    clear: (state, action) => initialState,
     update: (state, action) => {
-      objectPath.set(state.data, action.payload.path, action.payload.value)
+      objectPath.set(state.document.data, action.payload.path, action.payload.value)
     },
     push: (state, action) => {
-      objectPath.push(state.data, action.payload.path, action.payload.value)
+      objectPath.push(state.document.data, action.payload.path, action.payload.value)
     },
     remove: (state, action) => {
-      objectPath.del(state.data, action.payload.path)
+      objectPath.del(state.document.data, action.payload.path)
     },
     setTitle: (state, action) => {
-      state.title = action.payload
+      state.document.title = action.payload
     },
     setDescription: (state, action) => {
-      state.description = action.payload
+      state.document.description = action.payload
     },
+    showErrors: (state, action) => {
+      state.showErrors = true
+    }
   },
 })
 

@@ -5,6 +5,7 @@ import { DatePicker } from 'components/input/DatePicker'
 import { BlankField, BlankFields, BlankFieldType } from 'store/blanks'
 import { documentActions, DocumentPath } from 'store/document'
 import { validate } from 'utils/validate'
+import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 
 const update = (path: DocumentPath) => (value: string | number) =>
   store.dispatch(documentActions.update({ path, value }))
@@ -14,23 +15,20 @@ const formFields: {
     el: BlankField,
     label: string | undefined,
     value: string | number,
-    path: DocumentPath
+    path: DocumentPath,
+    showErrors: boolean
   ) => React.ReactNode
 } = {
-  text: (el, label, value, path) => (
-    <Input
-      label={label}
-      value={value as string}
-      set={update(path)}
-      {...validate(value as string, el.validations)}
-    />
+  text: (el, label, value, path, showErrors) => (
+    <Input label={label} value={value as string} set={update(path)} {...validate(value as string, el.validations)} {...{showErrors}} />
   ),
-  date: (el, label, value, path) => (
+  date: (el, label, value, path, showErrors) => (
     <DatePicker
       label={label}
       value={value as number}
       set={update(path)}
       {...validate(value?.toString(), el.validations)}
+      {...{showErrors}}
     />
   ),
   group: (el, label, value, path) => (
@@ -50,6 +48,7 @@ interface FieldProps {
   path: DocumentPath
   data: any
 }
-export const DocumentFormField: React.FC<FieldProps> = ({ el, label, path, data }) => (
-  <>{formFields[el.type](el, label, data, path)}</>
-)
+export const DocumentFormField: React.FC<FieldProps> = ({ el, label, path, data }) => {
+  const showErrors = useSelectorTyped(s => s.document.showErrors)
+  return <>{formFields[el.type](el, label, data, path, showErrors)}</>
+}

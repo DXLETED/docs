@@ -5,7 +5,7 @@ import { faCheck, faEllipsisV, faSlidersH } from '@fortawesome/free-solid-svg-ic
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 import { loadState, saveState } from 'utils/localStorage'
-import { onlyUnique } from 'utils/onlyUnoque'
+import { onlyUnique } from 'utils/onlyUnique'
 
 interface TableSearchProps {
   value: string

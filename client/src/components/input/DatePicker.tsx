@@ -15,8 +15,9 @@ interface DatePickerProps {
   set: (value: number) => void
   errors?: string[]
   required?: boolean
+  showErrors?: boolean
 }
-export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, errors = [], required }) => {
+export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, errors = [], required, showErrors }) => {
   const ref = useRef<HTMLDivElement | any>(null)
   const [isOpen, setIsOpen] = useState(false)
   useOnClickOutside<HTMLDivElement>(ref, () => setIsOpen(false))
@@ -53,7 +54,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, error
   }
   return (
     <div
-      className={clsx(st.datePicker, { [st.hasErrors]: value && errors.length, [st.open]: isOpen })}
+      className={clsx(st.datePicker, { [st.hasErrors]: (value || showErrors) && errors.length, [st.open]: isOpen })}
       onClick={() => setIsOpen(true)}
       ref={ref}>
       <Label text={label} required={required} />
@@ -102,7 +103,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, error
           </div>
         </div>
       </div>
-      <ValidationErrors errors={errors} visible={!!value} />
+      <ValidationErrors errors={errors} visible={!!value || !!showErrors} />
     </div>
   )
 }

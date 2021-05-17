@@ -17,21 +17,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFile } from '@fortawesome/free-solid-svg-icons'
 
 const validateField: {
-  [key in BlankFieldType]: (data: any, el: BlankField, add: (field: string, errs: string[]) => void) => void
+  [key in BlankFieldType]: (data: any, el: BlankField) => boolean
 } = {
-  text: (data, el, add) => add(el.label, validate(data, el.validations).errors),
-  date: (data, el, add) => add(el.label, validate(data, el.validations).errors),
-  group: (data, el, add) => validateFields(data, el.fields, add),
+  text: (data, el) => !!validate(data, el.validations).errors.length,
+  date: (data, el) => !!validate(data, el.validations).errors.length,
+  group: (data, el) => validateFields(data, el.fields),
 }
-const validateFields = (
-  data: any,
-  fields: BlankFields | undefined,
-  add: (field: string, errs: string[]) => void
-): any =>
-  fields?.forEach(el =>
+const validateFields = (data: any, fields: BlankFields | undefined): boolean =>
+  !!fields?.some(el =>
     el.multiple
-      ? data[el.name].forEach((d: any) => validateField[el.type](d, el, add))
-      : validateField[el.type](data[el.name], el, add)
+      ? data[el.name].some((d: any) => validateField[el.type](d, el))
+      : validateField[el.type](data[el.name], el)
   )
 
 export const DocumentPage: React.FC = () => {
@@ -41,24 +37,17 @@ export const DocumentPage: React.FC = () => {
     () => getBlanks()
   )
   const blanksList = blanks.map(b => b.name)
-  const blankId = useSelectorTyped(s => s.document.blankId)
+  const blankId = useSelectorTyped(s => s.document.document.blankId)
   const blank = blanks?.find(b => b.id === blankId)
+  const showErrors = useSelectorTyped(s => s.document.showErrors)
   const selectedBlank = blanks.findIndex(b => b.id === blankId)
-  const document = useSelectorTyped(s => s.document)
+  const document = useSelectorTyped(s => s.document.document)
   const blankSelect = (i: number | null) =>
     dispatch(documentActions.init({ blank: typeof i === 'number' ? blanks[i] : null }))
   const send = () => {
     if (!blank) return
-    let errors: [string, string[]][] = []
-    validateFields(document.data, blank.fields, (field, errs) => (errors = [...errors, [field, errs]]))
-    console.log(errors)
-    if (errors.length)
-      return alert(
-        errors
-          .filter(([field, errs]) => errs.length)
-          .map(([field, errs]) => `${field} - ${errs.join(' | ')}`)
-          .join(`\n`)
-      )
+    const hasErrors = validateFields(document.data, blank.fields)
+    if (hasErrors) return dispatch(documentActions.showErrors({}))
     dispatch(sendDocument()).then(res =>
       res.meta.requestStatus === 'fulfilled'
         ? alert(`Sended\n${JSON.stringify(document)}`)
@@ -94,7 +83,13 @@ export const DocumentPage: React.FC = () => {
                     set={blankSelect}
                     empty
                   />
-                  <Input label="Название" value={document.title} set={n => dispatch(documentActions.setTitle(n))} />
+                  <Input
+                    label="Название"
+                    value={document.title}
+                    set={n => dispatch(documentActions.setTitle(n))}
+                    {...validate(document.title, ['required'])}
+                    {...{ showErrors }}
+                  />
                   <Textarea label="Описание" set={n => dispatch(documentActions.setDescription(n))} />
                 </div>
                 <div className={st.signers} />
