@@ -7,7 +7,15 @@ interface ErrorProps {
 export const Error: React.FC<ErrorProps> = ({ msg }) => {
   return (
     <div className={st.error}>
-      <div className={st.msg}>{msg}</div>
+      {Array.isArray(msg) ? (
+        msg.filter(Boolean).map((m, i) => (
+          <div className={st.msg} key={`${m}${i}`}>
+            {m}
+          </div>
+        ))
+      ) : (
+        <div className={st.msg}>{msg}</div>
+      )}
     </div>
   )
 }

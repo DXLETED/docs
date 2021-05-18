@@ -28,6 +28,9 @@ module.exports = Router()
     res.json({ userId: req.auth.userId, username: req.auth.username })
   })
   .get('/blanks', authRequired, async (req, res) => res.sendFile(path.join(__dirname, 'blanks.json')))
+  .get('/users', authRequired, async (req, res) =>
+    res.json((await db.collection('users').find({}).toArray()).map(u => ({ userId: u._id, username: u.username })))
+  )
   .post(
     '/login',
     validate(

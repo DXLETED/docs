@@ -15,6 +15,8 @@ import { Textarea } from 'components/input/Textarea'
 import { validate } from 'utils/validate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFile } from '@fortawesome/free-solid-svg-icons'
+import { getUsers } from 'store/users'
+import { requestsStatus } from 'utils/requestsStatus'
 
 const validateField: {
   [key in BlankFieldType]: (data: any, el: BlankField) => boolean
@@ -32,10 +34,15 @@ const validateFields = (data: any, fields: BlankFields | undefined): boolean =>
 
 export const DocumentPage: React.FC = () => {
   const dispatch = useDispatchTyped()
-  const [blanks, status, error] = useRequest(
+  const [blanks, blanksStatus, blanksError] = useRequest(
     s => s.blanks,
     () => getBlanks()
   )
+  const [users, usersStatus, usersError] = useRequest(
+    s => s.users,
+    () => getUsers()
+  )
+  const status = requestsStatus(blanksStatus, usersStatus)
   const blanksList = blanks.map(b => b.name)
   const blankId = useSelectorTyped(s => s.document.document.blankId)
   const blank = blanks?.find(b => b.id === blankId)
@@ -65,7 +72,7 @@ export const DocumentPage: React.FC = () => {
       <Helmet>
         <title>Document - Docs</title>
       </Helmet>
-      {status === 'fulfilled' &&
+      {status === 'done' &&
         (blank ? (
           <>
             <div className={st.document}>
@@ -92,7 +99,9 @@ export const DocumentPage: React.FC = () => {
                   />
                   <Textarea label="Описание" set={n => dispatch(documentActions.setDescription(n))} />
                 </div>
-                <div className={st.signers} />
+                <div className={st.signers}>
+                  {users.map(user => user.username)}
+                </div>
                 <div className={st.send} onClick={send}>
                   Отправить
                 </div>
@@ -116,7 +125,7 @@ export const DocumentPage: React.FC = () => {
           </div>
         ))}
       {status === 'loading' && <Loading />}
-      {status === 'error' && <Error msg={error} />}
+      {status === 'error' && <Error msg={[blanksError, usersError]} />}
     </>
   )
 }

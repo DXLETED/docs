@@ -4,6 +4,7 @@ import { authReducer } from './auth'
 import { blanksReducer } from './blanks'
 import { documentReducer } from './document'
 import { switchesReducer } from './switches'
+import { usersReducer } from './users'
 
 export const store = configureStore({
   reducer: combineReducers({
@@ -11,6 +12,7 @@ export const store = configureStore({
     blanks: blanksReducer,
     document: documentReducer,
     switches: switchesReducer,
+    users: usersReducer,
   }),
 })
 
