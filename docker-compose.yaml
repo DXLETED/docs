@@ -7,8 +7,3 @@ services:
     build: server/
     ports:
       - 8082:3001
-  mongodb:
-    image: mongo
-    volumes:
-      - ./data/:/data/db
-    command: mongod --dbpath /data/db --nojournal
