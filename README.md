@@ -4,7 +4,7 @@
 
 #### Production
 
-> Указать URL базы данных в server/.env.production (не нужно, если локально)
+> Указать URL базы данных в server/.env.production
 
 ```
 docker-compose up --build
@@ -12,13 +12,7 @@ docker-compose up --build
 
 #### Development
 
-> Установить NodeJS, Yarn, MongoDB
-
-> [Для Windows] Добавить C:\Program Files\MongoDB\Server\4.4\bin в Path
-
-```
-mongod --dbpath data --port <port> --nojournal
-```
+> Установить NodeJS, Yarn
 
 1. /client
 
@@ -29,7 +23,7 @@ yarn dev
 
 2. /server
 
-> Указать URL базы данных и порт в .env.development
+> Указать URL базы данных в .env.development
 
 ```
 yarn

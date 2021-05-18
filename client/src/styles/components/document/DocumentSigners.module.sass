@@ -1,0 +1,48 @@
+@import styles/colors.sass
+@import styles/mixins.sass
+
+.signers
+  flex-direction: column
+  padding: 10px
+  background: $lighter
+  .label
+    height: 30px
+    align-items: center
+    font-size: 0.9rem
+    font-weight: 700
+  .inner
+    flex-direction: column
+    padding-top: 10px
+    .signer
+      width: 100%
+      height: 35px
+      justify-content: center
+      align-items: center
+      background: $background
+      margin-bottom: 10px
+  .add
+    width: 100%
+    height: 30px
+    padding: 0 10px
+    align-items: center
+    cursor: pointer
+    @include hover-1
+    .addIcon
+      margin-right: 10px
+
+.users
+  width: 400px
+  flex-direction: column
+  .user
+    width: 100%
+    height: 35px
+    align-items: center
+    cursor: pointer
+    @include hover-1
+    .check
+      width: 40px
+      height: 20px
+      justify-content: center
+      align-items: center
+      border-right: 2px solid $light
+      margin-right: 10px

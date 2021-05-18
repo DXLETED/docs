@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import objectPath from 'object-path'
 import { RootState } from 'store'
+import { reorder } from 'utils/reorder'
 import { request } from 'utils/request'
 import { Blank, BlankField, BlankFieldType } from './blanks'
 
@@ -14,6 +15,7 @@ export interface DocumentState {
     blankId: number | null
     title: string
     description: string
+    signers: string[]
     data: any
   }
 }
@@ -23,8 +25,9 @@ const initialState: DocumentState = {
     blankId: null,
     title: '',
     description: '',
+    signers: [],
     data: null,
-  }
+  },
 }
 
 export const sendDocument = createAsyncThunk('document/send', async (_, thunkAPI) => {
@@ -72,7 +75,16 @@ const slice = createSlice({
     },
     showErrors: (state, action) => {
       state.showErrors = true
-    }
+    },
+    addSigner: (state, action) => {
+      state.document.signers.push(action.payload.userId)
+    },
+    delSigner: (state, action) => {
+      state.document.signers = state.document.signers.filter(u => u !== action.payload.userId)
+    },
+    moveSigner: (state, action) => {
+      state.document.signers = reorder(state.document.signers, action.payload.prev, action.payload.new)
+    },
   },
 })
 

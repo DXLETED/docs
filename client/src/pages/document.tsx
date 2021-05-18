@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFile } from '@fortawesome/free-solid-svg-icons'
 import { getUsers } from 'store/users'
 import { requestsStatus } from 'utils/requestsStatus'
+import { DocumentSigners } from 'components/document/DocumentSigners'
 
 const validateField: {
   [key in BlankFieldType]: (data: any, el: BlankField) => boolean
@@ -53,7 +54,7 @@ export const DocumentPage: React.FC = () => {
     dispatch(documentActions.init({ blank: typeof i === 'number' ? blanks[i] : null }))
   const send = () => {
     if (!blank) return
-    const hasErrors = validateFields(document.data, blank.fields)
+    const hasErrors = !document.title || validateFields(document.data, blank.fields)
     if (hasErrors) return dispatch(documentActions.showErrors({}))
     dispatch(sendDocument()).then(res =>
       res.meta.requestStatus === 'fulfilled'
@@ -83,13 +84,15 @@ export const DocumentPage: React.FC = () => {
               </div>
               <div className={st.side}>
                 <div className={st.container}>
-                  <Select
-                    label="Бланк"
-                    selected={selectedBlank !== -1 ? selectedBlank : null}
-                    options={blanksList}
-                    set={blankSelect}
-                    empty
-                  />
+                  <div className={st.blank}>
+                    <Select
+                      label="Бланк"
+                      selected={selectedBlank !== -1 ? selectedBlank : null}
+                      options={blanksList}
+                      set={blankSelect}
+                      empty
+                    />
+                  </div>
                   <Input
                     label="Название"
                     value={document.title}
@@ -98,9 +101,7 @@ export const DocumentPage: React.FC = () => {
                     {...{ showErrors }}
                   />
                   <Textarea label="Описание" set={n => dispatch(documentActions.setDescription(n))} />
-                </div>
-                <div className={st.signers}>
-                  {users.map(user => user.username)}
+                  <DocumentSigners users={users} />
                 </div>
                 <div className={st.send} onClick={send}>
                   Отправить
