@@ -14,6 +14,12 @@ docker-compose up --build
 
 > Установить NodeJS, Yarn, MongoDB
 
+> [Для Windows] Добавить C:\Program Files\MongoDB\Server\4.4\bin в Path
+
+```
+mongod --dbpath data --port <port> --nojournal
+```
+
 1. /client
 
 ```
@@ -23,7 +29,7 @@ yarn dev
 
 2. /server
 
-> Указать URL базы данных в .env.development (не нужно, если локально)
+> Указать URL базы данных и порт в .env.development
 
 ```
 yarn
