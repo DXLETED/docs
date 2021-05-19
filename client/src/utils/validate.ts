@@ -18,3 +18,12 @@ export const validate = (value?: string, validations?: Validations): { required:
   required: !!validations?.includes('required'),
   errors: validations?.map(v => validateDict[v](value)).filter((v): v is string => !!v) || [],
 })
+
+const validateMultipleDict: { [key: string]: (list?: any[]) => string | false | null } = {
+  required: list => !list?.length && 'Как минимум 1 поле',
+}
+
+export const validateMultiple = (list: any[], validations?: Validations): { required: boolean; errors: string[] } => ({
+  required: !!validations?.includes('required'),
+  errors: validations?.map(v => validateMultipleDict[v]?.(list)).filter((v): v is string => !!v) || [],
+})
