@@ -77,4 +77,19 @@ module.exports = Router()
       })
     }
   )
-  .post('/documents', authRequired, async (req, res) => res.sendStatus(200))
+  .post('/documents', authRequired, async (req, res) => {
+    const doc = {
+      userId: req.auth.userId,
+      status: 'IN_PROGRESS',
+      title: req.body.title,
+      description: req.body.description,
+      data: req.body.data,
+      signers: req.body.signers.map((userId, i) => ({
+        userId,
+        status: 'WAITING',
+        index: i
+      }))
+    }
+    db.collection('documents').insertOne(doc)
+    res.json(doc)
+  })

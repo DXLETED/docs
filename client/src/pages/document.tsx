@@ -55,6 +55,7 @@ export const DocumentPage: React.FC = () => {
   const send = () => {
     if (!blank) return
     const hasErrors = !document.title || !document.signers.length || validateFields(document.data, blank.fields)
+    console.log(hasErrors)
     if (hasErrors) return dispatch(documentActions.showErrors({}))
     dispatch(sendDocument()).then(res =>
       res.meta.requestStatus === 'fulfilled'

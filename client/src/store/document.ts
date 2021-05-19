@@ -31,7 +31,7 @@ const initialState: DocumentState = {
 }
 
 export const sendDocument = createAsyncThunk('document/send', async (_, thunkAPI) => {
-  const data = (thunkAPI.getState() as RootState).document
+  const data = (thunkAPI.getState() as RootState).document.document
   await request.withToken({ method: 'POST', url: `${API_URL}/documents`, data }, thunkAPI)
 })
 
