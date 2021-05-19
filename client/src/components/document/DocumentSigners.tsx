@@ -1,40 +1,52 @@
 import React, { useRef, useState } from 'react'
 import st from 'styles/components/document/DocumentSigners.module.sass'
+import clsx from 'clsx'
 import { documentActions } from 'store/document'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Modal } from 'components/Modal'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd'
-import { faCheck, faChevronDown, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useAuth } from 'hooks/auth.hook'
-import clsx from 'clsx'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 
 const UsersSelect: React.FC = () => {
   const ref = useRef<HTMLDivElement | any>(null)
   const [isOpen, setIsOpen] = useState(false)
+  const [selected, setSelected] = useState<string | null>(null)
   const dispatch = useDispatchTyped()
   const signers = useSelectorTyped(s => s.document.document.signers)
   const { user } = useAuth()
   const users = useSelectorTyped(s => s.users)
   useOnClickOutside<HTMLDivElement>(ref, () => isOpen && setIsOpen(false))
-  const add = (userId: string) => {
-    dispatch(documentActions.addSigner({ userId }))
+  const select = (e: React.MouseEvent, userId: string) => {
+    e.stopPropagation()
+    setSelected(userId)
     setIsOpen(false)
   }
+  const add = () => {
+    dispatch(documentActions.addSigner({ userId: selected }))
+    setSelected(null)
+  }
   return (
-    <div className={clsx(st.usersSelect, { [st.open]: isOpen })} onClick={() => setIsOpen(true)} ref={ref}>
-      <div className={st.label}>Добавить пользователя</div>
-      <FontAwesomeIcon className={st.arrow} icon={faChevronDown} />
-      <div className={st.dropdown}>
-        {users
-          .filter(u => u.userId !== user?.userId && !signers.includes(u.userId))
-          .map((user, i) => (
-            <div className={st.el} onClick={() => add(user.userId)} key={user.userId}>
-              {user.username}
-            </div>
-          ))}
+    <div className={st.usersSelect}>
+      <div className={clsx(st.select, { [st.open]: isOpen })} onClick={() => setIsOpen(true)} ref={ref}>
+        <div className={st.label}>
+          {selected ? users.find(u => u.userId === selected)?.username : 'Выбрать пользователя'}
+        </div>
+        <FontAwesomeIcon className={st.arrow} icon={faChevronDown} />
+        <div className={st.dropdown}>
+          {users
+            .filter(u => u.userId !== user?.userId && !signers.includes(u.userId))
+            .map((user, i) => (
+              <div className={st.el} onClick={(e: React.MouseEvent) => select(e, user.userId)} key={user.userId}>
+                {user.username}
+              </div>
+            ))}
+        </div>
+      </div>
+      <div className={clsx(st.add, {disabled: !selected})} onClick={add}>
+        <FontAwesomeIcon icon={faPlus} />
       </div>
     </div>
   )
