@@ -9,6 +9,8 @@ import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautif
 import { faChevronDown, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useAuth } from 'hooks/auth.hook'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
+import { validateMultiple } from 'utils/validate'
+import { ValidationErrors } from 'components/input/ValidationErrors'
 
 const UsersSelect: React.FC = () => {
   const ref = useRef<HTMLDivElement | any>(null)
@@ -58,6 +60,8 @@ interface DocumentSignersProps {
 export const DocumentSigners: React.FC<DocumentSignersProps> = ({ users }) => {
   const dispatch = useDispatchTyped()
   const signers = useSelectorTyped(s => s.document.document.signers)
+  const showErrors = useSelectorTyped(s => s.document.showErrors)
+  const { errors } = validateMultiple(signers, ['required'])
   const move = (result: DropResult): any =>
     result.destination &&
     dispatch(documentActions.moveSigner({ prev: result.source.index, new: result.destination.index }))
@@ -91,6 +95,7 @@ export const DocumentSigners: React.FC<DocumentSignersProps> = ({ users }) => {
         </Droppable>
       </DragDropContext>
       <UsersSelect />
+      {!!errors.length && showErrors && <ValidationErrors errors={errors} visible />}
     </div>
   )
 }

@@ -54,7 +54,7 @@ export const DocumentPage: React.FC = () => {
     dispatch(documentActions.init({ blank: typeof i === 'number' ? blanks[i] : null }))
   const send = () => {
     if (!blank) return
-    const hasErrors = !document.title || validateFields(document.data, blank.fields)
+    const hasErrors = !document.title || !document.signers.length || validateFields(document.data, blank.fields)
     if (hasErrors) return dispatch(documentActions.showErrors({}))
     dispatch(sendDocument()).then(res =>
       res.meta.requestStatus === 'fulfilled'
