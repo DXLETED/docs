@@ -1,5 +1,5 @@
 import React from 'react'
-import st from 'styles/components/Textarea.module.sass'
+import st from 'styles/components/input/Textarea.module.sass'
 import { Label } from './Label'
 
 interface TextareaProps {

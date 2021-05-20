@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import clsx from 'clsx'
-import st from 'styles/components/Select.module.sass'
+import st from 'styles/components/input/Select.module.sass'
 import { Label } from './Label'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 import { faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons'

@@ -1,5 +1,5 @@
 import React from 'react'
-import st from 'styles/components/Header.module.sass'
+import st from 'styles/components/layout/Header.module.sass'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from 'hooks/auth.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

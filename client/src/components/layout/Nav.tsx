@@ -1,5 +1,5 @@
 import React from 'react'
-import st from 'styles/components/Nav.module.sass'
+import st from 'styles/components/layout/Nav.module.sass'
 import clsx from 'clsx'
 import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

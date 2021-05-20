@@ -1,5 +1,5 @@
 import React from 'react'
-import st from 'styles/components/ValidationErrors.module.sass'
+import st from 'styles/components/input/ValidationErrors.module.sass'
 import clsx from 'clsx'
 
 interface ErrorElProps {

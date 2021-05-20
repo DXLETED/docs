@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd'
-import { faChevronDown, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faPlus, faUserMinus } from '@fortawesome/free-solid-svg-icons'
 import { useAuth } from 'hooks/auth.hook'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 import { validateMultiple } from 'utils/validate'
@@ -82,7 +82,7 @@ export const DocumentSigners: React.FC<DocumentSignersProps> = ({ users }) => {
                           {users.find(u => u.userId === userId)?.username}
                         </div>
                         <div className={st.remove} onClick={() => remove(userId)}>
-                          <FontAwesomeIcon icon={faTrash} />
+                          <FontAwesomeIcon icon={faUserMinus} size="sm" />
                         </div>
                       </div>
                     )}

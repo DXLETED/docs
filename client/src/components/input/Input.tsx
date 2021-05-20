@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import st from 'styles/components/Input.module.sass'
+import st from 'styles/components/input/Input.module.sass'
 import clsx from 'clsx'
 import { Label } from 'components/input/Label'
 import { ValidationErrors } from 'components/input/ValidationErrors'
