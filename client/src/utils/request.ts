@@ -42,7 +42,7 @@ class Request {
     const req = this.create(
       {
         method: 'POST',
-        url: `${process.env.REACT_APP_API_URL}/refresh`,
+        url: `${process.env.REACT_APP_API_URL}/auth/refresh`,
         data: { refreshToken: thunkAPI.getState().auth.refreshToken },
       },
       thunkAPI

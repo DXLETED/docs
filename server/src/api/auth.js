@@ -1,10 +1,9 @@
 const { Router } = require('express')
-const jwt = require('jsonwebtoken')
 const { readFileSync } = require('fs')
+const jwt = require('jsonwebtoken')
 const Joi = require('joi')
-const { authRequired } = require('./middlewares/auth')
-const validate = require('./middlewares/validate')
-const path = require('path')
+const validate = require('../middlewares/validate')
+const { authRequired } = require('../middlewares/auth')
 
 const privateKey = readFileSync('./jwt.key')
 
@@ -27,10 +26,6 @@ module.exports = Router()
   .get('/@me', authRequired, async (req, res) => {
     res.json({ userId: req.auth.userId, username: req.auth.username })
   })
-  .get('/blanks', authRequired, async (req, res) => res.sendFile(path.join(__dirname, 'blanks.json')))
-  .get('/users', authRequired, async (req, res) =>
-    res.json((await db.collection('users').find({}).toArray()).map(u => ({ userId: u._id, username: u.username })))
-  )
   .post(
     '/login',
     validate(
@@ -77,19 +72,3 @@ module.exports = Router()
       })
     }
   )
-  .post('/documents', authRequired, async (req, res) => {
-    const doc = {
-      userId: req.auth.userId,
-      status: 'IN_PROGRESS',
-      title: req.body.title,
-      description: req.body.description,
-      data: req.body.data,
-      signers: req.body.signers.map((userId, i) => ({
-        userId,
-        status: 'WAITING',
-        index: i
-      }))
-    }
-    db.collection('documents').insertOne(doc)
-    res.json(doc)
-  })
