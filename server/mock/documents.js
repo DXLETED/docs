@@ -10,14 +10,14 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
   
   const users = (await db.collection('users').find({}).toArray()).map(u => u._id)
 
-  const document = (statuses, signed, done) => ({
+  const document = (status, signed, done) => ({
     userId: faker.helpers.randomize(users).toString(),
-    status: faker.helpers.randomize(statuses),
+    status,
     title: faker.name.title(),
     description: faker.lorem.words(20),
     data: {
       fio: `${faker.name.firstName()[0]}${faker.name.middleName()[0].toUpperCase()}${faker.name.lastName()[0]}`,
-      dateOfBirth: faker.date.past(20, new Date(946684800)),
+      dateOfBirth: faker.date.future(30, new Date(0)),
       contacts: {
         phone: faker.phone.phoneNumber('380 ## ### ## ##'),
         email: faker.internet.email()
@@ -45,9 +45,9 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
 
   await db.collection('documents').drop()
   await db.collection('documents').insertMany([
-    ...[...Array(60)].map(() => document(['IN_PROGRESS', 'SIGNED'], true, false)),
-    ...[...Array(30)].map(() => document(['ARCHIVED'], faker.datatype.boolean(), true)),
-    ...[...Array(10)].map(() => document(['REJECTED'], false, true))
+    ...[...Array(60)].map(() => document('IN_PROGRESS', true, false)),
+    ...[...Array(30)].map(() => document('ARCHIVED', faker.datatype.boolean(), true)),
+    ...[...Array(10)].map(() => document('REJECTED', false, true))
   ])
   process.exit()
 })()
