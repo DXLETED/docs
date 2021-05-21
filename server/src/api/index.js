@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const { authRequired } = require('../middlewares/auth')
 const path = require('path')
+const dict = require('../dictionary.json')
 
 module.exports = Router()
   .use('/auth', require('./auth'))
@@ -11,13 +12,13 @@ module.exports = Router()
   .post('/documents', authRequired, async (req, res) => {
     const doc = {
       userId: req.auth.userId,
-      status: 'IN_PROGRESS',
+      status: dict.documentStatusKey.inProgress,
       title: req.body.title,
       description: req.body.description,
       data: req.body.data,
-      signers: req.body.signers.map((userId, i) => ({
+      signers: req.body.signers.map(userId => ({
         userId,
-        status: 'WAITING',
+        status: dict.signerStatusKey.waiting,
       })),
     }
     await db.collection('documents').insertOne(doc)
@@ -27,7 +28,7 @@ module.exports = Router()
     res.json(
       await db
         .collection('documents')
-        .find({ signers: { $elemMatch: { userId: req.auth.userId, status: 'WAITING' } } })
+        .find({ signers: { $elemMatch: { userId: req.auth.userId, status: dict.signerStatusKey.waiting } } })
         .toArray()
     )
   )
@@ -39,7 +40,7 @@ module.exports = Router()
       await db
         .collection('documents')
         .find({
-          status: 'ARCHIVED',
+          status: dict.documentStatusKey.archived,
           $or: [{ userId: req.auth.userId }, { signers: { $elemMatch: { userId: req.auth.userId } } }],
         })
         .toArray()

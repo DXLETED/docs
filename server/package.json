@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/app --prod",
     "dev": "nodemon src/app",
-    "gen:documents": "node mock/documents"
+    "gen:documents": "node src/mock/documents"
   },
   "keywords": [],
   "author": "",

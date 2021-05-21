@@ -5,7 +5,7 @@ import { documentActions } from 'store/document'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
-import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd'
+import { DragDropContext, Draggable, DraggableProvided, Droppable, DropResult } from 'react-beautiful-dnd'
 import { faChevronDown, faPlus, faUserMinus } from '@fortawesome/free-solid-svg-icons'
 import { useAuth } from 'hooks/auth.hook'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
@@ -47,7 +47,7 @@ const UsersSelect: React.FC = () => {
             ))}
         </div>
       </div>
-      <div className={clsx(st.add, {disabled: !selected})} onClick={add}>
+      <div className={clsx(st.add, { disabled: !selected })} onClick={add}>
         <FontAwesomeIcon icon={faPlus} />
       </div>
     </div>
@@ -66,6 +66,20 @@ export const DocumentSigners: React.FC<DocumentSignersProps> = ({ users }) => {
     result.destination &&
     dispatch(documentActions.moveSigner({ prev: result.source.index, new: result.destination.index }))
   const remove = (userId: string) => dispatch(documentActions.delSigner({ userId }))
+  const renderDraggable = (userId: string, i: number) => (
+    <Draggable draggableId={userId} index={i} key={userId}>
+      {(provided: DraggableProvided) => (
+        <div className={st.signer} ref={provided.innerRef} {...provided.draggableProps} key={userId}>
+          <div className={st.username} {...provided.dragHandleProps}>
+            {users.find(u => u.userId === userId)?.username}
+          </div>
+          <div className={st.remove} onClick={() => remove(userId)}>
+            <FontAwesomeIcon icon={faUserMinus} size="sm" />
+          </div>
+        </div>
+      )}
+    </Draggable>
+  )
   return (
     <div className={st.signers}>
       <div className={st.label}>Подписанты</div>
@@ -74,20 +88,7 @@ export const DocumentSigners: React.FC<DocumentSignersProps> = ({ users }) => {
           {provided => (
             <>
               <div {...provided.droppableProps} ref={provided.innerRef} className={st.inner}>
-                {signers.map((userId, i) => (
-                  <Draggable draggableId={userId} index={i} key={userId}>
-                    {provided => (
-                      <div className={st.signer} ref={provided.innerRef} {...provided.draggableProps} key={userId}>
-                        <div className={st.username} {...provided.dragHandleProps}>
-                          {users.find(u => u.userId === userId)?.username}
-                        </div>
-                        <div className={st.remove} onClick={() => remove(userId)}>
-                          <FontAwesomeIcon icon={faUserMinus} size="sm" />
-                        </div>
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
+                {signers.map((userId, i) => renderDraggable(userId, i))}
               </div>
               {provided.placeholder}
             </>

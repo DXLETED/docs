@@ -2,12 +2,13 @@ import React, { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { Documents } from 'components/layout/Documents'
 import { Table, TableFilter, TableSearch } from 'components/Table'
+import dict from 'dictionary.json'
 
 const data = [...Array(20)].map((_, i) => ({
   id: `${i + 1}`,
   title: 'НАЗВАНИЕ ДОКУМЕНТА',
   author: ['AAAAA', 'BBBBB', 'CCCCC', 'DDDDD'][Math.floor(Math.random() * 4)],
-  status: ['На рассмотрении', 'Подписан всеми', 'Отклонен', 'В архиве'][Math.floor(Math.random() * 4)],
+  status: Object.values(dict.documentStatus)[Math.floor(Math.random() * 4)],
   creationDate: '04.05.2021',
   updateDate: '07.05.2021',
 }))

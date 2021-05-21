@@ -1,0 +1,14 @@
+{
+  "documentStatusKey": {
+    "inProgress": "IN_PROGRESS",
+    "signed": "SIGNED",
+    "rejected": "REJECTED",
+    "archived": "ARCHIVED"
+  },
+  "signerStatusKey": {
+    "resolved": "RESOLVED",
+    "rejected": "REJECTED",
+    "waiting": "WAITING",
+    "canceled": "CANCELED"
+  }
+}

@@ -1,6 +1,7 @@
 const { config } = require('dotenv')
 const { MongoClient } = require('mongodb')
 const faker = require('faker')
+const dict = require('../dictionary.json')
 
 config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.development' })
 ;(async () => {
@@ -11,7 +12,7 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
   const users = (await db.collection('users').find({}).toArray()).map(u => u._id)
 
   const document = (status, signed, done) => ({
-    userId: faker.helpers.randomize(users).toString(),
+    userId: faker.datatype.boolean() ? users[0].toString() : faker.helpers.randomize(users).toString(),
     status,
     title: faker.name.title(),
     description: faker.lorem.words(20),
@@ -35,19 +36,26 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
       return [...Array(signersTotal)].map((_, i) => ({
         userId: faker.helpers.randomize(users).toString(),
         status: (i + 1) === ready
-          ? signed ? 'SIGNED' : 'REJECTED'
+          ? signed ? dict.signerStatusKey.resolved : dict.signerStatusKey.rejected
           : (i + 1) > ready
-            ? done ? 'CANCELED' : 'WAITING'
-            : 'SIGNED'
+            ? done ? dict.signerStatusKey.canceled : dict.signerStatusKey.waiting
+            : dict.signerStatusKey.resolved,
+        updatedAt: 0,
+        ...((i + 1) === ready && !signed
+          ? { rejectReason: faker.lorem.words(10) }
+          : {}
+        )
       }))
-    })()
+    })(),
+    createdAt: faker.date.past(1),
+    updatedAt: new Date()
   })
 
   await db.collection('documents').drop()
   await db.collection('documents').insertMany([
-    ...[...Array(60)].map(() => document('IN_PROGRESS', true, false)),
-    ...[...Array(30)].map(() => document('ARCHIVED', faker.datatype.boolean(), true)),
-    ...[...Array(10)].map(() => document('REJECTED', false, true))
+    ...[...Array(60)].map(() => document(dict.documentStatusKey.inProgress, true, false)),
+    ...[...Array(30)].map(() => document(dict.documentStatusKey.archived, faker.datatype.boolean(), true)),
+    ...[...Array(10)].map(() => document(dict.documentStatusKey.rejected, false, true))
   ])
   process.exit()
 })()
