@@ -28,11 +28,13 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
     const ready = signed && done ? signersTotal : faker.datatype.number(signersTotal - 1)
     return [...Array(signersTotal)].map((_, i) => ({
       userId: faker.helpers.randomize(users).toString(),
-      status: (i + 1) === ready
-        ? signed ? dict.signerStatusKey.resolved : dict.signerStatusKey.rejected
-        : (i + 1) > ready
-          ? done ? dict.signerStatusKey.canceled : dict.signerStatusKey.waiting
-          : dict.signerStatusKey.resolved,
+      status: (() => {
+        if ((i + 1) === ready)
+          return signed ? dict.signerStatusKey.resolved : dict.signerStatusKey.rejected
+        if ((i + 1) < ready)
+          return dict.signerStatusKey.resolved
+        return done ? dict.signerStatusKey.canceled : dict.signerStatusKey.waiting
+      })(),
       updatedAt: 0,
       ...((i + 1) === ready && !signed
         ? { rejectReason: faker.lorem.words(10) }
