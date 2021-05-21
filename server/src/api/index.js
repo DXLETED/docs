@@ -20,6 +20,8 @@ module.exports = Router()
         userId,
         status: dict.signerStatusKey.waiting,
       })),
+      createdAt: new Date(),
+      updatedAt: 0
     }
     await db.collection('documents').insertOne(doc)
     res.json(doc)
