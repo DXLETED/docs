@@ -35,5 +35,13 @@ module.exports = Router()
     res.json(await db.collection('documents').find({ userId: req.auth.userId }).toArray())
   )
   .get('/documents/archive', authRequired, async (req, res) =>
-    res.json(await db.collection('documents').find({ status: 'ARCHIVED' }).toArray())
+    res.json(
+      await db
+        .collection('documents')
+        .find({
+          status: 'ARCHIVED',
+          $or: [{ userId: req.auth.userId }, { signers: { $elemMatch: { userId: req.auth.userId } } }],
+        })
+        .toArray()
+    )
   )
