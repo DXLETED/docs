@@ -11,42 +11,52 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
   
   const users = (await db.collection('users').find({}).toArray()).map(u => u._id)
 
+  const userId = () => faker.datatype.boolean() ? users[0].toString() : faker.helpers.randomize(users).toString()
+
+  const fio = () => `${faker.name.firstName()[0]}${faker.name.middleName()[0].toUpperCase()}${faker.name.lastName()[0]}`
+
+  const skills = () => [...Array(1 + faker.datatype.number(5))].map(() => faker.lorem.word())
+
+  const workExpirience = () => [...Array(faker.datatype.number(3))].map(() => ({
+    nameOfCompany: faker.company.companyName(),
+    occupation: faker.name.jobTitle(),
+    description: faker.lorem.words(20)
+  }))
+
+  const signers = (signed, done) => {
+    const signersTotal = 1 + faker.datatype.number(10)
+    const ready = signed && done ? signersTotal : faker.datatype.number(signersTotal - 1)
+    return [...Array(signersTotal)].map((_, i) => ({
+      userId: faker.helpers.randomize(users).toString(),
+      status: (i + 1) === ready
+        ? signed ? dict.signerStatusKey.resolved : dict.signerStatusKey.rejected
+        : (i + 1) > ready
+          ? done ? dict.signerStatusKey.canceled : dict.signerStatusKey.waiting
+          : dict.signerStatusKey.resolved,
+      updatedAt: 0,
+      ...((i + 1) === ready && !signed
+        ? { rejectReason: faker.lorem.words(10) }
+        : {}
+      )
+    }))
+  }
+
   const document = (status, signed, done) => ({
-    userId: faker.datatype.boolean() ? users[0].toString() : faker.helpers.randomize(users).toString(),
+    userId: userId(),
     status,
     title: faker.name.title(),
     description: faker.lorem.words(20),
     data: {
-      fio: `${faker.name.firstName()[0]}${faker.name.middleName()[0].toUpperCase()}${faker.name.lastName()[0]}`,
+      fio: fio(),
       dateOfBirth: faker.date.future(30, new Date(0)),
       contacts: {
         phone: faker.phone.phoneNumber('380 ## ### ## ##'),
         email: faker.internet.email()
       },
-      skills: [...Array(1 + faker.datatype.number(5))].map(() => faker.lorem.word()),
-      workExpirience: [...Array(faker.datatype.number(3))].map(() => ({
-        nameOfCompany: faker.company.companyName(),
-        occupation: faker.name.jobTitle(),
-        description: faker.lorem.words(20)
-      }))
+      skills: skills(),
+      workExpirience: workExpirience()
     },
-    signers: (() => {
-      const signersTotal = 1 + faker.datatype.number(10)
-      const ready = signed && done ? signersTotal : faker.datatype.number(signersTotal - 1)
-      return [...Array(signersTotal)].map((_, i) => ({
-        userId: faker.helpers.randomize(users).toString(),
-        status: (i + 1) === ready
-          ? signed ? dict.signerStatusKey.resolved : dict.signerStatusKey.rejected
-          : (i + 1) > ready
-            ? done ? dict.signerStatusKey.canceled : dict.signerStatusKey.waiting
-            : dict.signerStatusKey.resolved,
-        updatedAt: 0,
-        ...((i + 1) === ready && !signed
-          ? { rejectReason: faker.lorem.words(10) }
-          : {}
-        )
-      }))
-    })(),
+    signers: signers(signed, done),
     createdAt: faker.date.past(1),
     updatedAt: new Date()
   })
