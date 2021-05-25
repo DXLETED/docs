@@ -43,7 +43,7 @@ export const Nav: React.FC = () => {
       <NavItem to="/documents" title="Новые документы" icon={faListAlt} />
       <NavItem to="/mydocuments" title="Мои документы" icon={faFolderOpen} />
       <NavItem to="/archive" title="Архив" icon={faArchive} />
-      <NavItem to="/documents/create" title="Создать документ" icon={faFileUpload} />
+      <NavItem to="/newdocument" title="Создать документ" icon={faFileUpload} />
     </nav>
   )
 }

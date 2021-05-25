@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import st from 'styles/components/Table.module.sass'
 import clsx from 'clsx'
 import { faCheck, faEllipsisV, faSlidersH } from '@fortawesome/free-solid-svg-icons'
@@ -41,7 +41,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({ label, column, els, fi
       </div>
       <div className={st.dropdown}>
         {variants.map(el => (
-          <div className={st.el} onClick={() => toggle(el)}>
+          <div className={st.el} onClick={() => toggle(el)} key={el}>
             <div className={st.check}>
               {filter[el] && <FontAwesomeIcon className={st.selected} icon={faCheck} size="sm" />}
             </div>
@@ -59,8 +59,10 @@ interface TableProps {
   head: { [key: string]: string }
   els: { [key: string]: string }[]
   menu?: React.ReactNode
+  load?: () => void
 }
-export const Table: React.FC<TableProps> = ({ id, label, head, els, menu }) => {
+export const Table: React.FC<TableProps> = ({ id, label, head, els, menu, load }) => {
+  const innerRef = useRef<HTMLDivElement | any>(null)
   const settingsRef = useRef<HTMLDivElement | any>(null)
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
   const [settings, setSettings] = useState(
@@ -71,6 +73,17 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els, menu }) => {
     setSettings(newState)
     saveState(`tableSettings-${id}`, newState)
   }
+  const upd = useCallback(
+    () => {
+      const el = innerRef.current
+      el.scrollHeight - el.getBoundingClientRect().height - el.scrollTop < 50 && load?.()
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
+  useEffect(() => {
+    els.length && upd()
+  }, [upd, els])
   useOnClickOutside<HTMLDivElement>(settingsRef, () => isSettingsVisible && setIsSettingsVisible(false))
   const headEntries = Object.entries(head).filter(([col]) => settings[col] !== false)
   const renderHead = () => (
@@ -106,7 +119,7 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els, menu }) => {
   return (
     <div className={st.table}>
       {renderHead()}
-      <div className={st.inner}>
+      <div className={st.inner} onScroll={upd} ref={innerRef}>
         <table>
           {renderTHead()}
           <tbody>

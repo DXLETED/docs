@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { BlankFields } from 'store/blanks'
-import { DocumentPath } from 'store/document'
+import { DocumentPath } from 'store/documentCreate'
 import { DocumentFormField } from './DocumentFormField'
 import { DocumentFormMultipleField } from './DocumentFormMultipleField'
 

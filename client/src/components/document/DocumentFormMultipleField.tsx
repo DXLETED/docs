@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import st from 'styles/components/document/DocumentFormMultipleField.module.sass'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { BlankField } from 'store/blanks'
-import { documentActions, DocumentPath, fieldData } from 'store/document'
+import { documentCreateActions, DocumentPath, fieldData } from 'store/documentCreate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEraser, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { DocumentFormField } from './DocumentFormField'
@@ -19,14 +19,14 @@ interface MultipleFieldsProps {
 export const DocumentFormMultipleField: React.FC<MultipleFieldsProps> = ({ label, field, path, data }) => {
   const list = data[field.name]
   const dispatch = useDispatchTyped()
-  const showErrors = useSelectorTyped(s => s.document.showErrors)
+  const showErrors = useSelectorTyped(s => s.documentCreate.showErrors)
   const [isEdited, setIsEdited] = useState(false)
   const add = () => {
-    dispatch(documentActions.push({ path: [...path, field.name], value: fieldData(field) }))
+    dispatch(documentCreateActions.push({ path: [...path, field.name], value: fieldData(field) }))
     !isEdited && setIsEdited(true)
   }
   const remove = (i: number) => {
-    dispatch(documentActions.remove({ path: [...path, field.name, i] }))
+    dispatch(documentCreateActions.remove({ path: [...path, field.name, i] }))
     !isEdited && setIsEdited(true)
   }
   const { required, errors } = validateMultiple(list, field.validations)

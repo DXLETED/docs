@@ -19,6 +19,7 @@ export type Blank = {
   id: number
   name: string
   fields: BlankFields
+  template: string
 }
 export type BlanksState = Blank[]
 

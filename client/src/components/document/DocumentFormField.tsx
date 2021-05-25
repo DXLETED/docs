@@ -3,12 +3,12 @@ import { Input } from 'components/input/Input'
 import { DocumentFormGroup } from './DocumentFormGroup'
 import { DatePicker } from 'components/input/DatePicker'
 import { BlankField, BlankFields, BlankFieldType } from 'store/blanks'
-import { documentActions, DocumentPath } from 'store/document'
+import { documentCreateActions, DocumentPath } from 'store/documentCreate'
 import { validate } from 'utils/validate'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 
 const update = (path: DocumentPath) => (value: string | number) =>
-  store.dispatch(documentActions.update({ path, value }))
+  store.dispatch(documentCreateActions.update({ path, value }))
 
 const formFields: {
   [key in BlankFieldType]: (
@@ -49,6 +49,6 @@ interface FieldProps {
   data: any
 }
 export const DocumentFormField: React.FC<FieldProps> = ({ el, label, path, data }) => {
-  const showErrors = useSelectorTyped(s => s.document.showErrors)
+  const showErrors = useSelectorTyped(s => s.documentCreate.showErrors)
   return <>{formFields[el.type](el, label, data, path, showErrors)}</>
 }

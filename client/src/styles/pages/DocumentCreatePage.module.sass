@@ -1,0 +1,83 @@
+@import styles/colors.sass
+@import styles/mixins.sass
+
+.document
+  width: 100%
+  height: 100%
+  overflow-y: auto
+  .form
+    width: calc(100% - 400px)
+    min-width: 65%
+    height: 100%
+    justify-content: center
+    overflow-y: auto
+    .inner
+      width: 100%
+      max-width: 1300px
+      max-height: 100%
+      flex-direction: column
+      padding: 20px
+      &::after
+        content: ''
+        display: block
+        padding-bottom: 20px
+  .side
+    width: 400px
+    max-width: 35%
+    height: 100%
+    flex-direction: column
+    border-left: 2px solid $lighter
+    .container
+      flex: 1
+      flex-direction: column
+      padding: 20px 10px
+      overflow-y: auto
+      @include padding-bottom(20px)
+      > *:not(:last-child)
+        margin-bottom: 20px
+      .blank
+        margin-bottom: 30px
+    .send
+      width: 100%
+      height: 40px
+      justify-content: center
+      align-items: center
+      font-weight: 700
+      cursor: pointer
+      @include hover-1
+
+.blankSelect
+  width: 100%
+  height: 100%
+  justify-content: center
+  align-items: center
+  .inner
+    width: 600px
+    flex-direction: column
+    align-items: center
+    padding: 20px
+    margin-bottom: 200px
+    //background: $primary
+    .label
+      margin-bottom: 20px
+      font-weight: 700
+      align-items: flex-end
+      .icon
+        margin-right: 10px
+        color: $primary
+
+@media (max-width: 600px)
+  .document
+    flex-direction: column
+    .form
+      width: 100%
+      height: auto
+      .inner
+        width: 100%
+    .side
+      width: 100%
+      max-width: none
+      height: auto
+      padding: 20px
+      border: none
+      border-top: 2px solid $lighter

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import st from 'styles/components/document/DocumentSigners.module.sass'
 import clsx from 'clsx'
-import { documentActions } from 'store/document'
+import { documentCreateActions } from 'store/documentCreate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
@@ -17,7 +17,7 @@ const UsersSelect: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [selected, setSelected] = useState<string | null>(null)
   const dispatch = useDispatchTyped()
-  const signers = useSelectorTyped(s => s.document.document.signers)
+  const signers = useSelectorTyped(s => s.documentCreate.document.signers)
   const { user } = useAuth()
   const users = useSelectorTyped(s => s.users)
   useOnClickOutside<HTMLDivElement>(ref, () => isOpen && setIsOpen(false))
@@ -27,7 +27,7 @@ const UsersSelect: React.FC = () => {
     setIsOpen(false)
   }
   const add = () => {
-    dispatch(documentActions.addSigner({ userId: selected }))
+    dispatch(documentCreateActions.addSigner({ userId: selected }))
     setSelected(null)
   }
   return (
@@ -59,13 +59,13 @@ interface DocumentSignersProps {
 }
 export const DocumentSigners: React.FC<DocumentSignersProps> = ({ users }) => {
   const dispatch = useDispatchTyped()
-  const signers = useSelectorTyped(s => s.document.document.signers)
-  const showErrors = useSelectorTyped(s => s.document.showErrors)
+  const signers = useSelectorTyped(s => s.documentCreate.document.signers)
+  const showErrors = useSelectorTyped(s => s.documentCreate.showErrors)
   const { errors } = validateMultiple(signers, ['required'])
   const move = (result: DropResult): any =>
     result.destination &&
-    dispatch(documentActions.moveSigner({ prev: result.source.index, new: result.destination.index }))
-  const remove = (userId: string) => dispatch(documentActions.delSigner({ userId }))
+    dispatch(documentCreateActions.moveSigner({ prev: result.source.index, new: result.destination.index }))
+  const remove = (userId: string) => dispatch(documentCreateActions.delSigner({ userId }))
   const renderDraggable = (userId: string, i: number) => (
     <Draggable draggableId={userId} index={i} key={userId}>
       {(provided: DraggableProvided) => (

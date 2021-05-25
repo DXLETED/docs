@@ -3,7 +3,7 @@ import st from 'styles/components/document/DocumentFormGroup.module.sass'
 import clsx from 'clsx'
 import { BlankFields } from 'store/blanks'
 import { DocumentFormFields } from './DocumentFormFields'
-import { DocumentPath } from 'store/document'
+import { DocumentPath } from 'store/documentCreate'
 
 interface DocumentFormGroupProps {
   label?: string

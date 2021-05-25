@@ -2,7 +2,7 @@ import React from 'react'
 import { store } from 'store'
 import { BrowserRouter, Route } from 'react-router-dom'
 import { LoginPage } from './pages/login'
-import { DocumentPage } from './pages/document'
+import { DocumentCreatePage } from './pages/documentCreate'
 import { MainPage } from 'pages/main'
 import { Provider } from 'react-redux'
 import { MainLayout } from 'layouts/MainLayout'
@@ -10,11 +10,12 @@ import { LoginLayout } from 'layouts/LoginLayout'
 import { DocumentsPage } from 'pages/documents'
 import { MyDocumentsPage } from 'pages/mydocuments'
 import { ArchivePage } from 'pages/archive'
+import { DocumentPage } from 'pages/document'
 
 export const App: React.FC = () => (
   <Provider store={store}>
     <BrowserRouter>
-      <Route exact path={['/', '/documents', '/mydocuments', '/archive', '/documents/create']}>
+      <Route exact path={['/', '/documents', '/documents/:id', '/mydocuments', '/archive', '/newdocument']}>
         <MainLayout>
           <Route exact path="/">
             <MainPage />
@@ -28,7 +29,10 @@ export const App: React.FC = () => (
           <Route exact path="/archive">
             <ArchivePage />
           </Route>
-          <Route exact path="/documents/create">
+          <Route exact path="/newdocument">
+            <DocumentCreatePage />
+          </Route>
+          <Route exact path="/documents/:id">
             <DocumentPage />
           </Route>
         </MainLayout>
