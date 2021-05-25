@@ -9,6 +9,10 @@ import { requestsStatus } from 'utils/requestsStatus'
 import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
 import { Helmet } from 'react-helmet'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCalendarPlus, faEdit, faUser } from '@fortawesome/free-solid-svg-icons'
+import moment from 'moment'
+import { getUsers } from 'store/users'
 
 export const DocumentPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -20,30 +24,53 @@ export const DocumentPage: React.FC = () => {
     s => s.blanks,
     () => getBlanks()
   )
-  const status = requestsStatus(documentStatus, blanksStatus)
-  const html =
-    document && blanks
-      ? blanks?.[0].template
-          .replaceAll(/\$\$([a-zA-Z|.]*)(.*?)\$\$([a-zA-Z|.]*)/g, (_, path, tpl) =>
-            objectPath
-              .get(document.data, path)
-              .map((el: any) =>
-                tpl
-                  .replaceAll(/\$_/g, el)
-                  .replaceAll(/\$([a-zA-Z|.]*)/g, (_: string, path: string) => objectPath.get(el, path))
-              )
-              .join('')
-          )
-          .replaceAll(/\$([a-zA-Z|.]*)/g, (_, path) => objectPath.get(document.data, path))
-      : ''
+  const [users, usersStatus, usersError] = useRequest(
+    s => s.users,
+    () => getUsers()
+  )
+  const status = requestsStatus(documentStatus, blanksStatus, usersStatus)
+  const render = (tpl: string, data: any) =>
+    tpl
+      .replaceAll(/\$\$([a-zA-Z|.]*)(.*?)\$\$([a-zA-Z|.]*)/g, (_, path, tpl) =>
+        objectPath
+          .get(data, path)
+          .map((el: any) => render(tpl, el))
+          .join('')
+      )
+      .replaceAll(/\$_/g, data)
+      .replaceAll(/\$([a-zA-Z|.]*)/g, (_, path) => objectPath.get(data, path))
+  const html = document && blanks ? render(blanks?.[0].template, document.data) : ''
   return (
     <>
       <Helmet>
         <title>{document?.title || id} - Docs</title>
       </Helmet>
-      {status === 'done' && <div className={st.content} dangerouslySetInnerHTML={{ __html: html }} />}
+      {status === 'done' && document && blanks && (
+        <div className={st.container}>
+          <div className={st.head}>
+            <span className={st.title}>{document.title}</span>
+            <div className={st.d}>
+              <span>
+                <FontAwesomeIcon className={st.icon} icon={faUser} size="sm" />
+                {users.find(u => u.userId === document.userId)?.username}
+              </span>
+              <span>
+                <FontAwesomeIcon className={st.icon} icon={faCalendarPlus} size="sm" />
+                {moment(document.createdAt).format('DD.MM.YYYY')}
+              </span>
+              {document.updatedAt && (
+                <span className={st.updatedAt}>
+                  <FontAwesomeIcon className={st.icon} icon={faEdit} size="sm" />
+                  {moment(document.updatedAt).format('DD.MM.YYYY')}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className={st.content} dangerouslySetInnerHTML={{ __html: html }} />
+        </div>
+      )}
       {status === 'loading' && <Loading />}
-      {status === 'error' && <Error msg={[documentError, blanksError]} />}
+      {status === 'error' && <Error msg={[documentError, blanksError, usersError]} />}
     </>
   )
 }

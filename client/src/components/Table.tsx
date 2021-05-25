@@ -60,8 +60,9 @@ interface TableProps {
   els: { [key: string]: string }[]
   menu?: React.ReactNode
   load?: () => void
+  link?: (el: { [key: string]: string }) => void
 }
-export const Table: React.FC<TableProps> = ({ id, label, head, els, menu, load }) => {
+export const Table: React.FC<TableProps> = ({ id, label, head, els, menu, load, link }) => {
   const innerRef = useRef<HTMLDivElement | any>(null)
   const settingsRef = useRef<HTMLDivElement | any>(null)
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
@@ -124,7 +125,7 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els, menu, load }
           {renderTHead()}
           <tbody>
             {els.map((el, i) => (
-              <tr key={i}>
+              <tr className={clsx({ [st.link]: !!link })} key={i} onClick={() => link?.(el)}>
                 {headEntries.map(([key]) => (
                   <td key={key}>{el[key]}</td>
                 ))}

@@ -10,6 +10,7 @@ import { useRequest } from 'hooks/request.hook'
 import { requestsStatus } from 'utils/requestsStatus'
 import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
+import { useHistory } from 'react-router'
 
 interface DocumentsProps {
   id: string
@@ -19,6 +20,7 @@ interface DocumentsProps {
   statusFilter?: boolean
 }
 export const Documents: React.FC<DocumentsProps> = ({ id, label, path, head, statusFilter: statusFilterEnabled }) => {
+  const history = useHistory()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<{ [el: string]: boolean }>({})
   const dispatch = useDispatchTyped()
@@ -31,6 +33,7 @@ export const Documents: React.FC<DocumentsProps> = ({ id, label, path, head, sta
   const els = useMemo(
     () =>
       documents.list.map(d => ({
+        _id: d._id,
         id: d._id.slice(-8),
         author: users.find(u => u.userId === d.userId)?.username || d.userId,
         title: d.title,
@@ -62,6 +65,7 @@ export const Documents: React.FC<DocumentsProps> = ({ id, label, path, head, sta
               <TableSearch value={search} set={setSearch} />
             </>
           }
+          link={el => history.push(`/documents/${el._id}`)}
         />
       )}
       {status === 'loading' && <Loading />}
