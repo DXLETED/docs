@@ -10,6 +10,7 @@ export type Document = {
   status: keyof typeof dict.documentStatus
   signers: string[]
   data: any
+  rawDocument: string
   createdAt: Date
   updatedAt: Date
 }

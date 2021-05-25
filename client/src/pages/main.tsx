@@ -21,7 +21,7 @@ export const MainPage: React.FC = () => {
       </Helmet>
       <div className={st.container}>
         <div className={st.links}>
-          <NavLink className={st.button} to="/documents/create">
+          <NavLink className={st.button} to="/newdocument">
             <FontAwesomeIcon className={st.icon} icon={faFileUpload} />
             Создать документ
           </NavLink>

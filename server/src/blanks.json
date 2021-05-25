@@ -86,6 +86,6 @@
         ]
       }
     ],
-    "template": "<h1>$fio</h3><div>$dateOfBirth</div><h3>Контакты</h4><div><b>Телефон: $contacts.phone</b></div><div><b>Email: $contacts.email</b></div><h3>Cкиллы</h4><ul>$$skills<li>$_</li>$$skills</ul><h3>Опыт работы</h4><table><thead><tr><td>Название компании</td><td>Должность</td><td>Описание</td><tr></thead><tbody>$$workExpirience<tr><td>$nameOfCompany</td><td>$occupation</td><td>$description</td><tr>$$workExpirience</tbody></table>"
+    "template": "<h1>$fio</h3><div>$dateOfBirth</div><h3>Контакты</h4><div><b>Телефон: $contacts.phone</b></div><div><b>Email: $contacts.email</b></div><h3>Cкиллы</h4><ul>$$skills<li>$_</li>$$skills</ul><h3>Опыт работы</h4><table><thead><tr><td>Название компании</td><td>Должность</td><td>Описание</td><tr></thead><tbody>$$workExpirience<tr><td>$nameOfCompany</td><td>$occupation</td><td>$description</td></tr>$$workExpirience</tbody></table>"
   }
 ]

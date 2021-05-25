@@ -3,6 +3,20 @@ const { authRequired } = require('../middlewares/auth')
 const path = require('path')
 const dict = require('../dictionary.json')
 const { ObjectID } = require('mongodb')
+const parseDocument = require('../utils/parseDocument')
+
+const blanks = require('../blanks.json')
+
+const render = (tpl, data) =>
+tpl
+  .replaceAll(/\$\$([a-zA-Z|.]*)(.*?)\$\$([a-zA-Z|.]*)/g, (_, path, tpl) =>
+    objectPath
+      .get(data, path)
+      .map((el) => render(tpl, el))
+      .join('')
+  )
+  .replaceAll(/\$_/g, data)
+  .replaceAll(/\$([a-zA-Z|.]*)/g, (_, path) => objectPath.get(data, path))
 
 module.exports = Router()
   .use('/auth', require('./auth'))
@@ -21,6 +35,7 @@ module.exports = Router()
         userId,
         status: dict.signerStatusKey.waiting,
       })),
+      rawDocument: parseDocument(blanks[0].template, req.body.data),
       createdAt: new Date(),
       updatedAt: 0,
     }

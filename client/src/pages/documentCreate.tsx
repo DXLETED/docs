@@ -58,10 +58,8 @@ export const DocumentCreatePage: React.FC = () => {
     if (!blank) return
     const hasErrors = !document.title || !document.signers.length || validateFields(document.data, blank.fields)
     if (hasErrors) return dispatch(documentCreateActions.showErrors({}))
-    dispatch(sendDocument()).then(res =>
-      res.meta.requestStatus === 'fulfilled'
-        ? history.push('/mydocuments')
-        : alert((res as any).error.message)
+    dispatch(sendDocument({ blank })).then(res =>
+      res.meta.requestStatus === 'fulfilled' ? history.push('/mydocuments') : alert((res as any).error.message)
     )
   }
   useEffect(() => {

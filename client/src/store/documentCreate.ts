@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import moment from 'moment'
 import objectPath from 'object-path'
 import { RootState } from 'store'
 import { reorder } from 'utils/reorder'
 import { request } from 'utils/request'
-import { Blank, BlankField, BlankFieldType } from './blanks'
+import { Blank, BlankField, BlankFields, BlankFieldType } from './blanks'
 
 const API_URL = process.env.REACT_APP_API_URL
 
@@ -30,9 +31,31 @@ const initialState: DocumentCreateState = {
   },
 }
 
-export const sendDocument = createAsyncThunk('document/send', async (_, thunkAPI) => {
-  const data = (thunkAPI.getState() as RootState).documentCreate.document
-  await request.withToken({ method: 'POST', url: `${API_URL}/documents`, data }, thunkAPI)
+const parseEl: { [key in BlankFieldType]: (d: any, fields?: BlankFields) => any } = {
+  text: d => d,
+  date: d => moment(d).format('YYYY-MM-DD'),
+  group: (d, fields) => parse(fields as BlankFields, d),
+}
+const parse = (fields: BlankFields, data: any): any =>
+  Object.fromEntries(
+    Object.values(fields).map(field => [
+      field.name,
+      field.multiple
+        ? data[field.name].map((el: any) => parseEl[field.type](el, field.fields))
+        : parseEl[field.type](data[field.name], field.fields),
+    ])
+  )
+
+export const sendDocument = createAsyncThunk('document/send', async ({ blank }: { blank: Blank }, thunkAPI) => {
+  const data = parse(blank.fields, (thunkAPI.getState() as RootState).documentCreate.document.data)
+  await request.withToken(
+    {
+      method: 'POST',
+      url: `${API_URL}/documents`,
+      data: { ...(thunkAPI.getState() as RootState).documentCreate.document, data },
+    },
+    thunkAPI
+  )
 })
 
 const dataFields: { [key in BlankFieldType]: any } = {
