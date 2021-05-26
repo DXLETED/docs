@@ -9,7 +9,7 @@ export type Document = {
   title: string
   description: string
   status: keyof typeof dict.documentStatus
-  signers: string[]
+  signers: { userId: string; status: keyof typeof dict.signerStatus; rejectReason?: string; updatedAt: Date }[]
   data: any
   rawDocument: string
   createdAt: Date
@@ -37,6 +37,36 @@ export const getPDF = createAsyncThunk('document/get/pdf', async (_, thunkAPI) =
       thunkAPI
     ),
   }
+})
+
+export const resolveDocument = createAsyncThunk(
+  'document/resolve',
+  async ({ password }: { password: string }, thunkAPI) => {
+    const id = (thunkAPI.getState() as RootState).document?._id
+    return await request.withToken(
+      { method: 'POST', url: `${process.env.REACT_APP_API_URL}/documents/${id}/resolve`, data: { password } },
+      thunkAPI
+    )
+  }
+)
+
+export const rejectDocument = createAsyncThunk(
+  'document/reject',
+  async ({ rejectReason, password }: { rejectReason: string; password: string }, thunkAPI) => {
+    const id = (thunkAPI.getState() as RootState).document?._id
+    return await request.withToken(
+      { method: 'POST', url: `${process.env.REACT_APP_API_URL}/documents/${id}/reject`, data: { rejectReason, password } },
+      thunkAPI
+    )
+  }
+)
+
+export const archiveDocument = createAsyncThunk('document/archive', async (_, thunkAPI) => {
+  const id = (thunkAPI.getState() as RootState).document?._id
+  return await request.withToken(
+    { method: 'POST', url: `${process.env.REACT_APP_API_URL}/documents/${id}/archive` },
+    thunkAPI
+  )
 })
 
 const slice = createSlice({

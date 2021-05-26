@@ -13,8 +13,9 @@ interface InputProps {
   errors?: string[]
   required?: boolean
   showErrors?: boolean
+  autoComplete?: string
 }
-export const Input: React.FC<InputProps> = ({ label, value = '', set, type, placeholder, errors, required, showErrors }) => {
+export const Input: React.FC<InputProps> = ({ label, value = '', set, type, placeholder, errors, required, showErrors, autoComplete }) => {
   const [isEdited, setIsEdited] = useState(false)
   const onInput = (e: React.FormEvent): void => {
     const target = e.target as HTMLInputElement
@@ -28,7 +29,7 @@ export const Input: React.FC<InputProps> = ({ label, value = '', set, type, plac
       })}>
       <Label text={label} required={required} />
       <div className={st.inner}>
-        <input onInput={onInput} {...{ value, placeholder, type }} />
+        <input onInput={onInput} {...{ value, placeholder, type, autoComplete }} />
       </div>
       {errors && <ValidationErrors errors={errors} visible={isEdited || !!showErrors} />}
     </div>

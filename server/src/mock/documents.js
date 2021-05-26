@@ -7,6 +7,7 @@ const blanks = require('../blanks.json')
 const moment = require('moment')
 const pdf = require('html-pdf')
 const path = require('path')
+const onlyUnique = require('../utils/onlyUnique')
 
 config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.development' })
 ;(async () => {
@@ -29,23 +30,28 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
       description: faker.lorem.words(20),
     }))
 
-  const signers = (signed, done) => {
+  const signers = (userId, signed, done) => {
     const signersTotal = 1 + faker.datatype.number(10)
     const ready = signed && done ? signersTotal : faker.datatype.number(signersTotal - 1)
-    return [...Array(signersTotal)].map((_, i) => ({
-      userId: faker.helpers.randomize(users).toString(),
-      status: (() => {
-        if (i + 1 === ready) return signed ? dict.signerStatusKey.resolved : dict.signerStatusKey.rejected
-        if (i + 1 < ready) return dict.signerStatusKey.resolved
-        return done ? dict.signerStatusKey.canceled : dict.signerStatusKey.waiting
-      })(),
-      updatedAt: 0,
-      ...(i + 1 === ready && !signed ? { rejectReason: faker.lorem.words(10) } : {}),
-    }))
+    return [...Array(signersTotal)]
+      .map(() => faker.helpers.randomize(users).toString())
+      .filter(onlyUnique)
+      .filter(signerUserId => signerUserId !== userId)
+      .map((userId, i) => ({
+        userId,
+        status: (() => {
+          if (i + 1 === ready) return signed ? dict.signerStatusKey.resolved : dict.signerStatusKey.rejected
+          if (i + 1 < ready) return dict.signerStatusKey.resolved
+          return done ? dict.signerStatusKey.canceled : dict.signerStatusKey.waiting
+        })(),
+        updatedAt: 0,
+        ...(i + 1 === ready && !signed ? { rejectReason: faker.lorem.words(10) } : {}),
+      }))
   }
 
   const document = (status, signed, done) =>
     new Promise(res => {
+      const uid = userId()
       const data = {
         fio: fio(),
         dateOfBirth: moment(faker.date.future(30, new Date(0))).format('YYYY-MM-DD'),
@@ -58,13 +64,13 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
       }
       const doc = {
         _id: new ObjectID(),
-        userId: userId(),
+        userId: uid,
         blankId: 1,
         status,
         title: faker.name.title(),
         description: faker.lorem.words(20),
         data,
-        signers: signers(signed, done),
+        signers: signers(uid, signed, done),
         rawDocument: parseDocument(blanks.find(b => b.id === 1).template, data),
         createdAt: faker.date.past(1),
         updatedAt: new Date(),

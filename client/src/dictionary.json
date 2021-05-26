@@ -1,8 +1,14 @@
 {
   "documentStatus": {
     "IN_PROGRESS": "На рассмотрении",
-    "SIGNED": "Подписан всеми",
+    "RESOLVED": "Подписан всеми",
     "REJECTED": "Отклонен",
     "ARCHIVED": "В архиве"
+  },
+  "signerStatus": {
+    "RESOLVED": "Подписал",
+    "REJECTED": "Отклонил",
+    "WAITING": "Ожидание",
+    "CANCELED": "Отменено"
   }
 }

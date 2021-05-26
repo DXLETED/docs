@@ -5,9 +5,15 @@ const dict = require('../dictionary.json')
 const { ObjectID } = require('mongodb')
 const parseDocument = require('../utils/parseDocument')
 const pdf = require('html-pdf')
-const fs = require('fs')
 
 const blanks = require('../blanks.json')
+
+const getDocument = async (id, auth) => {
+  const doc = await db.collection('documents').findOne({ _id: ObjectID(id) })
+  if (!doc) throw Error({ code: 404 })
+  if (doc.userId !== auth.userId && !doc.signers.find(s => s.userId === auth.userId)) throw Error({ code: 403 })
+  return doc
+}
 
 const render = (tpl, data) =>
   tpl
@@ -89,4 +95,51 @@ module.exports = Router()
     if (doc.userId !== req.auth.userId && !doc.signers.find(s => s.userId === req.auth.userId))
       return res.sendStatus(403)
     res.sendFile(path.join(__dirname, '../..', `pdf/${doc._id}.pdf`))
+  })
+  .post('/documents/:id/resolve', authRequired, async (req, res) => {
+    const user = await db.collection('users').findOne({ _id: ObjectID(req.auth.userId) })
+    if (!user || req.body.password !== user.password) return res.sendStatus(400)
+    let doc
+    try {
+      doc = await getDocument(req.params.id, req.auth)
+    } catch (e) {
+      return res.sendStatus(e.code)
+    }
+    doc.signers = doc.signers.map(s =>
+      s.userId === req.auth.userId ? { ...s, status: 'RESOLVED', updatedAt: new Date() } : s
+    )
+    await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
+    res.json(doc)
+  })
+  .post('/documents/:id/reject', authRequired, async (req, res) => {
+    const user = await db.collection('users').findOne({ _id: ObjectID(req.auth.userId) })
+    if (!user || req.body.password !== user.password) return res.sendStatus(400)
+    let doc
+    try {
+      doc = await getDocument(req.params.id, req.auth)
+    } catch (e) {
+      return res.sendStatus(e.code)
+    }
+    doc.signers = doc.signers.map(s => {
+      if (s.userId === req.auth.userId)
+        return { ...s, status: 'REJECTED', updatedAt: new Date(), rejectReason: req.body.rejectReason }
+      if (s.status === 'WAITING') return { ...s, status: 'CANCELED' }
+      return s
+    })
+    doc.status = 'REJECTED'
+    await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
+    res.json(doc)
+  })
+  .post('/documents/:id/archive', authRequired, async (req, res) => {
+    let doc
+    try {
+      doc = await getDocument(req.params.id, req.auth)
+    } catch (e) {
+      return res.sendStatus(e.code)
+    }
+    if (doc.signers.some(s => s.status === 'WAITING'))
+      return res.sendStatus(400)
+    doc.status = 'ARCHIVED'
+    await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
+    res.json(doc)
   })
