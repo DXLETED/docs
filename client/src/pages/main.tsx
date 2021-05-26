@@ -1,17 +1,24 @@
 import React from 'react'
 import st from 'styles/pages/MainPage.module.sass'
+import moment from 'moment'
 import { Table } from 'components/Table'
 import { Helmet } from 'react-helmet'
 import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileUpload, faFolderOpen, faListAlt } from '@fortawesome/free-solid-svg-icons'
 
-const notificationsList = [...Array(5)].map(() => ({
-  description: 'Документ подписан',
-  name: 'NNNNNNNN',
-  author: 'AAAAA',
-  time: '15 minutes ago',
-}))
+const notificationsList = [...Array(10)]
+  .map(() => ({
+    description: 'Пользователь UUUUU подписал документ',
+    name: 'NNNNNNNN',
+    author: 'AAAAA',
+    time: moment()
+      .subtract(Math.random() * 100, 'h')
+      .toDate()
+      .getTime(),
+  }))
+  .sort((x, y) => y.time - x.time)
+  .map(n => ({ ...n, time: moment(n.time).fromNow() }))
 
 export const MainPage: React.FC = () => {
   return (

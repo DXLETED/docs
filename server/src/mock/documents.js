@@ -32,21 +32,21 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
 
   const signers = (userId, signed, done) => {
     const signersTotal = 1 + faker.datatype.number(10)
-    const ready = signed && done ? signersTotal : faker.datatype.number(signersTotal - 1)
-    return [...Array(signersTotal)]
+    const userIds = [...Array(signersTotal)]
       .map(() => faker.helpers.randomize(users).toString())
       .filter(onlyUnique)
       .filter(signerUserId => signerUserId !== userId)
-      .map((userId, i) => ({
-        userId,
-        status: (() => {
-          if (i + 1 === ready) return signed ? dict.signerStatusKey.resolved : dict.signerStatusKey.rejected
-          if (i + 1 < ready) return dict.signerStatusKey.resolved
-          return done ? dict.signerStatusKey.canceled : dict.signerStatusKey.waiting
-        })(),
-        updatedAt: 0,
-        ...(i + 1 === ready && !signed ? { rejectReason: faker.lorem.words(10) } : {}),
-      }))
+    const ready = signed && done ? userIds.length : faker.datatype.number(userIds.length - 1)
+    return userIds.map((userId, i) => ({
+      userId,
+      status: (() => {
+        if (i + 1 === ready) return signed ? dict.signerStatusKey.resolved : dict.signerStatusKey.rejected
+        if (i + 1 < ready) return dict.signerStatusKey.resolved
+        return done ? dict.signerStatusKey.canceled : dict.signerStatusKey.waiting
+      })(),
+      updatedAt: 0,
+      ...(i + 1 === ready && !signed ? { rejectReason: faker.lorem.words(10) } : {}),
+    }))
   }
 
   const document = (status, signed, done) =>

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import st from 'styles/components/layout/Documents.module.sass'
 import moment from 'moment'
 import dict from 'dictionary.json'
-import { documentsActions, getDocuments } from 'store/documents'
+import { documentsActions, getDocuments, getNextDocuments } from 'store/documents'
 import { getUsers } from 'store/users'
 import { Table, TableFilter, TableSearch } from 'components/Table'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
@@ -24,8 +24,11 @@ export const Documents: React.FC<DocumentsProps> = ({ id, label, path, head, sta
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<{ [el: string]: boolean }>({})
   const dispatch = useDispatchTyped()
-  const request = () => getDocuments({ path, search: search.toLowerCase() })
-  const [documents, documentsStatus, documentsError] = useRequest(s => s.documents, request)
+  const [documents, documentsStatus, documentsError] = useRequest(
+    s => s.documents,
+    () => getDocuments({ path, search, statusFilter }),
+    [search, statusFilter]
+  )
   const [users, usersStatus, usersError] = useRequest(
     s => s.users,
     () => getUsers()
@@ -51,7 +54,7 @@ export const Documents: React.FC<DocumentsProps> = ({ id, label, path, head, sta
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
-  const load = () => dispatch(request())
+  const load = () => dispatch(getNextDocuments({ path, search, statusFilter }))
   return (
     <div className={st.table}>
       {status === 'done' && (
@@ -60,7 +63,7 @@ export const Documents: React.FC<DocumentsProps> = ({ id, label, path, head, sta
           menu={
             <>
               {statusFilterEnabled && (
-                <TableFilter label="Статус" column="status" els={els} filter={statusFilter} set={setStatusFilter} />
+                <TableFilter label="Статус" options={dict.documentStatus} filter={statusFilter} set={setStatusFilter} />
               )}
               <TableSearch value={search} set={setSearch} />
             </>

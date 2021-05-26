@@ -20,7 +20,6 @@ export const DocumentsPage: React.FC = () => {
           creationDate: 'Дата создания',
           updateDate: 'Дата обновления',
         }}
-        statusFilter
       />
     </>
   )

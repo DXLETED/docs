@@ -19,16 +19,38 @@ const initialState: DocumentsState = {
 
 export const getDocuments = createAsyncThunk(
   'documents/get',
-  async ({ path, search }: { path: string, search?: string }, thunkAPI) => {
+  async (
+    { path, search, statusFilter }: { path: string; search?: string; statusFilter: { [el: string]: boolean } },
+    thunkAPI
+  ) => {
+    const res = await request.withToken<{ data: Document[]; total: number }>(
+      {
+        method: 'GET',
+        url: `${process.env.REACT_APP_API_URL}${path}`,
+        params: { from: 0, to: 10, search, statusFilter },
+      },
+      thunkAPI
+    )
+    thunkAPI.dispatch(slice.actions.set({ list: res.data, total: res.total }))
+    return res
+  }
+)
+
+export const getNextDocuments = createAsyncThunk(
+  'documents/get/next',
+  async (
+    { path, search, statusFilter }: { path: string; search?: string; statusFilter: { [el: string]: boolean } },
+    thunkAPI
+  ) => {
     const documents = (thunkAPI.getState() as RootState).documents
     if (documents.isLoading || documents.loaded) return
     thunkAPI.dispatch(slice.actions.setIsLoading(null))
     const page = documents.page !== null ? documents.page + 1 : 0
-    const res = await request.withToken<{data: Document[], total: number}>(
+    const res = await request.withToken<{ data: Document[]; total: number }>(
       {
         method: 'GET',
         url: `${process.env.REACT_APP_API_URL}${path}`,
-        params: { from: page * 10, to: page * 10 + 10, search },
+        params: { from: page * 10, to: page * 10 + 10, search, statusFilter },
       },
       thunkAPI
     )
@@ -41,6 +63,12 @@ const slice = createSlice({
   name: 'documents',
   initialState,
   reducers: {
+    set: (state, action) => {
+      state.list = action.payload.list
+      state.page = 0
+      state.loaded = state.list.length >= action.payload.total
+      state.isLoading = false
+    },
     add: (state, action) => {
       state.list.push(...action.payload.list)
       state.page = action.payload.page
@@ -53,7 +81,7 @@ const slice = createSlice({
     loaded: (state, action) => {
       state.loaded = true
     },
-    reset: () => initialState
+    reset: () => initialState,
   },
 })
 

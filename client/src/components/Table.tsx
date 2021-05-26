@@ -5,7 +5,6 @@ import { faCheck, faEllipsisV, faSlidersH } from '@fortawesome/free-solid-svg-ic
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 import { loadState, saveState } from 'utils/localStorage'
-import { onlyUnique } from 'utils/onlyUnique'
 
 interface TableSearchProps {
   value: string
@@ -22,16 +21,14 @@ export const TableSearch: React.FC<TableSearchProps> = ({ value, set }) => {
 
 interface TableFilterProps {
   label: string
-  column: string
-  els: { [key: string]: string }[]
+  options: { [key: string]: string }
   filter: { [el: string]: boolean }
   set: (keys: { [key: string]: boolean }) => void
 }
-export const TableFilter: React.FC<TableFilterProps> = ({ label, column, els, filter, set }) => {
+export const TableFilter: React.FC<TableFilterProps> = ({ label, options, filter, set }) => {
   const ref = useRef<HTMLDivElement | any>(null)
   const [isOpen, setIsOpen] = useState(false)
   useOnClickOutside<HTMLDivElement>(ref, () => setIsOpen(false))
-  const variants = els.map(el => el[column]).filter(onlyUnique)
   const toggle = (el: string) => set({ ...filter, [el]: !filter[el] })
   return (
     <div className={clsx(st.tableFilter, { [st.open]: isOpen })} ref={ref}>
@@ -40,12 +37,12 @@ export const TableFilter: React.FC<TableFilterProps> = ({ label, column, els, fi
         {label}
       </div>
       <div className={st.dropdown}>
-        {variants.map(el => (
-          <div className={st.el} onClick={() => toggle(el)} key={el}>
+        {Object.entries(options).map(([key, val]) => (
+          <div className={st.el} onClick={() => toggle(key)} key={key}>
             <div className={st.check}>
-              {filter[el] && <FontAwesomeIcon className={st.selected} icon={faCheck} size="sm" />}
+              {filter[key] && <FontAwesomeIcon className={st.selected} icon={faCheck} size="sm" />}
             </div>
-            {el}
+            {val}
           </div>
         ))}
       </div>
@@ -80,7 +77,7 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els, menu, load, 
       el.scrollHeight - el.getBoundingClientRect().height - el.scrollTop < 50 && load?.()
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [load]
   )
   useEffect(() => {
     els.length && upd()

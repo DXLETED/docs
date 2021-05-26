@@ -14,23 +14,20 @@
       justify-content: space-between
       align-items: center
       margin-bottom: 20px
-      background: $primary
+      background: $lighter
       .title
         font-size: 1.2rem
-      span
-        margin-left: 20px
-      .icon
-        margin-right: 10px
-      .d
+        font-weight: 700
+        padding: 0 20px
+      .pdf
         height: 100%
+        padding: 0 20px
+        margin-left: 20px
         align-items: center
-        .pdf
-          height: 100%
-          padding: 0 20px
-          margin-left: 20px
-          align-items: center
-          cursor: pointer
-          @include hover-1
+        cursor: pointer
+        @include hover-1
+        .icon
+          margin-right: 10px
     .content
       flex-direction: column
       padding: 0 20px
@@ -65,17 +62,24 @@
     border-left: 2px solid $lighter
     .docstatus
       width: 100%
-      height: 45px
-      justify-content: space-between
-      align-items: center
-      background: $primary
       padding: 0 10px
       margin-top: 20px
-      margin-bottom: 15px
+      .inner
+        width: 100%
+        flex-direction: column
+        background: $lighter
+        padding: 15px 10px
+        span
+          &:not(:last-child)
+            margin-bottom: 15px
+          .icon
+            width: 25px
+            margin-right: 10px
     .signers
       flex: 1
       flex-direction: column
       padding: 0 10px
+      margin-top: 15px
       overflow-y: auto
       .label
         height: 30px
@@ -112,11 +116,18 @@
   .sign, .reject, .archive
     width: 100%
     height: 40px
-    justify-content: center
     align-items: center
+    padding: 0 20px
     font-weight: 700
     cursor: pointer
     @include hover-1
+    &::before
+      content: ">"
+      margin-right: 20px
+    &.sign::before, &.archive::before
+      color: $success
+    &.reject::before
+      color: $error
 
 .signModal, .rejectModal
   width: 100%

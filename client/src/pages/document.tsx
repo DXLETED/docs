@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import st from 'styles/pages/DocumentPage.module.sass'
+import clsx from 'clsx'
 import moment from 'moment'
 import dict from 'dictionary.json'
-import clsx from 'clsx'
 import { useRequest } from 'hooks/request.hook'
 import { useParams } from 'react-router'
 import { archiveDocument, documentActions, getDocument, getPDF, rejectDocument, resolveDocument } from 'store/document'
@@ -11,7 +11,7 @@ import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
 import { Helmet } from 'react-helmet'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarPlus, faCheck, faEdit, faFilePdf, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarPlus, faCheck, faEdit, faFilePdf, faInfo, faUser } from '@fortawesome/free-solid-svg-icons'
 import { getUsers } from 'store/users'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { saveAs } from 'file-saver'
@@ -39,7 +39,13 @@ const SignModal: React.FC<SignModalProps> = ({ close }) => {
   return (
     <div className={st.signModal}>
       <FormContainer>
-        <Input value={formData.password} label="Пароль" type="password" set={update('password')} />
+        <Input
+          value={formData.password}
+          autoComplete="new-password"
+          label="Пароль"
+          type="password"
+          set={update('password')}
+        />
         <FormSubmit sendText="Подписать" onSubmit={onSubmit} />
       </FormContainer>
     </div>
@@ -116,33 +122,35 @@ export const DocumentPage: React.FC = () => {
           <div className={st.document}>
             <div className={st.head}>
               <span className={st.title}>{doc.title}</span>
-              <div className={st.d}>
-                <span>
-                  <FontAwesomeIcon className={st.icon} icon={faUser} size="sm" />
-                  {users.find(u => u.userId === doc.userId)?.username}
-                </span>
-                <span>
-                  <FontAwesomeIcon className={st.icon} icon={faCalendarPlus} size="sm" />
-                  {moment(doc.createdAt).format('DD.MM.YYYY')}
-                </span>
-                {!!doc.updatedAt && (
-                  <span className={st.updatedAt}>
-                    <FontAwesomeIcon className={st.icon} icon={faEdit} size="sm" />
-                    {moment(doc.updatedAt).format('DD.MM.YYYY')}
-                  </span>
-                )}
-                <div className={st.pdf} onClick={pdf}>
-                  <FontAwesomeIcon className={st.icon} icon={faFilePdf} />
-                  PDF
-                </div>
+              <div className={st.pdf} onClick={pdf}>
+                <FontAwesomeIcon className={st.icon} icon={faFilePdf} />
+                PDF
               </div>
             </div>
             <div className={st.content} id="content" dangerouslySetInnerHTML={{ __html: doc.rawDocument }} />
           </div>
           <div className={st.side}>
             <div className={st.docstatus}>
-              <span>Статус</span>
-              {dict.documentStatus[doc.status]}
+              <div className={st.inner}>
+                <span>
+                  <FontAwesomeIcon className={st.icon} icon={faUser} size="sm" />
+                  {users.find(u => u.userId === doc.userId)?.username}
+                </span>
+                <span>
+                  <FontAwesomeIcon className={st.icon} icon={faInfo} />
+                  {dict.documentStatus[doc.status]}
+                </span>
+                <span>
+                  <FontAwesomeIcon className={st.icon} icon={faCalendarPlus} size="sm" />
+                  {moment(doc.createdAt).format('YYYY-MM-DD HH:mm')}
+                </span>
+                {!!doc.updatedAt && (
+                  <span>
+                    <FontAwesomeIcon className={st.icon} icon={faEdit} size="sm" />
+                    {moment(doc.updatedAt).format('YYYY-MM-DD HH:mm')}
+                  </span>
+                )}
+              </div>
             </div>
             <div className={st.signers}>
               <div className={st.label}>Подписанты</div>
@@ -174,11 +182,13 @@ export const DocumentPage: React.FC = () => {
                 </div>
               </>
             )}
-            {doc.signers.every(s => s.status !== 'WAITING') && doc.status !== 'ARCHIVED' && (
-              <div className={st.archive} onClick={archive}>
-                Архивировать
-              </div>
-            )}
+            {doc.userId === user?.userId &&
+              doc.signers.every(s => s.status !== 'WAITING') &&
+              doc.status !== 'ARCHIVED' && (
+                <div className={st.archive} onClick={archive}>
+                  Архивировать
+                </div>
+              )}
           </div>
         </div>
       )}

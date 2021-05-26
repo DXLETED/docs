@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-export const useAsync = <T>(asyncFn: () => Promise<T>, onSuccess: (data: T) => void) => {
+export const useAsync = <T>(asyncFn: () => Promise<T>, onSuccess: (data: T) => void, deps: any[]) => {
   useEffect(() => {
     let isMounted = true
     asyncFn().then(data => isMounted && onSuccess(data))
@@ -8,5 +8,5 @@ export const useAsync = <T>(asyncFn: () => Promise<T>, onSuccess: (data: T) => v
       isMounted = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, deps)
 }

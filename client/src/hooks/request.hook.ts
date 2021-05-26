@@ -8,7 +8,8 @@ import { RequestStatus } from 'utils/requestsStatus'
 
 export const useRequest = <T>(
   selector: (state: RootState) => T,
-  req: () => AsyncThunkAction<any, any, any>
+  req: () => AsyncThunkAction<any, any, any>,
+  deps?: any[]
 ): [T, RequestStatus, any] => {
   const data = useSelectorTyped(selector)
   const [status, setStatus] = useState<RequestStatus>('loading')
@@ -22,7 +23,8 @@ export const useRequest = <T>(
         setError((res as any).error.message)
         setStatus('error')
       }
-    }
+    },
+    deps || []
   )
   return [data, status, error]
 }

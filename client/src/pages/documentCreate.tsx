@@ -104,7 +104,7 @@ export const DocumentCreatePage: React.FC = () => {
                   <DocumentSigners users={users} />
                 </div>
                 <div className={st.send} onClick={send}>
-                  Отправить
+                  Создать документ
                 </div>
               </div>
             </div>

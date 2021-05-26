@@ -15,6 +15,13 @@ const getDocument = async (id, auth) => {
   return doc
 }
 
+const limitRequest = (req, maxLen) => {
+  const from = parseInt(req.query.from) || 0,
+    to = parseInt(req.query.to) || 0
+  if (to - from > maxLen) throw Error({code: 400})
+  return [from, to]
+}
+
 const render = (tpl, data) =>
   tpl
     .replaceAll(/\$\$([a-zA-Z|.]*)(.*?)\$\$([a-zA-Z|.]*)/g, (_, path, tpl) =>
@@ -28,10 +35,13 @@ const render = (tpl, data) =>
 
 module.exports = Router()
   .use('/auth', require('./auth'))
+
   .get('/blanks', authRequired, async (req, res) => res.sendFile(path.join(__dirname, '../blanks.json')))
+
   .get('/users', authRequired, async (req, res) =>
     res.json((await db.collection('users').find({}).toArray()).map(u => ({ userId: u._id, username: u.username })))
   )
+
   .post('/documents', authRequired, async (req, res) => {
     const doc = {
       userId: req.auth.userId,
@@ -54,48 +64,94 @@ module.exports = Router()
       res.json(doc)
     })
   })
+
   .get('/documents', authRequired, async (req, res) => {
-    const from = parseInt(req.query.from) || 0,
-      to = parseInt(req.query.to) || 0
-    const list = await db
-      .collection('documents')
-      .find({ signers: { $elemMatch: { userId: req.auth.userId, status: dict.signerStatusKey.waiting } } })
-      .toArray()
-    res.json({ data: list.slice(from, to), total: list.length })
-  })
-  .get('/documents/my', authRequired, async (req, res) => {
-    const from = parseInt(req.query.from) || 0,
-      to = parseInt(req.query.to) || 0
-    if (to - from > 10) return res.sendStatus(400)
-    const list = await db.collection('documents').find({ userId: req.auth.userId }).toArray()
-    res.json({ data: list.slice(from, to), total: list.length })
-  })
-  .get('/documents/archive', authRequired, async (req, res) => {
-    const from = parseInt(req.query.from) || 0,
-      to = parseInt(req.query.to) || 0
+    let from, to
+    try {
+      [from, to] = limitRequest(req, 10)
+    } catch (e) {
+      return res.sendStatus(400)
+    }
+    const statusFilter = Object.entries(JSON.parse(req.query.statusFilter))
+      .filter(el => el[1])
+      .map(el => el[0])
     const list = await db
       .collection('documents')
       .find({
-        status: dict.documentStatusKey.archived,
-        $or: [{ userId: req.auth.userId }, { signers: { $elemMatch: { userId: req.auth.userId } } }],
+        ...(req.query.search ? { title: new RegExp(`.*${req.query.search}.*`) } : {}),
+        ...(statusFilter.length ? { status: { $in: statusFilter } } : {}),
+        signers: { $elemMatch: { userId: req.auth.userId, status: dict.signerStatusKey.waiting } },
       })
+      .sort({ createdAt: -1 })
       .toArray()
     res.json({ data: list.slice(from, to), total: list.length })
   })
+
+  .get('/documents/my', authRequired, async (req, res) => {
+    let from, to
+    try {
+      [from, to] = limitRequest(req, 10)
+    } catch (e) {
+      return res.sendStatus(400)
+    }
+    const statusFilter = Object.entries(JSON.parse(req.query.statusFilter))
+      .filter(el => el[1])
+      .map(el => el[0])
+    const list = await db
+      .collection('documents')
+      .find({
+        ...(req.query.search ? { title: new RegExp(`.*${req.query.search}.*`) } : {}),
+        ...(statusFilter.length ? { status: { $in: statusFilter } } : {}),
+        userId: req.auth.userId,
+      })
+      .sort({ createdAt: -1 })
+      .toArray()
+    res.json({ data: list.slice(from, to), total: list.length })
+  })
+
+  .get('/documents/archive', authRequired, async (req, res) => {
+    let from, to
+    try {
+      [from, to] = limitRequest(req, 10)
+    } catch (e) {
+      return res.sendStatus(400)
+    }
+    const statusFilter = Object.entries(JSON.parse(req.query.statusFilter))
+      .filter(el => el[1])
+      .map(el => el[0])
+    const list = await db
+      .collection('documents')
+      .find({
+        ...(req.query.search ? { title: new RegExp(`.*${req.query.search}.*`) } : {}),
+        ...(statusFilter.length ? { status: { $in: statusFilter } } : {}),
+        status: dict.documentStatusKey.archived,
+        $or: [{ userId: req.auth.userId }, { signers: { $elemMatch: { userId: req.auth.userId } } }],
+      })
+      .sort({ createdAt: -1 })
+      .toArray()
+    res.json({ data: list.slice(from, to), total: list.length })
+  })
+
   .get('/documents/:id', authRequired, async (req, res) => {
-    const doc = await db.collection('documents').findOne({ _id: ObjectID(req.params.id) })
-    if (!doc) return res.sendStatus(404)
-    if (doc.userId !== req.auth.userId && !doc.signers.find(s => s.userId === req.auth.userId))
-      return res.sendStatus(403)
+    let doc
+    try {
+      doc = await getDocument(req.params.id, req.auth)
+    } catch (e) {
+      return res.sendStatus(e.code)
+    }
     res.json(doc)
   })
+
   .get('/documents/:id/pdf', authRequired, async (req, res) => {
-    const doc = await db.collection('documents').findOne({ _id: ObjectID(req.params.id) })
-    if (!doc) return res.sendStatus(404)
-    if (doc.userId !== req.auth.userId && !doc.signers.find(s => s.userId === req.auth.userId))
-      return res.sendStatus(403)
+    let doc
+    try {
+      doc = await getDocument(req.params.id, req.auth)
+    } catch (e) {
+      return res.sendStatus(e.code)
+    }
     res.sendFile(path.join(__dirname, '../..', `pdf/${doc._id}.pdf`))
   })
+
   .post('/documents/:id/resolve', authRequired, async (req, res) => {
     const user = await db.collection('users').findOne({ _id: ObjectID(req.auth.userId) })
     if (!user || req.body.password !== user.password) return res.sendStatus(400)
@@ -105,12 +161,18 @@ module.exports = Router()
     } catch (e) {
       return res.sendStatus(e.code)
     }
-    doc.signers = doc.signers.map(s =>
-      s.userId === req.auth.userId ? { ...s, status: 'RESOLVED', updatedAt: new Date() } : s
+    const currentSigner = doc?.signers.find(
+      (s, i, signers) => s.status === 'WAITING' && !signers.slice(0, i).some(s => s.status === 'WAITING')
     )
+    if (currentSigner?.userId !== req.auth.userId) return res.sendStatus(400)
+    currentSigner.status = 'RESOLVED'
+    currentSigner.updatedAt = new Date()
+    if (doc.signers.every(s => s.status === 'RESOLVED')) doc.status = 'RESOLVED'
+    doc.updatedAt = new Date()
     await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
     res.json(doc)
   })
+
   .post('/documents/:id/reject', authRequired, async (req, res) => {
     const user = await db.collection('users').findOne({ _id: ObjectID(req.auth.userId) })
     if (!user || req.body.password !== user.password) return res.sendStatus(400)
@@ -120,16 +182,20 @@ module.exports = Router()
     } catch (e) {
       return res.sendStatus(e.code)
     }
-    doc.signers = doc.signers.map(s => {
-      if (s.userId === req.auth.userId)
-        return { ...s, status: 'REJECTED', updatedAt: new Date(), rejectReason: req.body.rejectReason }
-      if (s.status === 'WAITING') return { ...s, status: 'CANCELED' }
-      return s
-    })
+    const currentSigner = doc?.signers.find(
+      (s, i, signers) => s.status === 'WAITING' && !signers.slice(0, i).some(s => s.status === 'WAITING')
+    )
+    if (currentSigner?.userId !== req.auth.userId) return res.sendStatus(400)
+    currentSigner.status = 'REJECTED'
+    currentSigner.updatedAt = new Date()
+    currentSigner.rejectReason = req.body.rejectReason
+    doc.signers = doc.signers.map(s => (s.status === 'WAITING' ? { ...s, status: 'CANCELED' } : s))
     doc.status = 'REJECTED'
+    doc.updatedAt = new Date()
     await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
     res.json(doc)
   })
+
   .post('/documents/:id/archive', authRequired, async (req, res) => {
     let doc
     try {
@@ -137,9 +203,9 @@ module.exports = Router()
     } catch (e) {
       return res.sendStatus(e.code)
     }
-    if (doc.signers.some(s => s.status === 'WAITING'))
-      return res.sendStatus(400)
+    if (doc.signers.some(s => s.status === 'WAITING')) return res.sendStatus(400)
     doc.status = 'ARCHIVED'
+    doc.updatedAt = new Date()
     await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
     res.json(doc)
   })
