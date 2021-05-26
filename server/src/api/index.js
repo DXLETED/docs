@@ -5,19 +5,20 @@ const dict = require('../dictionary.json')
 const { ObjectID } = require('mongodb')
 const parseDocument = require('../utils/parseDocument')
 const pdf = require('html-pdf')
+const fs = require('fs')
 
 const blanks = require('../blanks.json')
 
 const render = (tpl, data) =>
-tpl
-  .replaceAll(/\$\$([a-zA-Z|.]*)(.*?)\$\$([a-zA-Z|.]*)/g, (_, path, tpl) =>
-    objectPath
-      .get(data, path)
-      .map((el) => render(tpl, el))
-      .join('')
-  )
-  .replaceAll(/\$_/g, data)
-  .replaceAll(/\$([a-zA-Z|.]*)/g, (_, path) => objectPath.get(data, path))
+  tpl
+    .replaceAll(/\$\$([a-zA-Z|.]*)(.*?)\$\$([a-zA-Z|.]*)/g, (_, path, tpl) =>
+      objectPath
+        .get(data, path)
+        .map(el => render(tpl, el))
+        .join('')
+    )
+    .replaceAll(/\$_/g, data)
+    .replaceAll(/\$([a-zA-Z|.]*)/g, (_, path) => objectPath.get(data, path))
 
 module.exports = Router()
   .use('/auth', require('./auth'))
@@ -28,6 +29,7 @@ module.exports = Router()
   .post('/documents', authRequired, async (req, res) => {
     const doc = {
       userId: req.auth.userId,
+      blankId: req.body.blankId,
       status: dict.documentStatusKey.inProgress,
       title: req.body.title,
       description: req.body.description,
@@ -40,8 +42,11 @@ module.exports = Router()
       createdAt: new Date(),
       updatedAt: 0,
     }
-    await db.collection('documents').insertOne(doc)
-    res.json(doc)
+    const d = await db.collection('documents').insertOne(doc)
+    pdf.create(doc.rawDocument).toFile(`pdf/${d.insertedId}.pdf`, err => {
+      err && console.log(err)
+      res.json(doc)
+    })
   })
   .get('/documents', authRequired, async (req, res) => {
     const from = parseInt(req.query.from) || 0,
@@ -74,12 +79,14 @@ module.exports = Router()
   .get('/documents/:id', authRequired, async (req, res) => {
     const doc = await db.collection('documents').findOne({ _id: ObjectID(req.params.id) })
     if (!doc) return res.sendStatus(404)
-    if (doc.userId !== req.auth.userId && !doc.signers.find(s => s.userId === req.auth.userId)) return res.sendStatus(403)
+    if (doc.userId !== req.auth.userId && !doc.signers.find(s => s.userId === req.auth.userId))
+      return res.sendStatus(403)
     res.json(doc)
   })
   .get('/documents/:id/pdf', authRequired, async (req, res) => {
     const doc = await db.collection('documents').findOne({ _id: ObjectID(req.params.id) })
     if (!doc) return res.sendStatus(404)
-    if (doc.userId !== req.auth.userId && !doc.signers.find(s => s.userId === req.auth.userId)) return res.sendStatus(403)
-    pdf.create(doc.rawDocument).toStream((err, stream) => stream.pipe(res))
+    if (doc.userId !== req.auth.userId && !doc.signers.find(s => s.userId === req.auth.userId))
+      return res.sendStatus(403)
+    res.sendFile(path.join(__dirname, '../..', `pdf/${doc._id}.pdf`))
   })

@@ -1,10 +1,12 @@
 const { config } = require('dotenv')
-const { MongoClient } = require('mongodb')
+const { MongoClient, ObjectID } = require('mongodb')
 const faker = require('faker')
 const dict = require('../dictionary.json')
 const parseDocument = require('../utils/parseDocument')
 const blanks = require('../blanks.json')
 const moment = require('moment')
+const pdf = require('html-pdf')
+const path = require('path')
 
 config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.development' })
 ;(async () => {
@@ -42,37 +44,43 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
     }))
   }
 
-  const document = (status, signed, done) => {
-    const data = {
-      fio: fio(),
-      dateOfBirth: moment(faker.date.future(30, new Date(0))).format('YYYY-MM-DD'),
-      contacts: {
-        phone: faker.phone.phoneNumber('380#########'),
-        email: faker.internet.email(),
-      },
-      skills: skills(),
-      workExpirience: workExpirience(),
-    }
-    return {
-      userId: userId(),
-      status,
-      title: faker.name.title(),
-      description: faker.lorem.words(20),
-      data,
-      signers: signers(signed, done),
-      rawDocument: parseDocument(blanks[0].template, data),
-      createdAt: faker.date.past(1),
-      updatedAt: new Date(),
-    }
-  }
+  const document = (status, signed, done) =>
+    new Promise(res => {
+      const data = {
+        fio: fio(),
+        dateOfBirth: moment(faker.date.future(30, new Date(0))).format('YYYY-MM-DD'),
+        contacts: {
+          phone: faker.phone.phoneNumber('380#########'),
+          email: faker.internet.email(),
+        },
+        skills: skills(),
+        workExpirience: workExpirience(),
+      }
+      const doc = {
+        _id: new ObjectID(),
+        userId: userId(),
+        blankId: 1,
+        status,
+        title: faker.name.title(),
+        description: faker.lorem.words(20),
+        data,
+        signers: signers(signed, done),
+        rawDocument: parseDocument(blanks.find(b => b.id === 1).template, data),
+        createdAt: faker.date.past(1),
+        updatedAt: new Date(),
+      }
+      pdf.create(doc.rawDocument).toFile(path.join(__dirname, '../..', `pdf/${doc._id}.pdf`), () => res(doc))
+    })
 
-  await db.collection('documents').drop()
-  await db
-    .collection('documents')
-    .insertMany([
-      ...[...Array(60)].map(() => document(dict.documentStatusKey.inProgress, true, false)),
-      ...[...Array(30)].map(() => document(dict.documentStatusKey.archived, faker.datatype.boolean(), true)),
-      ...[...Array(10)].map(() => document(dict.documentStatusKey.rejected, false, true)),
-    ])
+  const docs = [
+    ...(await Promise.all([...Array(60)].map(() => document(dict.documentStatusKey.inProgress, true, false)))),
+    ...(await Promise.all(
+      [...Array(30)].map(() => document(dict.documentStatusKey.archived, faker.datatype.boolean(), true))
+    )),
+    ...(await Promise.all([...Array(10)].map(() => document(dict.documentStatusKey.rejected, false, true)))),
+  ]
+
+  await db.collection('documents').deleteMany({})
+  await db.collection('documents').insertMany(docs)
   process.exit()
 })()

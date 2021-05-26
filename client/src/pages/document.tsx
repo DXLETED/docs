@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarPlus, faEdit, faFilePdf, faUser } from '@fortawesome/free-solid-svg-icons'
 import { getUsers } from 'store/users'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
+import { saveAs } from 'file-saver'
 
 export const DocumentPage: React.FC = () => {
   const dispatch = useDispatchTyped()
@@ -28,7 +29,7 @@ export const DocumentPage: React.FC = () => {
   const pdf = async () => {
     const res = await dispatch(getPDF())
     res.meta.requestStatus === 'fulfilled'
-      ? window.open(window.URL.createObjectURL(new Blob([res.payload as BlobPart], {type: 'application/pdf'})), '_blank')
+      ? saveAs(new Blob([(res.payload as { file: BlobPart }).file], { type: 'application/pdf' }), doc?.title)
       : alert((res as any).error.message)
   }
   return (

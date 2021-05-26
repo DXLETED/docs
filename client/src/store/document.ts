@@ -31,10 +31,12 @@ export const getDocument = createAsyncThunk('document/get', async ({ id }: { id:
 
 export const getPDF = createAsyncThunk('document/get/pdf', async (_, thunkAPI) => {
   const id = (thunkAPI.getState() as RootState).document?._id
-  return await request.withToken(
-    { method: 'GET', url: `${process.env.REACT_APP_API_URL}/documents/${id}/pdf`, responseType: 'blob' },
-    thunkAPI
-  )
+  return {
+    file: await request.withToken(
+      { method: 'GET', url: `${process.env.REACT_APP_API_URL}/documents/${id}/pdf`, responseType: 'blob' },
+      thunkAPI
+    ),
+  }
 })
 
 const slice = createSlice({

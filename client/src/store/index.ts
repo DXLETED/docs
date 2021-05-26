@@ -1,4 +1,4 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { saveState } from 'utils/localStorage'
 import { authReducer } from './auth'
 import { blanksReducer } from './blanks'
@@ -17,6 +17,11 @@ export const store = configureStore({
     documents: documentsReducer,
     switches: switchesReducer,
     users: usersReducer,
+  }),
+  middleware: getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActionPaths: ['payload.file'],
+    },
   }),
 })
 
