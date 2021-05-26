@@ -11,15 +11,24 @@
     height: 50px
     justify-content: space-between
     align-items: center
-    padding: 0 20px
     margin-bottom: 20px
     background: $lighter
     .title
       font-size: 1.2rem
-    span:not(.title)
+    span
       margin-left: 20px
-      .icon
-        margin-right: 10px
+    .icon
+      margin-right: 10px
+    .d
+      height: 100%
+      align-items: center
+      .pdf
+        height: 100%
+        padding: 0 20px
+        margin-left: 20px
+        align-items: center
+        cursor: pointer
+        @include hover-1
   .content
     flex-direction: column
     padding: 0 20px

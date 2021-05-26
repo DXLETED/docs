@@ -9,7 +9,7 @@ import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
 import { Helmet } from 'react-helmet'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarPlus, faEdit, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarPlus, faEdit, faFilePdf, faUser } from '@fortawesome/free-solid-svg-icons'
 import { getUsers } from 'store/users'
 
 export const DocumentPage: React.FC = () => {
@@ -47,6 +47,10 @@ export const DocumentPage: React.FC = () => {
                   {moment(document.updatedAt).format('DD.MM.YYYY')}
                 </span>
               )}
+              <a className={st.pdf} href={`http://localhost:3001/api/v1/documents/${document._id}/pdf`}>
+                <FontAwesomeIcon className={st.icon} icon={faFilePdf} />
+                PDF
+              </a>
             </div>
           </div>
           <div className={st.content} dangerouslySetInnerHTML={{ __html: document.rawDocument }} />

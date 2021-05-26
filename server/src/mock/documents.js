@@ -16,7 +16,7 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
 
   const userId = () => (faker.datatype.boolean() ? users[0].toString() : faker.helpers.randomize(users).toString())
 
-  const fio = () => `${faker.name.firstName()[0]}${faker.name.middleName()[0].toUpperCase()}${faker.name.lastName()[0]}`
+  const fio = () => `${faker.name.firstName()}-${faker.name.lastName()}`
 
   const skills = () => [...Array(1 + faker.datatype.number(5))].map(() => faker.lorem.word())
 
@@ -47,7 +47,7 @@ config({ path: process.argv.includes('--prod') ? '.env.production' : '.env.devel
       fio: fio(),
       dateOfBirth: moment(faker.date.future(30, new Date(0))).format('YYYY-MM-DD'),
       contacts: {
-        phone: faker.phone.phoneNumber('380 ## ### ## ##'),
+        phone: faker.phone.phoneNumber('380#########'),
         email: faker.internet.email(),
       },
       skills: skills(),

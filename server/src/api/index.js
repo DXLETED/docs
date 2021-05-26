@@ -4,6 +4,7 @@ const path = require('path')
 const dict = require('../dictionary.json')
 const { ObjectID } = require('mongodb')
 const parseDocument = require('../utils/parseDocument')
+const pdf = require('html-pdf')
 
 const blanks = require('../blanks.json')
 
@@ -75,4 +76,10 @@ module.exports = Router()
     if (!doc) return res.sendStatus(404)
     if (doc.userId !== req.auth.userId && !doc.signers.find(s => s === req.auth.userId)) return res.sendStatus(403)
     res.json(doc)
+  })
+  .get('/documents/:id/pdf', authRequired, async (req, res) => {
+    const doc = await db.collection('documents').findOne({ _id: ObjectID(req.params.id) })
+    if (!doc) return res.sendStatus(404)
+    if (doc.userId !== req.auth.userId && !doc.signers.find(s => s === req.auth.userId)) return res.sendStatus(403)
+    pdf.create(doc.rawDocument).toStream((err, stream) => stream.pipe(res))
   })
