@@ -3,7 +3,7 @@ import st from 'styles/pages/DocumentPage.module.sass'
 import moment from 'moment'
 import { useRequest } from 'hooks/request.hook'
 import { useParams } from 'react-router'
-import { getDocument } from 'store/document'
+import { getDocument, getPDF } from 'store/document'
 import { requestsStatus } from 'utils/requestsStatus'
 import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
@@ -11,10 +11,12 @@ import { Helmet } from 'react-helmet'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarPlus, faEdit, faFilePdf, faUser } from '@fortawesome/free-solid-svg-icons'
 import { getUsers } from 'store/users'
+import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 
 export const DocumentPage: React.FC = () => {
+  const dispatch = useDispatchTyped()
   const { id } = useParams<{ id: string }>()
-  const [document, documentStatus, documentError] = useRequest(
+  const [doc, documentStatus, documentError] = useRequest(
     s => s.document,
     () => getDocument({ id })
   )
@@ -23,37 +25,41 @@ export const DocumentPage: React.FC = () => {
     () => getUsers()
   )
   const status = requestsStatus(documentStatus, usersStatus)
+  const pdf = async () => {
+    const file = await dispatch(getPDF())
+    window.open(window.URL.createObjectURL(new Blob([file.payload as BlobPart])), '_blank')
+  }
   return (
     <>
       <Helmet>
-        <title>{document?.title || id} - Docs</title>
+        <title>{doc?.title || id} - Docs</title>
       </Helmet>
-      {status === 'done' && document && users && (
+      {status === 'done' && doc && users && (
         <div className={st.container}>
           <div className={st.head}>
-            <span className={st.title}>{document.title}</span>
+            <span className={st.title}>{doc.title}</span>
             <div className={st.d}>
               <span>
                 <FontAwesomeIcon className={st.icon} icon={faUser} size="sm" />
-                {users.find(u => u.userId === document.userId)?.username}
+                {users.find(u => u.userId === doc.userId)?.username}
               </span>
               <span>
                 <FontAwesomeIcon className={st.icon} icon={faCalendarPlus} size="sm" />
-                {moment(document.createdAt).format('DD.MM.YYYY')}
+                {moment(doc.createdAt).format('DD.MM.YYYY')}
               </span>
-              {!!document.updatedAt && (
+              {!!doc.updatedAt && (
                 <span className={st.updatedAt}>
                   <FontAwesomeIcon className={st.icon} icon={faEdit} size="sm" />
-                  {moment(document.updatedAt).format('DD.MM.YYYY')}
+                  {moment(doc.updatedAt).format('DD.MM.YYYY')}
                 </span>
               )}
-              <a className={st.pdf} href={`http://localhost:3001/api/v1/documents/${document._id}/pdf`}>
+              <div className={st.pdf} onClick={pdf}>
                 <FontAwesomeIcon className={st.icon} icon={faFilePdf} />
                 PDF
-              </a>
+              </div>
             </div>
           </div>
-          <div className={st.content} dangerouslySetInnerHTML={{ __html: document.rawDocument }} />
+          <div className={st.content} id="content" dangerouslySetInnerHTML={{ __html: doc.rawDocument }} />
         </div>
       )}
       {status === 'loading' && <Loading />}
