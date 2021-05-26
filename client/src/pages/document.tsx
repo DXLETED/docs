@@ -26,8 +26,10 @@ export const DocumentPage: React.FC = () => {
   )
   const status = requestsStatus(documentStatus, usersStatus)
   const pdf = async () => {
-    const file = await dispatch(getPDF())
-    window.open(window.URL.createObjectURL(new Blob([file.payload as BlobPart])), '_blank')
+    const res = await dispatch(getPDF())
+    res.meta.requestStatus === 'fulfilled'
+      ? window.open(window.URL.createObjectURL(new Blob([res.payload as BlobPart])), '_blank')
+      : alert((res as any).error.message)
   }
   return (
     <>
