@@ -37,15 +37,17 @@ const UsersSelect: React.FC = () => {
           {selected ? users.find(u => u.userId === selected)?.username : 'Выбрать пользователя'}
         </div>
         <FontAwesomeIcon className={st.arrow} icon={faChevronDown} />
-        <div className={st.dropdown}>
-          {users
-            .filter(u => u.userId !== user?.userId && !signers.includes(u.userId))
-            .map((user, i) => (
-              <div className={st.el} onClick={(e: React.MouseEvent) => select(e, user.userId)} key={user.userId}>
-                {user.username}
-              </div>
-            ))}
-        </div>
+        {isOpen && (
+          <div className={st.dropdown}>
+            {users
+              .filter(u => u.userId !== user?.userId && !signers.includes(u.userId))
+              .map((user, i) => (
+                <div className={st.el} onClick={(e: React.MouseEvent) => select(e, user.userId)} key={user.userId}>
+                  {user.username}
+                </div>
+              ))}
+          </div>
+        )}
       </div>
       <div className={clsx(st.add, { disabled: !selected })} onClick={add}>
         <FontAwesomeIcon icon={faPlus} />

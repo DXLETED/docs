@@ -3,8 +3,11 @@
 
 .container
   width: 100%
+  height: 100%
+  overflow-y: auto
   .document
     width: calc(100% - 400px)
+    min-width: 65%
     flex-direction: column
     padding: 20px
     overflow-y: auto
@@ -57,80 +60,104 @@
               padding: 10px
   .side
     width: 400px
+    max-width: 35%
     height: 100%
     flex-direction: column
-    border-left: 2px solid $lighter
-    .docstatus
-      width: 100%
-      padding: 0 10px
-      margin-top: 20px
-      .inner
-        width: 100%
-        flex-direction: column
-        background: $lighter
-        padding: 15px 10px
-        span
-          &:not(:last-child)
-            margin-bottom: 15px
-          .icon
-            width: 25px
-            margin-right: 10px
-    .signers
+    background: rgba($black, 0.2)
+    .scrollable
       flex: 1
-      flex-direction: column
-      padding: 0 10px
-      margin-top: 15px
       overflow-y: auto
-      .label
-        height: 30px
-        align-items: center
-        font-size: 0.9rem
-        font-weight: 700
-      .inner
+      padding: 0 10px
+      .container
+        flex: 1
         flex-direction: column
-        padding-top: 10px
-        .signer
+        padding: 20px 0
+        .docstatus
           width: 100%
-          position: relative
           flex-direction: column
-          justify-content: center
-          padding: 7px 10px
           background: $lighter
-          margin-bottom: 10px
-          &.current
-            background: $primary
-          &.RESOLVED, &.CANCELED
-            opacity: 0.5
-          &.REJECTED
-            background: $error
-          .resolved
-            position: absolute
-            top: 5px
-            right: 10px
-          .d
-            justify-content: space-between
-            font-size: 0.8rem
-          .rejectReason
+          padding: 15px 10px
+          span
+            &:not(:last-child)
+              margin-bottom: 15px
+            .icon
+              width: 25px
+              margin-right: 10px
+        .signers
+          flex-direction: column
+          margin-top: 15px
+          overflow-y: auto
+          .label
+            height: 30px
+            align-items: center
             font-size: 0.9rem
-            margin-top: 5px
-  .sign, .reject, .archive
-    width: 100%
-    height: 40px
-    align-items: center
-    padding: 0 20px
-    font-weight: 700
-    cursor: pointer
-    @include hover-1
-    &::before
-      content: ">"
-      margin-right: 20px
-    &.sign::before, &.archive::before
-      color: $success
-    &.reject::before
-      color: $error
+            font-weight: 700
+          .inner
+            flex-direction: column
+            padding-top: 10px
+            .signer
+              width: 100%
+              position: relative
+              flex-direction: column
+              justify-content: center
+              padding: 7px 10px
+              background: $lighter
+              margin-bottom: 10px
+              &.current
+                background: $primary
+              &.RESOLVED, &.CANCELED
+                opacity: 0.5
+              &.REJECTED
+                background: $error
+              .resolved
+                position: absolute
+                top: 5px
+                right: 10px
+              .d
+                justify-content: space-between
+                font-size: 0.8rem
+              .rejectReason
+                font-size: 0.9rem
+                margin-top: 5px
+    .buttons
+      flex-direction: column
+      padding: 10px
+      > *
+        width: 100%
+        height: 35px
+        align-items: center
+        padding: 0 20px
+        font-weight: 700
+        cursor: pointer
+        @include hover-1
+        &:not(:last-child)
+          margin-bottom: 10px
+        &::before
+          content: ">"
+          margin-right: 20px
+        &.sign::before, &.archive::before
+          color: $success
+        &.reject::before
+          color: $error
 
 .signModal, .rejectModal
   width: 100%
   flex-direction: column
   padding: 20px
   align-items: center
+
+@media (max-width: 850px)
+  .container
+    flex-direction: column
+    .document
+      width: 100%
+      height: auto
+      .inner
+        width: 100%
+    .side
+      width: 100%
+      max-width: none
+      height: auto
+      padding: 10px
+      border: none
+      border-top: 2px solid $lighter

@@ -31,10 +31,10 @@ const SignModal: React.FC<SignModalProps> = ({ close }) => {
   const [formData, update] = useForm({ password: '' })
   const onSubmit = () =>
     dispatch(resolveDocument(formData)).then(res => {
-      res.meta.requestStatus === 'fulfilled'
-        ? dispatch(documentActions.set(res.payload))
-        : alert((res as any).error.message)
-      close()
+      if (res.meta.requestStatus === 'fulfilled') {
+        dispatch(documentActions.set(res.payload))
+        close()
+      } else alert((res as any).error.message)
     })
   return (
     <div className={st.signModal}>
@@ -60,10 +60,10 @@ const RejectModal: React.FC<RejectModalProps> = ({ close }) => {
   const [formData, update] = useForm({ rejectReason: '', password: '' })
   const onSubmit = () =>
     dispatch(rejectDocument(formData)).then(res => {
-      res.meta.requestStatus === 'fulfilled'
-        ? dispatch(documentActions.set(res.payload))
-        : alert((res as any).error.message)
-      close()
+      if (res.meta.requestStatus === 'fulfilled') {
+        dispatch(documentActions.set(res.payload))
+        close()
+      } else alert((res as any).error.message)
     })
   return (
     <div className={st.rejectModal}>
@@ -130,65 +130,69 @@ export const DocumentPage: React.FC = () => {
             <div className={st.content} id="content" dangerouslySetInnerHTML={{ __html: doc.rawDocument }} />
           </div>
           <div className={st.side}>
-            <div className={st.docstatus}>
-              <div className={st.inner}>
-                <span>
-                  <FontAwesomeIcon className={st.icon} icon={faUser} size="sm" />
-                  {users.find(u => u.userId === doc.userId)?.username}
-                </span>
-                <span>
-                  <FontAwesomeIcon className={st.icon} icon={faInfo} />
-                  {dict.documentStatus[doc.status]}
-                </span>
-                <span>
-                  <FontAwesomeIcon className={st.icon} icon={faCalendarPlus} size="sm" />
-                  {moment(doc.createdAt).format('YYYY-MM-DD HH:mm')}
-                </span>
-                {!!doc.updatedAt && (
+            <div className={st.scrollable}>
+              <div className={st.container}>
+                <div className={st.docstatus}>
                   <span>
-                    <FontAwesomeIcon className={st.icon} icon={faEdit} size="sm" />
-                    {moment(doc.updatedAt).format('YYYY-MM-DD HH:mm')}
+                    <FontAwesomeIcon className={st.icon} icon={faUser} size="sm" />
+                    {users.find(u => u.userId === doc.userId)?.username}
                   </span>
-                )}
-              </div>
-            </div>
-            <div className={st.signers}>
-              <div className={st.label}>Подписанты</div>
-              <div className={st.inner}>
-                {doc.signers.map((s, i) => (
-                  <div
-                    className={clsx(st.signer, st[s.status], { [st.current]: s === currentSigner })}
-                    key={s.userId + i}>
-                    <div className={st.username}>{users.find(u => u.userId === s.userId)?.username}</div>
-                    <div className={st.d}>
-                      <span>{dict.signerStatus[s.status]}</span>
-                      {!!s.updatedAt && <span>{moment(s.updatedAt).format('YYYY-MM-DD HH:mm')}</span>}
-                    </div>
-                    {s.status === 'REJECTED' && (
-                      <div className={st.rejectReason}>{s.rejectReason || 'Причина не указана'}</div>
-                    )}
-                    {s.status === 'RESOLVED' && <FontAwesomeIcon className={st.resolved} icon={faCheck} />}
+                  <span>
+                    <FontAwesomeIcon className={st.icon} icon={faInfo} />
+                    {dict.documentStatus[doc.status]}
+                  </span>
+                  <span>
+                    <FontAwesomeIcon className={st.icon} icon={faCalendarPlus} size="sm" />
+                    {moment(doc.createdAt).format('YYYY-MM-DD HH:mm')}
+                  </span>
+                  {!!doc.updatedAt && (
+                    <span>
+                      <FontAwesomeIcon className={st.icon} icon={faEdit} size="sm" />
+                      {moment(doc.updatedAt).format('YYYY-MM-DD HH:mm')}
+                    </span>
+                  )}
+                </div>
+                <div className={st.signers}>
+                  <div className={st.label}>Подписанты</div>
+                  <div className={st.inner}>
+                    {doc.signers.map(s => (
+                      <div
+                        className={clsx(st.signer, st[s.status], { [st.current]: s === currentSigner })}
+                        key={s.userId}>
+                        <div className={st.username}>{users.find(u => u.userId === s.userId)?.username}</div>
+                        <div className={st.d}>
+                          <span>{dict.signerStatus[s.status]}</span>
+                          {!!s.updatedAt && <span>{moment(s.updatedAt).format('YYYY-MM-DD HH:mm')}</span>}
+                        </div>
+                        {s.status === 'REJECTED' && (
+                          <div className={st.rejectReason}>{s.rejectReason || 'Причина не указана'}</div>
+                        )}
+                        {s.status === 'RESOLVED' && <FontAwesomeIcon className={st.resolved} icon={faCheck} />}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
             </div>
-            {currentSigner?.userId === user?.userId && (
-              <>
-                <div className={st.sign} onClick={() => setIsSignModalOpen(true)}>
-                  Подписать
-                </div>
-                <div className={st.reject} onClick={() => setIsRejectModalOpen(true)}>
-                  Отклонить
-                </div>
-              </>
-            )}
-            {doc.userId === user?.userId &&
-              doc.signers.every(s => s.status !== 'WAITING') &&
-              doc.status !== 'ARCHIVED' && (
-                <div className={st.archive} onClick={archive}>
-                  Архивировать
-                </div>
+            <div className={st.buttons}>
+              {currentSigner?.userId === user?.userId && (
+                <>
+                  <div className={st.sign} onClick={() => setIsSignModalOpen(true)}>
+                    Подписать
+                  </div>
+                  <div className={st.reject} onClick={() => setIsRejectModalOpen(true)}>
+                    Отклонить
+                  </div>
+                </>
               )}
+              {doc.userId === user?.userId &&
+                doc.signers.every(s => s.status !== 'WAITING') &&
+                doc.status !== 'ARCHIVED' && (
+                  <div className={st.archive} onClick={archive}>
+                    Архивировать
+                  </div>
+                )}
+            </div>
           </div>
         </div>
       )}

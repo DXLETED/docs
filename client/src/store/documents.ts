@@ -67,7 +67,6 @@ const slice = createSlice({
       state.list = action.payload.list
       state.page = 0
       state.loaded = state.list.length >= action.payload.total
-      state.isLoading = false
     },
     add: (state, action) => {
       state.list.push(...action.payload.list)

@@ -83,28 +83,32 @@ export const DocumentCreatePage: React.FC = () => {
                 </div>
               </div>
               <div className={st.side}>
-                <div className={st.container}>
-                  <div className={st.blank}>
-                    <Select
-                      label="Бланк"
-                      selected={selectedBlank !== -1 ? selectedBlank : null}
-                      options={blanksList}
-                      set={blankSelect}
-                      empty
+                <div className={st.scrollable}>
+                  <div className={st.container}>
+                    <div className={st.blank}>
+                      <Select
+                        label="Бланк"
+                        selected={selectedBlank !== -1 ? selectedBlank : null}
+                        options={blanksList}
+                        set={blankSelect}
+                        empty
+                      />
+                    </div>
+                    <Input
+                      label="Название"
+                      value={document.title}
+                      set={n => dispatch(documentCreateActions.setTitle(n))}
+                      {...validate(document.title, ['required'])}
+                      {...{ showErrors }}
                     />
+                    <Textarea label="Описание" set={n => dispatch(documentCreateActions.setDescription(n))} />
+                    <DocumentSigners users={users} />
                   </div>
-                  <Input
-                    label="Название"
-                    value={document.title}
-                    set={n => dispatch(documentCreateActions.setTitle(n))}
-                    {...validate(document.title, ['required'])}
-                    {...{ showErrors }}
-                  />
-                  <Textarea label="Описание" set={n => dispatch(documentCreateActions.setDescription(n))} />
-                  <DocumentSigners users={users} />
                 </div>
-                <div className={st.send} onClick={send}>
-                  Создать документ
+                <div className={st.buttons}>
+                  <div className={st.send} onClick={send}>
+                    Создать документ
+                  </div>
                 </div>
               </div>
             </div>

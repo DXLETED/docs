@@ -28,15 +28,21 @@ export const Select: React.FC<SelectProps> = ({ label, selected, options, set, e
       <div className={st.inner} onClick={() => setIsOpen(!isOpen)}>
         <div className={st.label}>{typeof selected === 'number' ? options[selected] : 'Не выбрано'}</div>
         <FontAwesomeIcon className={st.arrow} icon={faChevronDown} />
-        <div className={st.dropdown}>
-          {empty && <div className={st.el} onClick={() => change(null)}>Не выбрано</div>}
-          {options.map((o, i) => (
-            <div className={st.el} onClick={() => change(i)} key={o + i}>
-              {i === selected && <FontAwesomeIcon className={st.selected} icon={faCheck} size="sm" />}
-              {o}
-            </div>
-          ))}
-        </div>
+        {isOpen && (
+          <div className={st.dropdown}>
+            {empty && (
+              <div className={st.el} onClick={() => change(null)}>
+                Не выбрано
+              </div>
+            )}
+            {options.map((o, i) => (
+              <div className={st.el} onClick={() => change(i)} key={o + i}>
+                {i === selected && <FontAwesomeIcon className={st.selected} icon={faCheck} size="sm" />}
+                {o}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

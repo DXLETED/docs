@@ -71,14 +71,10 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els, menu, load, 
     setSettings(newState)
     saveState(`tableSettings-${id}`, newState)
   }
-  const upd = useCallback(
-    () => {
-      const el = innerRef.current
-      el.scrollHeight - el.getBoundingClientRect().height - el.scrollTop < 50 && load?.()
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [load]
-  )
+  const upd = useCallback(() => {
+    const el = innerRef.current
+    el.scrollHeight - el.getBoundingClientRect().height - el.scrollTop < 50 && load?.()
+  }, [load])
   useEffect(() => {
     els.length && upd()
   }, [upd, els])

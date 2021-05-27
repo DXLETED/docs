@@ -8,7 +8,7 @@ export const Error: React.FC<ErrorProps> = ({ msg }) => {
   return (
     <div className={st.error}>
       {Array.isArray(msg) ? (
-        msg.filter(Boolean).map((m, i) => (
+        msg.filter(Boolean).slice(0, 1).map((m, i) => (
           <div className={st.msg} key={`${m}${i}`}>
             {m}
           </div>
