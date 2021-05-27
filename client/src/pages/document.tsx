@@ -11,7 +11,7 @@ import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
 import { Helmet } from 'react-helmet'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarPlus, faCheck, faEdit, faFilePdf, faInfo, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarPlus, faCheck, faEdit, faFilePdf, faInfoCircle, faUser } from '@fortawesome/free-solid-svg-icons'
 import { getUsers } from 'store/users'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { saveAs } from 'file-saver'
@@ -138,7 +138,7 @@ export const DocumentPage: React.FC = () => {
                     {users.find(u => u.userId === doc.userId)?.username}
                   </span>
                   <span>
-                    <FontAwesomeIcon className={st.icon} icon={faInfo} />
+                    <FontAwesomeIcon className={st.icon} icon={faInfoCircle} />
                     {dict.documentStatus[doc.status]}
                   </span>
                   <span>

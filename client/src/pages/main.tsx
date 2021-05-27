@@ -1,7 +1,7 @@
 import React from 'react'
 import st from 'styles/pages/MainPage.module.sass'
 import moment from 'moment'
-import { Table } from 'components/Table'
+import { Table } from 'components/table/Table'
 import { Helmet } from 'react-helmet'
 import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

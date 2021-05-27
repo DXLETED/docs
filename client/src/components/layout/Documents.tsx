@@ -4,13 +4,15 @@ import moment from 'moment'
 import dict from 'dictionary.json'
 import { documentsActions, getDocuments, getNextDocuments } from 'store/documents'
 import { getUsers } from 'store/users'
-import { Table, TableFilter, TableSearch } from 'components/Table'
+import { Table } from 'components/table/Table'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { useRequest } from 'hooks/request.hook'
 import { requestsStatus } from 'utils/requestsStatus'
 import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
 import { useHistory } from 'react-router'
+import { TableFilter } from 'components/table/TableFilter'
+import { TableSearch } from 'components/table/TableSearch'
 
 interface DocumentsProps {
   id: string
