@@ -87,5 +87,147 @@
       }
     ],
     "template": "<h1>$fio</h3><div>$dateOfBirth</div><h3>Контакты</h4><div><b>Телефон: $contacts.phone</b></div><div><b>Email: $contacts.email</b></div><h3>Cкиллы</h4><ul>$$skills<li>$_</li>$$skills</ul><h3>Опыт работы</h4><table><thead><tr><td>Название компании</td><td>Должность</td><td>Описание</td><tr></thead><tbody>$$workExpirience<tr><td>$nameOfCompany</td><td>$occupation</td><td>$description</td></tr>$$workExpirience</tbody></table>"
+  },
+  {
+    "id": 2,
+    "name": "Расчетная накладная",
+    "fields": [
+      {
+        "id": 1,
+        "name": "organization",
+        "label": "Организация",
+        "type": "text",
+        "multiple": false,
+        "validations": [
+          "required"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "date",
+        "label": "Дата",
+        "type": "date",
+        "multiple": false,
+        "validations": [
+          "required"
+        ]
+      },
+      {
+        "id": 3,
+        "name": "number",
+        "label": "Номер накладной",
+        "type": "text",
+        "multiple": false,
+        "validations": [
+          "required"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "from",
+        "label": "От кого",
+        "type": "text",
+        "multiple": false,
+        "validations": [
+          "required",
+          "notContainNumbers"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "to",
+        "label": "Кому",
+        "type": "text",
+        "multiple": false,
+        "validations": [
+          "required",
+          "notContainNumbers"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "reason",
+        "label": "Основание",
+        "type": "text",
+        "multiple": false,
+        "validations": [
+          "required",
+          "notContainNumbers"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "list",
+        "label": "Список наименований",
+        "type": "group",
+        "multiple": true,
+        "validations": [
+          "required"
+        ],
+        "fields": [
+          {
+            "id": 8,
+            "name": "name",
+            "label": "Наименование",
+            "type": "text",
+            "multiple": false,
+            "validations": [
+              "required"
+            ]
+          },
+          {
+            "id": 9,
+            "name": "units",
+            "label": "Единица измерения",
+            "type": "text",
+            "multiple": false,
+            "validations": [
+              "required"
+            ]
+          },
+          {
+            "id": 10,
+            "name": "count",
+            "label": "Количество",
+            "type": "text",
+            "multiple": false,
+            "validations": [
+              "required"
+            ]
+          },
+          {
+            "id": 11,
+            "name": "price",
+            "label": "Цена",
+            "type": "text",
+            "multiple": false,
+            "validations": [
+              "required"
+            ]
+          },
+          {
+            "id": 12,
+            "name": "sum",
+            "label": "Сумма",
+            "type": "text",
+            "multiple": false,
+            "validations": [
+              "required"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "name": "totalSum",
+        "label": "Итого",
+        "type": "text",
+        "multiple": false,
+        "validations": [
+          "required"
+        ]
+      }
+    ],
+    "template": "<div style='padding: 20px; font-family: sans-serif'> <p style='margin: 0; margin-bottom: 10px; display: flex'> Организация: <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$organization</span> </p><p style=' margin: 0; margin-bottom: 10px; width: 66%; text-align: right; margin-left: auto; border-bottom: 1px solid black; ' > $date </p><h1 style='text-align: center; font-size: 28px'>НАКЛАДНАЯ № $number</h1> <p style='margin: 0; margin-bottom: 10px; display: flex'> <span style='flex: 0 0 auto'>От кого:</span> <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$from</span> </p><p style='margin: 0; margin-bottom: 10px; display: flex'> Кому: <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$to</span> </p><p style='margin: 0; margin-bottom: 10px; display: flex'> Основание: <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$reason</span> </p><table style='margin-top: 15px; width: 100%; border-collapse: collapse;'> <thead> <tr> <td style='border: 1px solid black; border-left: 0; text-align: center; vertical-align: middle; padding: 7px;'>Наименование товара</td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px; width: 80px;'>Единица измере- ния</td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px; width: 70px;'>Коли- чество</td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px;'>Цена</td><td style='border: 1px solid black; border-right: 0; text-align: center; vertical-align: middle; padding: 7px;'>Сумма</td></tr></thead> <tbody> $$list <tr> <td style='border: 1px solid black; border-left: 0; padding: 7px;'>$name</td><td style='border: 1px solid black; padding: 7px;'>$units</td><td style='border: 1px solid black; padding: 7px;'>$count</td><td style='border: 1px solid black; padding: 7px;'>$price</td><td style='border: 1px solid black; border-right: 0; padding: 7px;'>$sum</td></tr>$$list </tbody> </table> <p style='margin: 0; margin-top: 10px; display: flex; width: 33%; margin-left: auto;'> <b>Итого:</b> <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$totalSum</span> </p></div>"
   }
 ]

@@ -44,7 +44,7 @@ module.exports = Router()
         userId,
         status: dict.signerStatusKey.waiting,
       })),
-      rawDocument: parseDocument(blanks[0].template, req.body.data),
+      rawDocument: parseDocument(blanks.find(b => b.id === req.body.blankId)?.template || '', req.body.data),
       createdAt: new Date(),
       updatedAt: 0,
     }
