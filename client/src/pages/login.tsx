@@ -1,9 +1,8 @@
 import React from 'react'
+import st from 'styles/pages/LoginPage.module.sass'
 import { Helmet } from 'react-helmet'
 import { Input } from 'components/input/Input'
 import { useForm } from 'hooks/form.hook'
-import { FormContainer } from 'components/form/FormContainer'
-import { FormSubmit } from 'components/form/FormSubmit'
 import { useHistory, useLocation } from 'react-router'
 import { login } from 'store/auth'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
@@ -14,7 +13,7 @@ export const LoginPage: React.FC = () => {
   const dispatch = useDispatchTyped()
   const history = useHistory()
   const query = new URLSearchParams(useLocation().search)
-  const onSubmit = () =>
+  const submit = () =>
     dispatch(login(formData)).then(res =>
       res.meta.requestStatus === 'fulfilled'
         ? history.push(query.get('to') || '/')
@@ -25,11 +24,11 @@ export const LoginPage: React.FC = () => {
       <Helmet>
         <title>Login - Docs</title>
       </Helmet>
-      <FormContainer classes={['p-20', 'bg']}>
-        <Input label="Username" value={formData.username} set={update('username')} />
-        <Input label="Password" type="password" value={formData.password} set={update('password')} />
-        <FormSubmit sendText="LOG IN" onSubmit={onSubmit} />
-      </FormContainer>
+      <div className={st.form}>
+        <Input label="Имя пользователя" value={formData.username} set={update('username')} />
+        <Input label="Пароль" type="password" value={formData.password} set={update('password')} />
+        <div className={st.submit} onClick={submit}>Вход</div>
+      </div>
     </>
   )
 }

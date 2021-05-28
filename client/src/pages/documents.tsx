@@ -1,6 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { Documents } from 'components/layout/Documents'
+import { Documents } from 'Documents'
 
 export const DocumentsPage: React.FC = () => {
   return (

@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import st from 'styles/components/layout/Documents.module.sass'
 import moment from 'moment'
 import dict from 'dictionary.json'
 import { documentsActions, getDocuments, getNextDocuments } from 'store/documents'
@@ -77,7 +76,7 @@ export const Documents: React.FC<DocumentsProps> = ({
   )
   const load = () => dispatch(getNextDocuments({ path, search, statusFilter, onlyWaiting }))
   return (
-    <div className={st.table}>
+    <>
       {status === 'done' && (
         <Table
           {...{ id, label, head, els, load }}
@@ -97,6 +96,6 @@ export const Documents: React.FC<DocumentsProps> = ({
       )}
       {status === 'loading' && <Loading />}
       {status === 'error' && <Error msg={[documentsError, usersError]} />}
-    </div>
+    </>
   )
 }

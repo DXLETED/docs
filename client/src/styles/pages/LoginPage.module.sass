@@ -1,0 +1,19 @@
+@import styles/colors.sass
+@import styles/mixins.sass
+
+.form
+  width: 700px
+  max-width: 100%
+  flex-direction: column
+  padding: 20px
+  background: $lighter
+  .submit
+    width: 100%
+    height: 35px
+    justify-content: center
+    align-items: center
+    font-weight: 700
+    background: $primary
+    cursor: pointer
+    &:hover
+      background: lighten($primary, 5)
