@@ -98,9 +98,7 @@
         "label": "Организация",
         "type": "text",
         "multiple": false,
-        "validations": [
-          "required"
-        ]
+        "validations": ["required"]
       },
       {
         "id": 2,
@@ -108,9 +106,7 @@
         "label": "Дата",
         "type": "date",
         "multiple": false,
-        "validations": [
-          "required"
-        ]
+        "validations": ["required"]
       },
       {
         "id": 3,
@@ -118,9 +114,7 @@
         "label": "Номер накладной",
         "type": "text",
         "multiple": false,
-        "validations": [
-          "required"
-        ]
+        "validations": ["required"]
       },
       {
         "id": 4,
@@ -128,10 +122,7 @@
         "label": "От кого",
         "type": "text",
         "multiple": false,
-        "validations": [
-          "required",
-          "notContainNumbers"
-        ]
+        "validations": ["required", "notContainNumbers"]
       },
       {
         "id": 5,
@@ -139,10 +130,7 @@
         "label": "Кому",
         "type": "text",
         "multiple": false,
-        "validations": [
-          "required",
-          "notContainNumbers"
-        ]
+        "validations": ["required", "notContainNumbers"]
       },
       {
         "id": 6,
@@ -150,10 +138,7 @@
         "label": "Основание",
         "type": "text",
         "multiple": false,
-        "validations": [
-          "required",
-          "notContainNumbers"
-        ]
+        "validations": ["required", "notContainNumbers"]
       },
       {
         "id": 7,
@@ -161,9 +146,7 @@
         "label": "Список наименований",
         "type": "group",
         "multiple": true,
-        "validations": [
-          "required"
-        ],
+        "validations": ["required"],
         "fields": [
           {
             "id": 8,
@@ -171,9 +154,7 @@
             "label": "Наименование",
             "type": "text",
             "multiple": false,
-            "validations": [
-              "required"
-            ]
+            "validations": ["required"]
           },
           {
             "id": 9,
@@ -181,9 +162,7 @@
             "label": "Единица измерения",
             "type": "text",
             "multiple": false,
-            "validations": [
-              "required"
-            ]
+            "validations": ["required"]
           },
           {
             "id": 10,
@@ -191,9 +170,7 @@
             "label": "Количество",
             "type": "text",
             "multiple": false,
-            "validations": [
-              "required"
-            ]
+            "validations": ["required"]
           },
           {
             "id": 11,
@@ -201,9 +178,7 @@
             "label": "Цена",
             "type": "text",
             "multiple": false,
-            "validations": [
-              "required"
-            ]
+            "validations": ["required"]
           },
           {
             "id": 12,
@@ -211,9 +186,7 @@
             "label": "Сумма",
             "type": "text",
             "multiple": false,
-            "validations": [
-              "required"
-            ]
+            "validations": ["required"]
           }
         ]
       },
@@ -223,11 +196,9 @@
         "label": "Итого",
         "type": "text",
         "multiple": false,
-        "validations": [
-          "required"
-        ]
+        "validations": ["required"]
       }
     ],
-    "template": "<div style='padding: 20px; font-family: sans-serif'> <p style='margin: 0; margin-bottom: 10px; display: flex'> Организация: <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$organization</span> </p><p style=' margin: 0; margin-bottom: 10px; width: 66%; text-align: right; margin-left: auto; border-bottom: 1px solid black; ' > $date </p><h1 style='text-align: center; font-size: 28px'>НАКЛАДНАЯ № $number</h1> <p style='margin: 0; margin-bottom: 10px; display: flex'> <span style='flex: 0 0 auto'>От кого:</span> <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$from</span> </p><p style='margin: 0; margin-bottom: 10px; display: flex'> Кому: <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$to</span> </p><p style='margin: 0; margin-bottom: 10px; display: flex'> Основание: <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$reason</span> </p><table style='margin-top: 15px; width: 100%; border-collapse: collapse;'> <thead> <tr> <td style='border: 1px solid black; border-left: 0; text-align: center; vertical-align: middle; padding: 7px;'>Наименование товара</td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px; width: 80px;'>Единица измере- ния</td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px; width: 70px;'>Коли- чество</td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px;'>Цена</td><td style='border: 1px solid black; border-right: 0; text-align: center; vertical-align: middle; padding: 7px;'>Сумма</td></tr></thead> <tbody> $$list <tr> <td style='border: 1px solid black; border-left: 0; padding: 7px;'>$name</td><td style='border: 1px solid black; padding: 7px;'>$units</td><td style='border: 1px solid black; padding: 7px;'>$count</td><td style='border: 1px solid black; padding: 7px;'>$price</td><td style='border: 1px solid black; border-right: 0; padding: 7px;'>$sum</td></tr>$$list </tbody> </table> <p style='margin: 0; margin-top: 10px; display: flex; width: 33%; margin-left: auto;'> <b>Итого:</b> <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$totalSum</span> </p></div>"
+    "template": "<p style='margin: 0; margin-bottom: 10px; display: flex'> Организация: <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$organization</span></p><p style=' margin: 0; margin-bottom: 10px; width: 66%; text-align: right; margin-left: auto; border-bottom: 1px solid black; ' > $date </p><h1 style='text-align: center; font-size: 28px'>НАКЛАДНАЯ № $number</h1><p style='margin: 0; margin-bottom: 10px; display: flex'> <span style='flex: 0 0 auto'>От кого:</span><span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$from</span></p><p style='margin: 0; margin-bottom: 10px; display: flex'>Кому: <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$to</span></p><p style='margin: 0; margin-bottom: 10px; display: flex'> Основание: <span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$reason</span></p><table style='margin-top: 15px; width: 100%; border-collapse: collapse;'><thead><tr><td style='border: 1px solid black; border-left: 0; text-align: center; vertical-align: middle; padding: 7px;'>Наименование товара</td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px; width: 80px;'>Единица измере- ния</td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px; width: 70px;'>Коли- чество</td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px;'>Цена</td><td style='border: 1px solid black; border-right: 0; text-align: center; vertical-align: middle; padding: 7px;'>Сумма</td></tr></thead><tbody>$$list<tr><td style='border: 1px solid black; border-left: 0; padding: 7px;'>$name</td><td style='border: 1px solid black; padding: 7px;'>$units</td><td style='border: 1px solid black; padding: 7px;'>$count</td><td style='border: 1px solid black; padding: 7px;'>$price</td><td style='border: 1px solid black; border-right: 0; padding: 7px;'>$sum</td></tr>$$list</tbody></table><p style='margin: 0; margin-top: 10px; display: flex; width: 33%; margin-left: auto;'><b>Итого:</b><span style='width: 100%; border-bottom: 1px solid black; margin-left: 5px'>$totalSum</span></p>"
   }
 ]

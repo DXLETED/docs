@@ -1,6 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { Documents } from 'Documents'
+import { Documents } from 'components/Documents'
 
 export const ArchivePage: React.FC = () => {
   return (

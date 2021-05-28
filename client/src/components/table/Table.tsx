@@ -6,18 +6,19 @@ import { faCheck, faSlidersH } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 import { loadState, saveState } from 'utils/localStorage'
+import { useHistory } from 'react-router'
 
 interface TableProps {
   id: string
   label?: string
   head: { [key: string]: string }
-  els: { d: { [key: string]: string | { d: string; color?: string } } }[]
+  els: { d: { [key: string]: string | { d: string; color?: string } }, link?: string }[]
   menu?: React.ReactNode
   load?: () => void
-  link?: (el: { [key: string]: string | { d: string; color?: string } }) => void
   extended?: boolean
 }
-export const Table: React.FC<TableProps> = ({ id, label, head, els, menu, load, link }) => {
+export const Table: React.FC<TableProps> = ({ id, label, head, els, menu, load }) => {
+  const history = useHistory()
   const innerRef = useRef<HTMLDivElement | any>(null)
   const settingsRef = useRef<HTMLDivElement | any>(null)
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
@@ -76,7 +77,7 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els, menu, load, 
           {renderTHead()}
           <tbody>
             {els.map((el, i) => (
-              <tr className={clsx({ [st.link]: !!link })} key={i} onClick={() => link?.(el.d)}>
+              <tr className={clsx({ [st.link]: !!el.link })} key={i} onClick={() => el.link && history.push(el.link)}>
                 {headEntries.map(([key]) => {
                   const data =
                     typeof el.d[key] === 'object'

@@ -9,7 +9,6 @@ import { useRequest } from 'hooks/request.hook'
 import { requestsStatus } from 'utils/requestsStatus'
 import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
-import { useHistory } from 'react-router'
 import { TableFilter } from 'components/table/TableFilter'
 import { TableSearch } from 'components/table/TableSearch'
 import { TableSwitch } from 'components/table/TableSwitch'
@@ -37,7 +36,6 @@ export const Documents: React.FC<DocumentsProps> = ({
   statusFilter: statusFilterEnabled,
   onlyWaitingSwitch,
 }) => {
-  const history = useHistory()
   const [search, setSearch] = useState('')
   const [onlyWaiting, setOnlyWaiting] = useState(true)
   const [statusFilter, setStatusFilter] = useState<{ [el: string]: boolean }>({})
@@ -55,7 +53,6 @@ export const Documents: React.FC<DocumentsProps> = ({
     () =>
       documents.list.map(d => ({
         d: {
-          _id: d._id,
           id: d._id.slice(-8),
           author: users.find(u => u.userId === d.userId)?.username || d.userId,
           title: d.title,
@@ -63,6 +60,7 @@ export const Documents: React.FC<DocumentsProps> = ({
           creationDate: moment(d.createdAt).format(`DD.MM.YYYY`),
           updateDate: d.updatedAt ? moment(d.updatedAt).format(`DD.MM.YYYY`) : '-----',
         },
+        link: `/documents/${d._id}`
       })),
     [documents, users]
   )
@@ -91,7 +89,6 @@ export const Documents: React.FC<DocumentsProps> = ({
               <TableSearch value={search} set={setSearch} />
             </>
           }
-          link={el => history.push(`/documents/${el._id}`)}
         />
       )}
       {status === 'loading' && <Loading />}
