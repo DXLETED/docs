@@ -3,11 +3,12 @@ import st from 'styles/components/Notifications.module.sass'
 import clsx from 'clsx'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 import { createPortal } from 'react-dom'
-import { Notification, notificationsActions } from 'store/notifications'
+import { Notification, notificationsActions, NotificationType } from 'store/notifications'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { CSSTransition } from 'react-transition-group'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faExclamationTriangle, faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faBan, faCheck, faExclamationTriangle, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 const NotificationEl: React.FC<{ ntf: Notification }> = ({ ntf }) => {
   const dispatch = useDispatchTyped()
@@ -16,6 +17,12 @@ const NotificationEl: React.FC<{ ntf: Notification }> = ({ ntf }) => {
     setVisible(true)
     setTimeout(() => setVisible(false), 5000)
   }, [])
+  const icon: { [key in NotificationType]: IconProp } = {
+    info: faInfoCircle,
+    success: faCheck,
+    warning: faExclamationTriangle,
+    error: faBan,
+  }
   return (
     <CSSTransition
       in={visible}
@@ -31,10 +38,7 @@ const NotificationEl: React.FC<{ ntf: Notification }> = ({ ntf }) => {
         key={ntf.id}>
         <div className={st.background} />
         <div className={st.icon}>
-          {ntf.type === 'info' && <FontAwesomeIcon icon={faInfoCircle} size="4x" />}
-          {ntf.type === 'success' && <FontAwesomeIcon icon={faCheck} size="4x" />}
-          {ntf.type === 'warning' && <FontAwesomeIcon icon={faExclamationTriangle} size="4x" />}
-          {ntf.type === 'error' && <FontAwesomeIcon icon={faTimes} size="4x" />}
+          <FontAwesomeIcon icon={icon[ntf.type]} size="4x" />
         </div>
         {ntf.title && <div className={st.title}>{ntf.title}</div>}
         {ntf.content && <div className={st.content}>{ntf.content}</div>}
