@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import st from 'styles/components/table/Table.module.sass'
 import clsx from 'clsx'
+import color from 'color'
 import { faCheck, faSlidersH } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
@@ -10,10 +11,11 @@ interface TableProps {
   id: string
   label?: string
   head: { [key: string]: string }
-  els: { [key: string]: string }[]
+  els: { d: { [key: string]: string | { d: string; color?: string } } }[]
   menu?: React.ReactNode
   load?: () => void
-  link?: (el: { [key: string]: string }) => void
+  link?: (el: { [key: string]: string | { d: string; color?: string } }) => void
+  extended?: boolean
 }
 export const Table: React.FC<TableProps> = ({ id, label, head, els, menu, load, link }) => {
   const innerRef = useRef<HTMLDivElement | any>(null)
@@ -74,10 +76,20 @@ export const Table: React.FC<TableProps> = ({ id, label, head, els, menu, load, 
           {renderTHead()}
           <tbody>
             {els.map((el, i) => (
-              <tr className={clsx({ [st.link]: !!link })} key={i} onClick={() => link?.(el)}>
-                {headEntries.map(([key]) => (
-                  <td key={key}>{el[key]}</td>
-                ))}
+              <tr className={clsx({ [st.link]: !!link })} key={i} onClick={() => link?.(el.d)}>
+                {headEntries.map(([key]) => {
+                  const data =
+                    typeof el.d[key] === 'object'
+                      ? (el.d[key] as { d: string; color?: string })
+                      : { d: el.d[key], color: undefined }
+                  return (
+                    <td key={key}>
+                      <span style={{ background: data.color && color(data.color).alpha(0.2).toString() }}>
+                        {data.d}
+                      </span>
+                    </td>
+                  )
+                })}
               </tr>
             ))}
           </tbody>

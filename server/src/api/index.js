@@ -18,20 +18,9 @@ const getDocument = async (id, auth) => {
 const limitRequest = (req, maxLen) => {
   const from = parseInt(req.query.from) || 0,
     to = parseInt(req.query.to) || 0
-  if (to - from > maxLen) throw Error({code: 400})
+  if (to - from > maxLen) throw Error({ code: 400 })
   return [from, to]
 }
-
-const render = (tpl, data) =>
-  tpl
-    .replaceAll(/\$\$([a-zA-Z|.]*)(.*?)\$\$([a-zA-Z|.]*)/g, (_, path, tpl) =>
-      objectPath
-        .get(data, path)
-        .map(el => render(tpl, el))
-        .join('')
-    )
-    .replaceAll(/\$_/g, data)
-    .replaceAll(/\$([a-zA-Z|.]*)/g, (_, path) => objectPath.get(data, path))
 
 module.exports = Router()
   .use('/auth', require('./auth'))
@@ -44,6 +33,7 @@ module.exports = Router()
 
   .post('/documents', authRequired, async (req, res) => {
     const doc = {
+      _id: ObjectID(),
       userId: req.auth.userId,
       blankId: req.body.blankId,
       status: dict.documentStatusKey.inProgress,
@@ -59,23 +49,26 @@ module.exports = Router()
       updatedAt: 0,
     }
     const d = await db.collection('documents').insertOne(doc)
-    pdf.create(doc.rawDocument).toFile(`pdf/${d.insertedId}.pdf`, err => {
-      err && console.log(err)
-      res.json(doc)
-    })
+    pdf
+      .create(`<div style="font-family: sans-serif">${doc.rawDocument}</div>`)
+      .toFile(`pdf/${d.insertedId}.pdf`, err => {
+        err && console.log(err)
+        res.json(doc)
+      })
   })
 
   .get('/documents', authRequired, async (req, res) => {
     let from, to
     try {
-      [from, to] = limitRequest(req, 10)
+      ;[from, to] = limitRequest(req, 10)
     } catch (e) {
       return res.sendStatus(400)
     }
     const statusFilter = Object.entries(JSON.parse(req.query.statusFilter))
       .filter(el => el[1])
       .map(el => el[0])
-    const list = await db
+    const onlyWaiting = JSON.parse(req.query.onlyWaiting)
+    let list = await db
       .collection('documents')
       .find({
         ...(req.query.search ? { title: new RegExp(`.*${req.query.search}.*`) } : {}),
@@ -84,13 +77,15 @@ module.exports = Router()
       })
       .sort({ createdAt: -1 })
       .toArray()
+    if (onlyWaiting)
+      list = list.filter(doc => doc.signers.find(s => s.status === 'WAITING')?.userId === req.auth.userId)
     res.json({ data: list.slice(from, to), total: list.length })
   })
 
   .get('/documents/my', authRequired, async (req, res) => {
     let from, to
     try {
-      [from, to] = limitRequest(req, 10)
+      ;[from, to] = limitRequest(req, 10)
     } catch (e) {
       return res.sendStatus(400)
     }
@@ -112,7 +107,7 @@ module.exports = Router()
   .get('/documents/archive', authRequired, async (req, res) => {
     let from, to
     try {
-      [from, to] = limitRequest(req, 10)
+      ;[from, to] = limitRequest(req, 10)
     } catch (e) {
       return res.sendStatus(400)
     }

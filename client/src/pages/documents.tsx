@@ -16,10 +16,10 @@ export const DocumentsPage: React.FC = () => {
           id: 'ID',
           title: 'Название',
           author: 'Автор',
-          status: 'Статус',
           creationDate: 'Дата создания',
           updateDate: 'Дата обновления',
         }}
+        onlyWaitingSwitch
       />
     </>
   )

@@ -20,14 +20,19 @@ const initialState: DocumentsState = {
 export const getDocuments = createAsyncThunk(
   'documents/get',
   async (
-    { path, search, statusFilter }: { path: string; search?: string; statusFilter: { [el: string]: boolean } },
+    {
+      path,
+      search,
+      statusFilter,
+      onlyWaiting,
+    }: { path: string; search?: string; statusFilter: { [el: string]: boolean }; onlyWaiting: boolean },
     thunkAPI
   ) => {
     const res = await request.withToken<{ data: Document[]; total: number }>(
       {
         method: 'GET',
         url: `${process.env.REACT_APP_API_URL}${path}`,
-        params: { from: 0, to: 10, search, statusFilter },
+        params: { from: 0, to: 10, search, statusFilter, onlyWaiting },
       },
       thunkAPI
     )
@@ -39,7 +44,12 @@ export const getDocuments = createAsyncThunk(
 export const getNextDocuments = createAsyncThunk(
   'documents/get/next',
   async (
-    { path, search, statusFilter }: { path: string; search?: string; statusFilter: { [el: string]: boolean } },
+    {
+      path,
+      search,
+      statusFilter,
+      onlyWaiting,
+    }: { path: string; search?: string; statusFilter: { [el: string]: boolean }; onlyWaiting: boolean },
     thunkAPI
   ) => {
     const documents = (thunkAPI.getState() as RootState).documents
@@ -50,7 +60,7 @@ export const getNextDocuments = createAsyncThunk(
       {
         method: 'GET',
         url: `${process.env.REACT_APP_API_URL}${path}`,
-        params: { from: page * 10, to: page * 10 + 10, search, statusFilter },
+        params: { from: page * 10, to: page * 10 + 10, search, statusFilter, onlyWaiting },
       },
       thunkAPI
     )

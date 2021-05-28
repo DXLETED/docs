@@ -19,9 +19,10 @@ import { useAuth } from 'hooks/auth.hook'
 import { Modal } from 'components/Modal'
 import { useForm } from 'hooks/form.hook'
 import { Input } from 'components/input/Input'
-import { FormContainer } from 'components/form/FormContainer'
-import { FormSubmit } from 'components/form/FormSubmit'
 import { Textarea } from 'components/input/Textarea'
+import { validate } from 'utils/validate'
+import { notify } from 'utils/notify'
+import { formErrors } from 'utils/formErrors'
 
 interface SignModalProps {
   close: () => void
@@ -29,25 +30,34 @@ interface SignModalProps {
 const SignModal: React.FC<SignModalProps> = ({ close }) => {
   const dispatch = useDispatchTyped()
   const [formData, update] = useForm({ password: '' })
-  const onSubmit = () =>
+  const [showErrors, setShowErrors] = useState(false)
+  const validation = {
+    password: validate(formData.password, ['required']),
+  }
+  const submit = () => {
+    if (formErrors(validation).length) return setShowErrors(true)
     dispatch(resolveDocument(formData)).then(res => {
       if (res.meta.requestStatus === 'fulfilled') {
         dispatch(documentActions.set(res.payload))
+        notify.success({ content: 'Документ подписан' })
         close()
-      } else alert((res as any).error.message)
+      } else notify.error({ content: (res as any).error.message })
     })
+  }
   return (
     <div className={st.signModal}>
-      <FormContainer>
-        <Input
-          value={formData.password}
-          autoComplete="new-password"
-          label="Пароль"
-          type="password"
-          set={update('password')}
-        />
-        <FormSubmit sendText="Подписать" onSubmit={onSubmit} />
-      </FormContainer>
+      <Input
+        value={formData.password}
+        autoComplete="new-password"
+        label="Пароль"
+        type="password"
+        set={update('password')}
+        {...validation.password}
+        {...{ showErrors }}
+      />
+      <div className={clsx(st.submit, st.sign)} onClick={submit}>
+        Подписать
+      </div>
     </div>
   )
 }
@@ -58,26 +68,41 @@ interface RejectModalProps {
 const RejectModal: React.FC<RejectModalProps> = ({ close }) => {
   const dispatch = useDispatchTyped()
   const [formData, update] = useForm({ rejectReason: '', password: '' })
-  const onSubmit = () =>
+  const [showErrors, setShowErrors] = useState(false)
+  const validation = {
+    password: validate(formData.password, ['required']),
+    rejectReason: validate(formData.rejectReason, ['required']),
+  }
+  const submit = () =>
     dispatch(rejectDocument(formData)).then(res => {
+      if (formErrors(validation).length) return setShowErrors(true)
       if (res.meta.requestStatus === 'fulfilled') {
         dispatch(documentActions.set(res.payload))
+        notify.success({ content: 'Документ отклонен' })
         close()
-      } else alert((res as any).error.message)
+      } else notify.error({ content: (res as any).error.message })
     })
   return (
     <div className={st.rejectModal}>
-      <FormContainer>
-        <Input
-          value={formData.password}
-          autoComplete="new-password"
-          label="Пароль"
-          type="password"
-          set={update('password')}
-        />
-        <Textarea value={formData.rejectReason} label="Причина" set={update('rejectReason')} />
-        <FormSubmit sendText="Отклонить" onSubmit={onSubmit} />
-      </FormContainer>
+      <Input
+        value={formData.password}
+        autoComplete="new-password"
+        label="Пароль"
+        type="password"
+        set={update('password')}
+        {...validation.password}
+        {...{ showErrors }}
+      />
+      <Textarea
+        value={formData.rejectReason}
+        label="Причина"
+        set={update('rejectReason')}
+        {...validation.rejectReason}
+        {...{ showErrors }}
+      />
+      <div className={clsx(st.submit, st.reject)} onClick={submit}>
+        Отклонить
+      </div>
     </div>
   )
 }
@@ -101,17 +126,18 @@ export const DocumentPage: React.FC = () => {
     const res = await dispatch(getPDF())
     res.meta.requestStatus === 'fulfilled'
       ? saveAs(new Blob([(res.payload as { file: BlobPart }).file], { type: 'application/pdf' }), doc?.title)
-      : alert((res as any).error.message)
+      : notify.error({ content: (res as any).error.message })
   }
   const currentSigner = doc?.signers.find(
     (s, i, signers) => s.status === 'WAITING' && !signers.slice(0, i).some(s => s.status === 'WAITING')
   )
   const archive = () =>
-    dispatch(archiveDocument()).then(res =>
-      res.meta.requestStatus === 'fulfilled'
-        ? dispatch(documentActions.set(res.payload))
-        : alert((res as any).error.message)
-    )
+    dispatch(archiveDocument()).then(res => {
+      if (res.meta.requestStatus === 'fulfilled') {
+        dispatch(documentActions.set(res.payload))
+        notify.success({ content: 'Документ перемещен в архив' })
+      } else notify.error({ content: (res as any).error.message })
+    })
   return (
     <>
       <Helmet>
@@ -127,7 +153,9 @@ export const DocumentPage: React.FC = () => {
                 PDF
               </div>
             </div>
-            <div className={st.content} id="content" dangerouslySetInnerHTML={{ __html: doc.rawDocument }} />
+            <div className={st.content}>
+              <div className={st.inner} id="content" dangerouslySetInnerHTML={{ __html: doc.rawDocument }} />
+            </div>
           </div>
           <div className={st.side}>
             <div className={st.scrollable}>

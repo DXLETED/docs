@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import moment from 'moment'
 import objectPath from 'object-path'
+import faker from 'faker'
+import moment from 'moment'
 import { RootState } from 'store'
 import { reorder } from 'utils/reorder'
 import { request } from 'utils/request'
@@ -48,7 +49,7 @@ const parse = (fields: BlankFields, data: any): any =>
 
 export const sendDocument = createAsyncThunk('document/send', async ({ blank }: { blank: Blank }, thunkAPI) => {
   const data = parse(blank.fields, (thunkAPI.getState() as RootState).documentCreate.document.data)
-  await request.withToken(
+  return await request.withToken(
     {
       method: 'POST',
       url: `${API_URL}/documents`,
@@ -108,6 +109,22 @@ const slice = createSlice({
     moveSigner: (state, action) => {
       state.document.signers = reorder(state.document.signers, action.payload.prev, action.payload.new)
     },
+    random: (state, action) => {
+      state.document.data = {
+        fio: `${faker.name.firstName()}-${faker.name.lastName()}`,
+        dateOfBirth: moment(faker.date.future(30, new Date(0))).format('YYYY-MM-DD'),
+        contacts: {
+          phone: faker.phone.phoneNumber('380#########'),
+          email: faker.internet.email(),
+        },
+        skills: [...Array(1 + faker.datatype.number(5))].map(() => faker.lorem.word()),
+        workExpirience: [...Array(faker.datatype.number(3))].map(() => ({
+          nameOfCompany: faker.company.companyName(),
+          occupation: faker.name.jobTitle(),
+          description: faker.lorem.words(20),
+        })),
+      }
+    }
   },
 })
 

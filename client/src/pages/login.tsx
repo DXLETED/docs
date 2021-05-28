@@ -7,6 +7,7 @@ import { FormSubmit } from 'components/form/FormSubmit'
 import { useHistory, useLocation } from 'react-router'
 import { login } from 'store/auth'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
+import { notify } from 'utils/notify'
 
 export const LoginPage: React.FC = () => {
   const [formData, update] = useForm({ username: '', password: '' })
@@ -15,7 +16,9 @@ export const LoginPage: React.FC = () => {
   const query = new URLSearchParams(useLocation().search)
   const onSubmit = () =>
     dispatch(login(formData)).then(res =>
-      res.meta.requestStatus === 'fulfilled' ? history.push(query.get('to') || '/') : alert((res as any).error.message)
+      res.meta.requestStatus === 'fulfilled'
+        ? history.push(query.get('to') || '/')
+        : notify.error({ content: (res as any).error.message })
     )
   return (
     <>

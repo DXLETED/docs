@@ -9,16 +9,18 @@ import { faFileUpload, faFolderOpen, faListAlt } from '@fortawesome/free-solid-s
 
 const notificationsList = [...Array(10)]
   .map(() => ({
-    description: 'Пользователь UUUUU подписал документ',
-    name: 'NNNNNNNN',
-    author: 'AAAAA',
-    time: moment()
-      .subtract(Math.random() * 100, 'h')
-      .toDate()
-      .getTime(),
+    d: {
+      description: 'Пользователь UUUUU подписал документ',
+      name: 'NNNNNNNN',
+      author: 'AAAAA',
+      time: moment()
+        .subtract(Math.random() * 100, 'h')
+        .toDate()
+        .getTime(),
+    },
   }))
-  .sort((x, y) => y.time - x.time)
-  .map(n => ({ ...n, time: moment(n.time).fromNow() }))
+  .sort((x, y) => y.d.time - x.d.time)
+  .map(n => ({ ...n, d: { ...n.d, time: moment(n.d.time).fromNow() } }))
 
 export const MainPage: React.FC = () => {
   return (

@@ -19,6 +19,8 @@ import { getUsers } from 'store/users'
 import { requestsStatus } from 'utils/requestsStatus'
 import { DocumentSigners } from 'components/document/DocumentSigners'
 import { useHistory } from 'react-router'
+import { Document } from 'store/document'
+import { notify } from 'utils/notify'
 
 const validateField: {
   [key in BlankFieldType]: (data: any, el: BlankField) => boolean
@@ -54,13 +56,17 @@ export const DocumentCreatePage: React.FC = () => {
   const history = useHistory()
   const blankSelect = (i: number | null) =>
     dispatch(documentCreateActions.init({ blank: typeof i === 'number' ? blanks[i] : null }))
+  const generate = () => dispatch(documentCreateActions.random(null))
   const send = () => {
     if (!blank) return
     const hasErrors = !document.title || !document.signers.length || validateFields(document.data, blank.fields)
     if (hasErrors) return dispatch(documentCreateActions.showErrors({}))
-    dispatch(sendDocument({ blank })).then(res =>
-      res.meta.requestStatus === 'fulfilled' ? history.push('/mydocuments') : alert((res as any).error.message)
-    )
+    dispatch(sendDocument({ blank })).then(res => {
+      if (res.meta.requestStatus === 'fulfilled') {
+        history.push(`/documents/${(res.payload as Document)._id}`)
+        notify.success({ content: 'Документ создан' })
+      } else notify.error({ content: (res as any).error.message })
+    })
   }
   useEffect(() => {
     return () => {
@@ -106,6 +112,11 @@ export const DocumentCreatePage: React.FC = () => {
                   </div>
                 </div>
                 <div className={st.buttons}>
+                  {process.env.NODE_ENV === 'development' && (
+                    <div className={st.generate} onClick={generate}>
+                      Сгенерировать данные
+                    </div>
+                  )}
                   <div className={st.send} onClick={send}>
                     Создать документ
                   </div>

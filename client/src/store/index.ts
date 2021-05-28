@@ -5,6 +5,7 @@ import { blanksReducer } from './blanks'
 import { documentReducer } from './document'
 import { documentCreateReducer } from './documentCreate'
 import { documentsReducer } from './documents'
+import { notificationsReducer } from './notifications'
 import { switchesReducer } from './switches'
 import { usersReducer } from './users'
 
@@ -17,6 +18,7 @@ export const store = configureStore({
     documents: documentsReducer,
     switches: switchesReducer,
     users: usersReducer,
+    notifications: notificationsReducer,
   }),
   middleware: getDefaultMiddleware({
     serializableCheck: {
