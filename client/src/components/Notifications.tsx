@@ -38,7 +38,7 @@ const NotificationEl: React.FC<{ ntf: Notification }> = ({ ntf }) => {
         key={ntf.id}>
         <div className={st.background} />
         <div className={st.icon}>
-          <FontAwesomeIcon icon={icon[ntf.type]} size="4x" />
+          <FontAwesomeIcon icon={icon[ntf.type]} size="2x" />
         </div>
         {ntf.title && <div className={st.title}>{ntf.title}</div>}
         {ntf.content && <div className={st.content}>{ntf.content}</div>}

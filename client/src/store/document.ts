@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { request } from 'utils/request'
 import dict from 'dictionary.json'
 import { RootState } from 'store'
+import { apiError, notifyApiError } from 'utils/apiError'
+import { notify } from 'utils/notify'
 
 export type Document = {
   _id: string
@@ -25,6 +27,7 @@ export const getDocument = createAsyncThunk('document/get', async ({ id }: { id:
     { method: 'GET', url: `${process.env.REACT_APP_API_URL}/documents/${id}` },
     thunkAPI
   )
+    .catch(apiError)
   thunkAPI.dispatch(slice.actions.set(res))
   return res
 })
@@ -43,10 +46,16 @@ export const resolveDocument = createAsyncThunk(
   'document/resolve',
   async ({ password }: { password: string }, thunkAPI) => {
     const id = (thunkAPI.getState() as RootState).document?._id
-    return await request.withToken(
-      { method: 'POST', url: `${process.env.REACT_APP_API_URL}/documents/${id}/resolve`, data: { password } },
-      thunkAPI
-    )
+    return await request
+      .withToken<Document>(
+        { method: 'POST', url: `${process.env.REACT_APP_API_URL}/documents/${id}/resolve`, data: { password } },
+        thunkAPI
+      )
+      .then(res => {
+        thunkAPI.dispatch(documentActions.set(res))
+        notify.success({ content: 'Документ подписан' })
+      })
+      .catch(notifyApiError)
   }
 )
 
@@ -54,19 +63,32 @@ export const rejectDocument = createAsyncThunk(
   'document/reject',
   async ({ rejectReason, password }: { rejectReason: string; password: string }, thunkAPI) => {
     const id = (thunkAPI.getState() as RootState).document?._id
-    return await request.withToken(
-      { method: 'POST', url: `${process.env.REACT_APP_API_URL}/documents/${id}/reject`, data: { rejectReason, password } },
-      thunkAPI
-    )
+    return await request
+      .withToken<Document>(
+        {
+          method: 'POST',
+          url: `${process.env.REACT_APP_API_URL}/documents/${id}/reject`,
+          data: { rejectReason, password },
+        },
+        thunkAPI
+      )
+      .then(res => {
+        thunkAPI.dispatch(documentActions.set(res))
+        notify.success({ content: 'Документ отозван' })
+      })
+      .catch(notifyApiError)
   }
 )
 
 export const archiveDocument = createAsyncThunk('document/archive', async (_, thunkAPI) => {
   const id = (thunkAPI.getState() as RootState).document?._id
-  return await request.withToken(
-    { method: 'POST', url: `${process.env.REACT_APP_API_URL}/documents/${id}/archive` },
-    thunkAPI
-  )
+  return await request
+    .withToken<Document>({ method: 'POST', url: `${process.env.REACT_APP_API_URL}/documents/${id}/archive` }, thunkAPI)
+    .then(res => {
+      thunkAPI.dispatch(documentActions.set(res))
+      notify.success({ content: 'Документ перемещен в архив' })
+    })
+    .catch(notifyApiError)
 })
 
 const slice = createSlice({

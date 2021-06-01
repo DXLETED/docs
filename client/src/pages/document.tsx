@@ -5,7 +5,7 @@ import moment from 'moment'
 import dict from 'dictionary.json'
 import { useRequest } from 'hooks/request.hook'
 import { useParams } from 'react-router'
-import { archiveDocument, documentActions, getDocument, getPDF, rejectDocument, resolveDocument } from 'store/document'
+import { archiveDocument, getDocument, getPDF, rejectDocument, resolveDocument } from 'store/document'
 import { requestsStatus } from 'utils/requestsStatus'
 import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
@@ -36,13 +36,7 @@ const SignModal: React.FC<SignModalProps> = ({ close }) => {
   }
   const submit = () => {
     if (formErrors(validation).length) return setShowErrors(true)
-    dispatch(resolveDocument(formData)).then(res => {
-      if (res.meta.requestStatus === 'fulfilled') {
-        dispatch(documentActions.set(res.payload))
-        notify.success({ content: 'Документ подписан' })
-        close()
-      } else notify.error({ content: (res as any).error.message })
-    })
+    dispatch(resolveDocument(formData)).then(res => res.meta.requestStatus === 'fulfilled' && close())
   }
   return (
     <div className={st.signModal}>
@@ -73,15 +67,10 @@ const RejectModal: React.FC<RejectModalProps> = ({ close }) => {
     password: validate(formData.password, ['required']),
     rejectReason: validate(formData.rejectReason, ['required']),
   }
-  const submit = () =>
-    dispatch(rejectDocument(formData)).then(res => {
-      if (formErrors(validation).length) return setShowErrors(true)
-      if (res.meta.requestStatus === 'fulfilled') {
-        dispatch(documentActions.set(res.payload))
-        notify.success({ content: 'Документ отклонен' })
-        close()
-      } else notify.error({ content: (res as any).error.message })
-    })
+  const submit = () => {
+    if (formErrors(validation).length) return setShowErrors(true)
+    dispatch(rejectDocument(formData)).then(res => res.meta.requestStatus === 'fulfilled' && close())
+  }
   return (
     <div className={st.rejectModal}>
       <Input
@@ -131,13 +120,7 @@ export const DocumentPage: React.FC = () => {
   const currentSigner = doc?.signers.find(
     (s, i, signers) => s.status === 'WAITING' && !signers.slice(0, i).some(s => s.status === 'WAITING')
   )
-  const archive = () =>
-    dispatch(archiveDocument()).then(res => {
-      if (res.meta.requestStatus === 'fulfilled') {
-        dispatch(documentActions.set(res.payload))
-        notify.success({ content: 'Документ перемещен в архив' })
-      } else notify.error({ content: (res as any).error.message })
-    })
+  const archive = () => dispatch(archiveDocument())
   return (
     <>
       <Helmet>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import st from 'styles/pages/DocumentCreatePage.module.sass'
 import { Select } from 'components/input/Select'
 import { useRequest } from 'hooks/request.hook'
@@ -20,7 +20,7 @@ import { requestsStatus } from 'utils/requestsStatus'
 import { DocumentSigners } from 'components/document/DocumentSigners'
 import { useHistory } from 'react-router'
 import { Document } from 'store/document'
-import { notify } from 'utils/notify'
+import clsx from 'clsx'
 
 const validateField: {
   [key in BlankFieldType]: (data: any, el: BlankField) => boolean
@@ -47,6 +47,7 @@ export const DocumentCreatePage: React.FC = () => {
     () => getUsers()
   )
   const status = requestsStatus(blanksStatus, usersStatus)
+  const [isSaving, setIsSaving] = useState(false)
   const blanksList = blanks.map(b => b.name)
   const blankId = useSelectorTyped(s => s.documentCreate.document.blankId)
   const blank = blanks?.find(b => b.id === blankId)
@@ -61,11 +62,11 @@ export const DocumentCreatePage: React.FC = () => {
     if (!blank) return
     const hasErrors = !document.title || !document.signers.length || validateFields(document.data, blank.fields)
     if (hasErrors) return dispatch(documentCreateActions.showErrors({}))
+    setIsSaving(true)
     dispatch(sendDocument({ blank })).then(res => {
-      if (res.meta.requestStatus === 'fulfilled') {
-        history.push(`/documents/${(res.payload as Document)._id}`)
-        notify.success({ content: 'Документ создан' })
-      } else notify.error({ content: (res as any).error.message })
+      res.meta.requestStatus === 'fulfilled'
+        ? history.push(`/documents/${(res.payload as Document)._id}`)
+        : setIsSaving(false)
     })
   }
   useEffect(() => {
@@ -83,13 +84,13 @@ export const DocumentCreatePage: React.FC = () => {
         (blank ? (
           <>
             <div className={st.document}>
-              <div className={st.form}>
+              <div className={clsx(st.form, { disabled: isSaving })}>
                 <div className={st.inner}>
                   {blank && document && <DocumentFormFields data={document.data} fields={blank.fields} />}
                 </div>
               </div>
               <div className={st.side}>
-                <div className={st.scrollable}>
+                <div className={clsx(st.scrollable, { disabled: isSaving })}>
                   <div className={st.container}>
                     <div className={st.blank}>
                       <Select
@@ -112,13 +113,22 @@ export const DocumentCreatePage: React.FC = () => {
                   </div>
                 </div>
                 <div className={st.buttons}>
-                  {process.env.NODE_ENV === 'development' && document.blankId === 1 && (
+                  {process.env.NODE_ENV === 'development' && !isSaving && (
                     <div className={st.generate} onClick={generate}>
                       Сгенерировать данные
                     </div>
                   )}
                   <div className={st.send} onClick={send}>
-                    Создать документ
+                    {isSaving ? (
+                      <>
+                        <div className={st.loading}>
+                          <Loading size={10} />
+                        </div>
+                        Документ создается
+                      </>
+                    ) : (
+                      'Создать документ'
+                    )}
                   </div>
                 </div>
               </div>

@@ -10,15 +10,15 @@ const blanks = require('../blanks.json')
 
 const getDocument = async (id, auth) => {
   const doc = await db.collection('documents').findOne({ _id: ObjectID(id) })
-  if (!doc) throw Error({ code: 404 })
-  if (doc.userId !== auth.userId && !doc.signers.find(s => s.userId === auth.userId)) throw Error({ code: 403 })
+  if (!doc) throw { code: 404, err: 'no_document' }
+  if (doc.userId !== auth.userId && !doc.signers.find(s => s.userId === auth.userId)) throw { code: 403, err: 'document_no_access' }
   return doc
 }
 
 const limitRequest = (req, maxLen) => {
   const from = parseInt(req.query.from) || 0,
     to = parseInt(req.query.to) || 0
-  if (to - from > maxLen) throw Error({ code: 400 })
+  if (to - from > maxLen) throw { code: 400 }
   return [from, to]
 }
 
@@ -26,6 +26,25 @@ module.exports = Router()
   .use('/auth', require('./auth'))
 
   .get('/blanks', authRequired, async (req, res) => res.sendFile(path.join(__dirname, '../blanks.json')))
+
+  .get('/status', authRequired, async (req, res) =>
+    res.json({
+      newDocuments: await db.collection('documents').countDocuments({
+        signers: { $elemMatch: { userId: req.auth.userId, status: dict.signerStatusKey.waiting } },
+      }),
+      myDocuments: await db.collection('documents').countDocuments({
+        userId: req.auth.userId,
+      }),
+      notifications: (
+        await db.collection('notifications').find({ users: req.auth.userId }).sort({ date: -1 }).toArray()
+      ).map(el => ({
+        type: el.type,
+        document: el.document,
+        userId: el.userId,
+        date: el.date,
+      })),
+    })
+  )
 
   .get('/users', authRequired, async (req, res) =>
     res.json((await db.collection('users').find({}).toArray()).map(u => ({ userId: u._id, username: u.username })))
@@ -49,6 +68,16 @@ module.exports = Router()
       updatedAt: 0,
     }
     const d = await db.collection('documents').insertOne(doc)
+    await db.collection('notifications').insertOne({
+      type: 'CREATE',
+      userId: req.auth.userId,
+      document: {
+        id: doc._id.toString(),
+        title: doc.title,
+      },
+      date: new Date(),
+      users: doc.signers.map(s => s.userId),
+    })
     pdf
       .create(`<div style="font-family: sans-serif">${doc.rawDocument}</div>`)
       .toFile(`pdf/${d.insertedId}.pdf`, err => {
@@ -132,7 +161,7 @@ module.exports = Router()
     try {
       doc = await getDocument(req.params.id, req.auth)
     } catch (e) {
-      return res.sendStatus(e.code)
+      return res.status(e.code).json({err: e.err})
     }
     res.json(doc)
   })
@@ -142,45 +171,55 @@ module.exports = Router()
     try {
       doc = await getDocument(req.params.id, req.auth)
     } catch (e) {
-      return res.sendStatus(e.code)
+      return res.status(e.code).json({err: e.err})
     }
     res.sendFile(path.join(__dirname, '../..', `pdf/${doc._id}.pdf`))
   })
 
   .post('/documents/:id/resolve', authRequired, async (req, res) => {
     const user = await db.collection('users').findOne({ _id: ObjectID(req.auth.userId) })
-    if (!user || req.body.password !== user.password) return res.sendStatus(400)
+    if (!user || req.body.password !== user.password) return res.status(400).json({ err: 'invalid_password' })
     let doc
     try {
       doc = await getDocument(req.params.id, req.auth)
     } catch (e) {
-      return res.sendStatus(e.code)
+      return res.status(e.code).json({err: e.err})
     }
     const currentSigner = doc?.signers.find(
       (s, i, signers) => s.status === 'WAITING' && !signers.slice(0, i).some(s => s.status === 'WAITING')
     )
-    if (currentSigner?.userId !== req.auth.userId) return res.sendStatus(400)
+    if (currentSigner?.userId !== req.auth.userId) return res.sendStatus(403)
     currentSigner.status = 'RESOLVED'
     currentSigner.updatedAt = new Date()
     if (doc.signers.every(s => s.status === 'RESOLVED')) doc.status = 'RESOLVED'
     doc.updatedAt = new Date()
     await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
+    await db.collection('notifications').insertOne({
+      type: 'SIGN',
+      userId: req.auth.userId,
+      document: {
+        id: doc._id.toString(),
+        title: doc.title,
+      },
+      date: new Date(),
+      users: [doc.userId, ...doc.signers.map(s => s.userId)].filter(u => u !== req.auth.userId),
+    })
     res.json(doc)
   })
 
   .post('/documents/:id/reject', authRequired, async (req, res) => {
     const user = await db.collection('users').findOne({ _id: ObjectID(req.auth.userId) })
-    if (!user || req.body.password !== user.password) return res.sendStatus(400)
+    if (!user || req.body.password !== user.password) return res.status(400).json({ err: 'invalid_password' })
     let doc
     try {
       doc = await getDocument(req.params.id, req.auth)
     } catch (e) {
-      return res.sendStatus(e.code)
+      return res.status(e.code).json({err: e.err})
     }
     const currentSigner = doc?.signers.find(
       (s, i, signers) => s.status === 'WAITING' && !signers.slice(0, i).some(s => s.status === 'WAITING')
     )
-    if (currentSigner?.userId !== req.auth.userId) return res.sendStatus(400)
+    if (currentSigner?.userId !== req.auth.userId) return res.sendStatus(403)
     currentSigner.status = 'REJECTED'
     currentSigner.updatedAt = new Date()
     currentSigner.rejectReason = req.body.rejectReason
@@ -188,6 +227,16 @@ module.exports = Router()
     doc.status = 'REJECTED'
     doc.updatedAt = new Date()
     await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
+    await db.collection('notifications').insertOne({
+      type: 'REJECT',
+      userId: req.auth.userId,
+      document: {
+        id: doc._id.toString(),
+        title: doc.title,
+      },
+      date: new Date(),
+      users: [doc.userId, ...doc.signers.map(s => s.userId)].filter(u => u !== req.auth.userId),
+    })
     res.json(doc)
   })
 
@@ -196,11 +245,21 @@ module.exports = Router()
     try {
       doc = await getDocument(req.params.id, req.auth)
     } catch (e) {
-      return res.sendStatus(e.code)
+      return res.status(e.code).json({err: e.err})
     }
     if (doc.signers.some(s => s.status === 'WAITING')) return res.sendStatus(400)
     doc.status = 'ARCHIVED'
     doc.updatedAt = new Date()
     await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
+    await db.collection('notifications').insertOne({
+      type: 'ARCHIVE',
+      userId: req.auth.userId,
+      document: {
+        id: doc._id.toString(),
+        title: doc.title,
+      },
+      date: new Date(),
+      users: doc.signers.map(s => s.userId),
+    })
     res.json(doc)
   })

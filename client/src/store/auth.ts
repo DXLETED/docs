@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { request } from 'utils/request'
 import { loadState } from 'utils/localStorage'
+import { notifyApiError } from 'utils/apiError'
 
 const API_URL = process.env.REACT_APP_API_URL
 
@@ -22,12 +23,10 @@ export interface LoginPayload {
 export const login = createAsyncThunk(
   'auth/login',
   async ({ username, password }: { username: string; password: string }, thunkAPI) => {
-    const res = await request.withoutToken(
-      { method: 'POST', url: `${API_URL}/auth/login`, data: { username, password } },
-      thunkAPI
-    )
-    thunkAPI.dispatch(slice.actions.set(res))
-    return res
+    return await request
+      .withoutToken({ method: 'POST', url: `${API_URL}/auth/login`, data: { username, password } }, thunkAPI)
+      .then(res => thunkAPI.dispatch(slice.actions.set(res)))
+      .catch(notifyApiError)
   }
 )
 

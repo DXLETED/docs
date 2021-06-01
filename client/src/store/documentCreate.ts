@@ -6,6 +6,8 @@ import { RootState } from 'store'
 import { reorder } from 'utils/reorder'
 import { request } from 'utils/request'
 import { Blank, BlankField, BlankFields, BlankFieldType } from './blanks'
+import { notify } from 'utils/notify'
+import { notifyApiError } from 'utils/apiError'
 
 const API_URL = process.env.REACT_APP_API_URL
 
@@ -49,14 +51,20 @@ const parse = (fields: BlankFields, data: any): any =>
 
 export const sendDocument = createAsyncThunk('document/send', async ({ blank }: { blank: Blank }, thunkAPI) => {
   const data = parse(blank.fields, (thunkAPI.getState() as RootState).documentCreate.document.data)
-  return await request.withToken(
-    {
-      method: 'POST',
-      url: `${API_URL}/documents`,
-      data: { ...(thunkAPI.getState() as RootState).documentCreate.document, data },
-    },
-    thunkAPI
-  )
+  return await request
+    .withToken(
+      {
+        method: 'POST',
+        url: `${API_URL}/documents`,
+        data: { ...(thunkAPI.getState() as RootState).documentCreate.document, data },
+      },
+      thunkAPI
+    )
+    .then(res => {
+      notify.success({ content: 'Документ создан' })
+      return res
+    })
+    .catch(notifyApiError)
 })
 
 const dataFields: { [key in BlankFieldType]: any } = {
@@ -67,6 +75,46 @@ const dataFields: { [key in BlankFieldType]: any } = {
 export const fieldData = (field: BlankField) => dataFields[field.type]
 const dataFromBlank = (blank: Blank) =>
   Object.fromEntries(blank.fields.map(el => [el.name, el.multiple ? [] : fieldData(el)]))
+
+const mock: { [key: number]: () => any } = {
+  1: () => ({
+    fio: `${faker.name.firstName()}-${faker.name.lastName()}`,
+    dateOfBirth: faker.date.future(30, new Date(0)).getTime(),
+    contacts: {
+      phone: faker.phone.phoneNumber('380#########'),
+      email: faker.internet.email(),
+    },
+    skills: [...Array(1 + faker.datatype.number(5))].map(() => faker.lorem.word()),
+    workExpirience: [...Array(faker.datatype.number(3))].map(() => ({
+      nameOfCompany: faker.company.companyName(),
+      occupation: faker.name.jobTitle(),
+      description: faker.lorem.words(20),
+    })),
+  }),
+  2: () => {
+    const list = [...Array(faker.datatype.number(10))].map(() => {
+      const count = 1 + faker.datatype.number(10)
+      const price = parseInt(faker.commerce.price(10, 1000))
+      return {
+        name: faker.lorem.word(),
+        units: faker.lorem.word(),
+        count,
+        price,
+        sum: price * count,
+      }
+    })
+    return {
+      organization: faker.company.companyName(),
+      date: faker.date.past(1).getTime(),
+      number: faker.datatype.number(100).toString(),
+      from: `${faker.name.firstName()} ${faker.name.lastName()}`,
+      to: `${faker.name.firstName()} ${faker.name.lastName()}`,
+      reason: faker.lorem.words(10),
+      list,
+      totalSum: list.reduce((acc, el) => acc + el.price, 0),
+    }
+  },
+}
 
 const slice = createSlice({
   name: 'documentCreate',
@@ -110,21 +158,8 @@ const slice = createSlice({
       state.document.signers = reorder(state.document.signers, action.payload.prev, action.payload.new)
     },
     random: (state, action) => {
-      state.document.data = {
-        fio: `${faker.name.firstName()}-${faker.name.lastName()}`,
-        dateOfBirth: moment(faker.date.future(30, new Date(0))).format('YYYY-MM-DD'),
-        contacts: {
-          phone: faker.phone.phoneNumber('380#########'),
-          email: faker.internet.email(),
-        },
-        skills: [...Array(1 + faker.datatype.number(5))].map(() => faker.lorem.word()),
-        workExpirience: [...Array(faker.datatype.number(3))].map(() => ({
-          nameOfCompany: faker.company.companyName(),
-          occupation: faker.name.jobTitle(),
-          description: faker.lorem.words(20),
-        })),
-      }
-    }
+      if (state.document.blankId && mock[state.document.blankId]) state.document.data = mock[state.document.blankId]()
+    },
   },
 })
 

@@ -6,21 +6,23 @@
   height: 100%
   flex-direction: column
   align-items: center
-  padding: 20px 0
   .links
     display: grid
     width: 100%
-    height: 80px
+    height: 120px
     grid-template-columns: 1fr 1fr 1fr
     grid-gap: 20px
-    padding: 0 20px
-    margin-bottom: 40px
+    padding: 20px
+    margin-bottom: 20px
+    background: rgba($black, 0.2)
     .button
       justify-content: center
       align-items: center
       background: $primary
       font-weight: 700
       border-radius: 3px
+      &:hover
+        background: lighten($primary, 5)
       .icon
         margin-right: 10px
       .count
@@ -32,7 +34,6 @@
         background: $lighter
   .notifications
     width: 100%
-    height: calc(100% - 120px)
     flex-direction: column
     &:not(:last-child)
       margin-bottom: 40px
