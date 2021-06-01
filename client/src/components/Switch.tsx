@@ -1,15 +1,15 @@
 import React from 'react'
-import st from 'styles/components/table/TableSwitch.module.sass'
+import st from 'styles/components/Switch.module.sass'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-interface TableSwitchProps {
+interface SwitchProps {
   enabled: boolean
   set: (n: boolean) => void
   label: string
 }
-export const TableSwitch: React.FC<TableSwitchProps> = ({ enabled, set, label }) => (
-  <div className={st.tableSwitch} onClick={() => set(!enabled)}>
+export const Switch: React.FC<SwitchProps> = ({ enabled, set, label }) => (
+  <div className={st.switch} onClick={() => set(!enabled)}>
     <div className={st.check}>{enabled && <FontAwesomeIcon icon={faCheck} />}</div>
     {label}
   </div>

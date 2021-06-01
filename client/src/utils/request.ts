@@ -18,8 +18,8 @@ class Request {
   static _instance: Request
   queue: Req[] = []
   isRefreshing: boolean = false
-  async withoutToken<T>(config: AxiosRequestConfig, thunkAPI: any): Promise<T> {
-    return await this.create(config, thunkAPI)
+  async withoutToken<T>(config: AxiosRequestConfig): Promise<T> {
+    return await this.create(config, null)
   }
   async withToken<T>(config: AxiosRequestConfig, thunkAPI: any): Promise<T> {
     try {

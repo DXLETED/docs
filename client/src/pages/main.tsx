@@ -14,6 +14,9 @@ import { requestsStatus } from 'utils/requestsStatus'
 import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
+import { request } from 'utils/request'
+import { urlBase64ToUint8Array } from 'utils/urlBase64ToUint8Array'
+import { Switch } from 'components/Switch'
 
 export const MainPage: React.FC = () => {
   const newDocuments = useSelectorTyped(s => s.status.newDocuments)
@@ -38,11 +41,24 @@ export const MainPage: React.FC = () => {
               id: el.document.id.slice(-8),
               date: moment(el.date).format('YYYY-MM-DD HH:mm'),
             },
-            link: `/documents/${el.document.id}`
+            link: `/documents/${el.document.id}`,
           }))
         : [],
     [notifications, users]
   )
+  const subscribe = async () => {
+    const register = await navigator.serviceWorker.register('sw.js', { scope: '/' })
+    const subscription = await register.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(process.env.PUBLIC_VAPID_KEY as string),
+    })
+    request.withoutToken({
+      url: '/api/v1/notifications/subscribe',
+      data: subscription,
+      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+    })
+  }
   return (
     <>
       <Helmet>
@@ -64,11 +80,20 @@ export const MainPage: React.FC = () => {
               Новые документы<div className={st.count}>{newDocuments}</div>
             </NavLink>
           </div>
+          <div className={st.subscribe}>
+            <Switch enabled={false} set={subscribe} label="Подписаться на уведомления" />
+          </div>
           <div className={st.notifications}>
             <Table
               id="notificaitons"
               label="Уведомления"
-              head={{ author: 'Автор', description: 'Описание', title: 'Название документа', id: 'ID документа', date: 'Время' }}
+              head={{
+                author: 'Автор',
+                description: 'Описание',
+                title: 'Название документа',
+                id: 'ID документа',
+                date: 'Время',
+              }}
               els={els}
             />
           </div>

@@ -11,7 +11,8 @@ const blanks = require('../blanks.json')
 const getDocument = async (id, auth) => {
   const doc = await db.collection('documents').findOne({ _id: ObjectID(id) })
   if (!doc) throw { code: 404, err: 'no_document' }
-  if (doc.userId !== auth.userId && !doc.signers.find(s => s.userId === auth.userId)) throw { code: 403, err: 'document_no_access' }
+  if (doc.userId !== auth.userId && !doc.signers.find(s => s.userId === auth.userId))
+    throw { code: 403, err: 'document_no_access' }
   return doc
 }
 
@@ -24,6 +25,7 @@ const limitRequest = (req, maxLen) => {
 
 module.exports = Router()
   .use('/auth', require('./auth'))
+  .use('/notifications', require('./notifications'))
 
   .get('/blanks', authRequired, async (req, res) => res.sendFile(path.join(__dirname, '../blanks.json')))
 
@@ -161,7 +163,7 @@ module.exports = Router()
     try {
       doc = await getDocument(req.params.id, req.auth)
     } catch (e) {
-      return res.status(e.code).json({err: e.err})
+      return res.status(e.code).json({ err: e.err })
     }
     res.json(doc)
   })
@@ -171,7 +173,7 @@ module.exports = Router()
     try {
       doc = await getDocument(req.params.id, req.auth)
     } catch (e) {
-      return res.status(e.code).json({err: e.err})
+      return res.status(e.code).json({ err: e.err })
     }
     res.sendFile(path.join(__dirname, '../..', `pdf/${doc._id}.pdf`))
   })
@@ -183,7 +185,7 @@ module.exports = Router()
     try {
       doc = await getDocument(req.params.id, req.auth)
     } catch (e) {
-      return res.status(e.code).json({err: e.err})
+      return res.status(e.code).json({ err: e.err })
     }
     const currentSigner = doc?.signers.find(
       (s, i, signers) => s.status === 'WAITING' && !signers.slice(0, i).some(s => s.status === 'WAITING')
@@ -214,7 +216,7 @@ module.exports = Router()
     try {
       doc = await getDocument(req.params.id, req.auth)
     } catch (e) {
-      return res.status(e.code).json({err: e.err})
+      return res.status(e.code).json({ err: e.err })
     }
     const currentSigner = doc?.signers.find(
       (s, i, signers) => s.status === 'WAITING' && !signers.slice(0, i).some(s => s.status === 'WAITING')
@@ -245,7 +247,7 @@ module.exports = Router()
     try {
       doc = await getDocument(req.params.id, req.auth)
     } catch (e) {
-      return res.status(e.code).json({err: e.err})
+      return res.status(e.code).json({ err: e.err })
     }
     if (doc.signers.some(s => s.status === 'WAITING')) return res.sendStatus(400)
     doc.status = 'ARCHIVED'

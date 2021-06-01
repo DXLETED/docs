@@ -24,7 +24,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ username, password }: { username: string; password: string }, thunkAPI) => {
     return await request
-      .withoutToken({ method: 'POST', url: `${API_URL}/auth/login`, data: { username, password } }, thunkAPI)
+      .withoutToken({ method: 'POST', url: `${API_URL}/auth/login`, data: { username, password } })
       .then(res => thunkAPI.dispatch(slice.actions.set(res)))
       .catch(notifyApiError)
   }
