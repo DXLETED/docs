@@ -7,6 +7,9 @@ const parseDocument = require('../utils/parseDocument')
 const pdf = require('html-pdf')
 
 const blanks = require('../blanks.json')
+const sendWebNotification = require('../utils/sendWebNotification')
+
+const getUsername = async userId => (await db.collection('users').findOne({ _id: ObjectID(userId) }))?.username
 
 const getDocument = async (id, auth) => {
   const doc = await db.collection('documents').findOne({ _id: ObjectID(id) })
@@ -82,9 +85,13 @@ module.exports = Router()
     })
     pdf
       .create(`<div style="font-family: sans-serif">${doc.rawDocument}</div>`)
-      .toFile(`pdf/${d.insertedId}.pdf`, err => {
+      .toFile(`pdf/${d.insertedId}.pdf`, async err => {
         err && console.log(err)
         res.json(doc)
+        sendWebNotification(
+          { title: doc.title, type: 'create', user: await getUsername(req.auth.userId) },
+          req.auth.userId
+        )
       })
   })
 
@@ -207,6 +214,7 @@ module.exports = Router()
       users: [doc.userId, ...doc.signers.map(s => s.userId)].filter(u => u !== req.auth.userId),
     })
     res.json(doc)
+    sendWebNotification({ title: doc.title, type: 'sign', user: await getUsername(req.auth.userId) }, req.auth.userId)
   })
 
   .post('/documents/:id/reject', authRequired, async (req, res) => {
@@ -240,6 +248,7 @@ module.exports = Router()
       users: [doc.userId, ...doc.signers.map(s => s.userId)].filter(u => u !== req.auth.userId),
     })
     res.json(doc)
+    sendWebNotification({ title: doc.title, type: 'reject', user: await getUsername(req.auth.userId) }, req.auth.userId)
   })
 
   .post('/documents/:id/archive', authRequired, async (req, res) => {
@@ -264,4 +273,8 @@ module.exports = Router()
       users: doc.signers.map(s => s.userId),
     })
     res.json(doc)
+    sendWebNotification(
+      { title: doc.title, type: 'archive', user: await getUsername(req.auth.userId) },
+      req.auth.userId
+    )
   })

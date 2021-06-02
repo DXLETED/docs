@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import st from 'styles/pages/MainPage.module.sass'
 import moment from 'moment'
 import dict from 'dictionary.json'
@@ -8,17 +8,18 @@ import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileUpload, faFolderOpen, faListAlt } from '@fortawesome/free-solid-svg-icons'
 import { useRequest } from 'hooks/request.hook'
-import { getStatus } from 'store/status'
+import { getStatus, subscribe, unsubscribe } from 'store/status'
 import { getUsers } from 'store/users'
 import { requestsStatus } from 'utils/requestsStatus'
 import { Loading } from 'components/Loading'
 import { Error } from 'components/Error'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
-import { request } from 'utils/request'
-import { urlBase64ToUint8Array } from 'utils/urlBase64ToUint8Array'
 import { Switch } from 'components/Switch'
+import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 
 export const MainPage: React.FC = () => {
+  const dispatch = useDispatchTyped()
+  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState<'loading' | boolean>(false)
   const newDocuments = useSelectorTyped(s => s.status.newDocuments)
   const myDocuments = useSelectorTyped(s => s.status.myDocuments)
   const [notifications, notificationsStatus, notificationsError] = useRequest(
@@ -46,18 +47,19 @@ export const MainPage: React.FC = () => {
         : [],
     [notifications, users]
   )
-  const subscribe = async () => {
-    const register = await navigator.serviceWorker.register('sw.js', { scope: '/' })
-    const subscription = await register.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(process.env.PUBLIC_VAPID_KEY as string),
-    })
-    request.withoutToken({
-      url: '/api/v1/notifications/subscribe',
-      data: subscription,
-      headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
-    })
+  useEffect(() => {
+    ;(async () =>
+      setIsNotificationsEnabled(
+        !!(await navigator.serviceWorker.getRegistrations()).length && window.Notification.permission === 'granted'
+      ))()
+  }, [])
+  const toggleWebPush = async (n: boolean) => {
+    setIsNotificationsEnabled('loading')
+    if (n) {
+      dispatch(subscribe()).then(res => res.meta.requestStatus === 'fulfilled' && setIsNotificationsEnabled(true))
+    } else {
+      dispatch(unsubscribe()).then(res => res.meta.requestStatus === 'fulfilled' && setIsNotificationsEnabled(false))
+    }
   }
   return (
     <>
@@ -81,7 +83,12 @@ export const MainPage: React.FC = () => {
             </NavLink>
           </div>
           <div className={st.subscribe}>
-            <Switch enabled={false} set={subscribe} label="Подписаться на уведомления" />
+            <Switch
+              enabled={!!isNotificationsEnabled}
+              set={toggleWebPush}
+              label="Подписаться на уведомления"
+              loading={isNotificationsEnabled === 'loading'}
+            />
           </div>
           <div className={st.notifications}>
             <Table
