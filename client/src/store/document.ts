@@ -23,10 +23,8 @@ type DocumentState = Document | null
 const initialState: DocumentState = null as DocumentState
 
 export const getDocument = createAsyncThunk('document/get', async ({ id }: { id: string }, thunkAPI) => {
-  const res = await request.withToken(
-    { method: 'GET', url: `${process.env.REACT_APP_API_URL}/documents/${id}` },
-    thunkAPI
-  )
+  const res = await request
+    .withToken({ method: 'GET', url: `${process.env.REACT_APP_API_URL}/documents/${id}` }, thunkAPI)
     .catch(apiError)
   thunkAPI.dispatch(slice.actions.set(res))
   return res

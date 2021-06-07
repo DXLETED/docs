@@ -14,9 +14,11 @@ interface DocumentFormGroupProps {
 }
 export const DocumentFormGroup: React.FC<DocumentFormGroupProps> = ({ label, data, fields, path = [], multiple }) => {
   return (
-    <div className={clsx(st.group, {[st.multiple]: multiple})}>
+    <div className={clsx(st.group, { [st.multiple]: multiple })}>
       {label && <div className={st.label}>{label.toUpperCase()}</div>}
-      <div className={st.inner}><DocumentFormFields {...{ data, fields, path }} /></div>
+      <div className={st.inner}>
+        <DocumentFormFields {...{ data, fields, path }} />
+      </div>
     </div>
   )
 }

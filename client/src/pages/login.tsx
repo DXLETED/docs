@@ -6,6 +6,7 @@ import { useForm } from 'hooks/form.hook'
 import { useHistory, useLocation } from 'react-router'
 import { login } from 'store/auth'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
+import { Form } from 'components/Form'
 
 export const LoginPage: React.FC = () => {
   const [formData, update] = useForm({ username: '', password: '' })
@@ -22,11 +23,13 @@ export const LoginPage: React.FC = () => {
         <title>Login - Docs</title>
       </Helmet>
       <div className={st.form}>
-        <Input label="Имя пользователя" value={formData.username} set={update('username')} />
-        <Input label="Пароль" type="password" value={formData.password} set={update('password')} />
-        <div className={st.submit} onClick={submit}>
-          Вход
-        </div>
+        <Form onSubmit={submit}>
+          <Input label="Имя пользователя" value={formData.username} set={update('username')} />
+          <Input label="Пароль" type="password" value={formData.password} set={update('password')} />
+          <div className={st.submit} onClick={submit}>
+            Вход
+          </div>
+        </Form>
       </div>
     </>
   )

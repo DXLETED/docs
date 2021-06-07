@@ -20,7 +20,13 @@ const formFields: {
   ) => React.ReactNode
 } = {
   text: (el, label, value, path, showErrors) => (
-    <Input label={label} value={value as string} set={update(path)} {...validate(value as string, el.validations)} {...{showErrors}} />
+    <Input
+      label={label}
+      value={value as string}
+      set={update(path)}
+      {...validate(value as string, el.validations)}
+      {...{ showErrors }}
+    />
   ),
   date: (el, label, value, path, showErrors) => (
     <DatePicker
@@ -28,7 +34,7 @@ const formFields: {
       value={value as number}
       set={update(path)}
       {...validate(value?.toString(), el.validations)}
-      {...{showErrors}}
+      {...{ showErrors }}
     />
   ),
   group: (el, label, value, path) => (

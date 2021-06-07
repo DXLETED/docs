@@ -60,7 +60,7 @@ export const Documents: React.FC<DocumentsProps> = ({
           creationDate: moment(d.createdAt).format(`DD.MM.YYYY`),
           updateDate: d.updatedAt ? moment(d.updatedAt).format(`DD.MM.YYYY`) : '-----',
         },
-        link: `/documents/${d._id}`
+        link: `/documents/${d._id}`,
       })),
     [documents, users]
   )

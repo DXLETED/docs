@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import st from 'styles/pages/MainPage.module.sass'
 import moment from 'moment'
 import dict from 'dictionary.json'
@@ -19,7 +19,7 @@ import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 
 export const MainPage: React.FC = () => {
   const dispatch = useDispatchTyped()
-  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState<'loading' | boolean>(false)
+  const subscribed = useSelectorTyped(s => s.status.subscribed)
   const newDocuments = useSelectorTyped(s => s.status.newDocuments)
   const myDocuments = useSelectorTyped(s => s.status.myDocuments)
   const [notifications, notificationsStatus, notificationsError] = useRequest(
@@ -47,20 +47,6 @@ export const MainPage: React.FC = () => {
         : [],
     [notifications, users]
   )
-  useEffect(() => {
-    ;(async () =>
-      setIsNotificationsEnabled(
-        !!(await navigator.serviceWorker.getRegistrations()).length && window.Notification.permission === 'granted'
-      ))()
-  }, [])
-  const toggleWebPush = async (n: boolean) => {
-    setIsNotificationsEnabled('loading')
-    if (n) {
-      dispatch(subscribe()).then(res => res.meta.requestStatus === 'fulfilled' && setIsNotificationsEnabled(true))
-    } else {
-      dispatch(unsubscribe()).then(res => res.meta.requestStatus === 'fulfilled' && setIsNotificationsEnabled(false))
-    }
-  }
   return (
     <>
       <Helmet>
@@ -84,10 +70,10 @@ export const MainPage: React.FC = () => {
           </div>
           <div className={st.subscribe}>
             <Switch
-              enabled={!!isNotificationsEnabled}
-              set={toggleWebPush}
+              enabled={!!subscribed}
+              set={n => dispatch(n ? subscribe() : unsubscribe())}
               label="Подписаться на уведомления"
-              loading={isNotificationsEnabled === 'loading'}
+              loading={subscribed === 'loading'}
             />
           </div>
           <div className={st.notifications}>

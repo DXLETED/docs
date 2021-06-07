@@ -10,7 +10,6 @@ module.exports = Router()
     await db
       .collection('notificationSubs')
       .updateOne({ userId: req.auth.userId }, { $set: { userId: req.auth.userId, ...req.body } }, { upsert: true })
-    webpush.sendNotification(req.body, JSON.stringify({ title: 'Test' }))
   })
   .post('/unsubscribe', authRequired, async (req, res) => {
     res.sendStatus(201)

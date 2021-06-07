@@ -12,7 +12,7 @@ interface TableProps {
   id: string
   label?: string
   head: { [key: string]: string }
-  els: { d: { [key: string]: string | { d: string; color?: string } }, link?: string }[]
+  els: { d: { [key: string]: string | { d: string; color?: string } }; link?: string }[]
   menu?: React.ReactNode
   load?: () => void
   extended?: boolean

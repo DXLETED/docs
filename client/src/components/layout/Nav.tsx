@@ -2,6 +2,9 @@ import React from 'react'
 import st from 'styles/components/layout/Nav.module.sass'
 import clsx from 'clsx'
 import { NavLink } from 'react-router-dom'
+import { useSelectorTyped } from 'hooks/selectorTyped.hook'
+import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
+import { switchesActions } from 'store/switches'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faArchive,
@@ -12,9 +15,6 @@ import {
   faListAlt,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
-import { useSelectorTyped } from 'hooks/selectorTyped.hook'
-import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
-import { switchesActions } from 'store/switches'
 
 interface NavItemProps {
   to: string

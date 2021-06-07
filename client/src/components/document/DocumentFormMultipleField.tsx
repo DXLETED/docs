@@ -33,7 +33,10 @@ export const DocumentFormMultipleField: React.FC<MultipleFieldsProps> = ({ label
   return (
     <div className={st.multipleFields}>
       <div className={st.head}>
-        <div className={st.label}>{label.toUpperCase()}{required && ' *'}</div>
+        <div className={st.label}>
+          {label.toUpperCase()}
+          {required && ' *'}
+        </div>
         <div className={st.add} onClick={add}>
           <FontAwesomeIcon className={st.addIcon} icon={faPlus} size="sm" />
           ADD

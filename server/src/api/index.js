@@ -73,6 +73,7 @@ module.exports = Router()
       updatedAt: 0,
     }
     const d = await db.collection('documents').insertOne(doc)
+    const users = doc.signers.map(s => s.userId)
     await db.collection('notifications').insertOne({
       type: 'CREATE',
       userId: req.auth.userId,
@@ -81,17 +82,14 @@ module.exports = Router()
         title: doc.title,
       },
       date: new Date(),
-      users: doc.signers.map(s => s.userId),
+      users,
     })
     pdf
       .create(`<div style="font-family: sans-serif">${doc.rawDocument}</div>`)
       .toFile(`pdf/${d.insertedId}.pdf`, async err => {
-        err && console.log(err)
+        if (err) return console.log(err)
         res.json(doc)
-        sendWebNotification(
-          { title: doc.title, type: 'create', user: await getUsername(req.auth.userId) },
-          req.auth.userId
-        )
+        sendWebNotification({ title: doc.title, type: 'create', user: await getUsername(req.auth.userId) }, users)
       })
   })
 
@@ -203,6 +201,7 @@ module.exports = Router()
     if (doc.signers.every(s => s.status === 'RESOLVED')) doc.status = 'RESOLVED'
     doc.updatedAt = new Date()
     await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
+    const users = [doc.userId, ...doc.signers.map(s => s.userId)].filter(u => u !== req.auth.userId)
     await db.collection('notifications').insertOne({
       type: 'SIGN',
       userId: req.auth.userId,
@@ -211,10 +210,10 @@ module.exports = Router()
         title: doc.title,
       },
       date: new Date(),
-      users: [doc.userId, ...doc.signers.map(s => s.userId)].filter(u => u !== req.auth.userId),
+      users,
     })
     res.json(doc)
-    sendWebNotification({ title: doc.title, type: 'sign', user: await getUsername(req.auth.userId) }, req.auth.userId)
+    sendWebNotification({ title: doc.title, type: 'sign', user: await getUsername(req.auth.userId) }, users)
   })
 
   .post('/documents/:id/reject', authRequired, async (req, res) => {
@@ -237,6 +236,7 @@ module.exports = Router()
     doc.status = 'REJECTED'
     doc.updatedAt = new Date()
     await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
+    const users = [doc.userId, ...doc.signers.map(s => s.userId)].filter(u => u !== req.auth.userId)
     await db.collection('notifications').insertOne({
       type: 'REJECT',
       userId: req.auth.userId,
@@ -245,10 +245,10 @@ module.exports = Router()
         title: doc.title,
       },
       date: new Date(),
-      users: [doc.userId, ...doc.signers.map(s => s.userId)].filter(u => u !== req.auth.userId),
+      users,
     })
     res.json(doc)
-    sendWebNotification({ title: doc.title, type: 'reject', user: await getUsername(req.auth.userId) }, req.auth.userId)
+    sendWebNotification({ title: doc.title, type: 'reject', user: await getUsername(req.auth.userId) }, users)
   })
 
   .post('/documents/:id/archive', authRequired, async (req, res) => {
@@ -262,6 +262,7 @@ module.exports = Router()
     doc.status = 'ARCHIVED'
     doc.updatedAt = new Date()
     await db.collection('documents').updateOne({ _id: doc._id }, { $set: doc })
+    const users = doc.signers.map(s => s.userId)
     await db.collection('notifications').insertOne({
       type: 'ARCHIVE',
       userId: req.auth.userId,
@@ -270,11 +271,8 @@ module.exports = Router()
         title: doc.title,
       },
       date: new Date(),
-      users: doc.signers.map(s => s.userId),
+      users,
     })
     res.json(doc)
-    sendWebNotification(
-      { title: doc.title, type: 'archive', user: await getUsername(req.auth.userId) },
-      req.auth.userId
-    )
+    sendWebNotification({ title: doc.title, type: 'archive', user: await getUsername(req.auth.userId) }, users)
   })

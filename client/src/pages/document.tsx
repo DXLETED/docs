@@ -23,6 +23,7 @@ import { Textarea } from 'components/input/Textarea'
 import { validate } from 'utils/validate'
 import { notify } from 'utils/notify'
 import { formErrors } from 'utils/formErrors'
+import { Form } from 'components/Form'
 
 interface SignModalProps {
   close: () => void
@@ -40,18 +41,20 @@ const SignModal: React.FC<SignModalProps> = ({ close }) => {
   }
   return (
     <div className={st.signModal}>
-      <Input
-        value={formData.password}
-        autoComplete="new-password"
-        label="Пароль"
-        type="password"
-        set={update('password')}
-        {...validation.password}
-        {...{ showErrors }}
-      />
-      <div className={clsx(st.submit, st.sign)} onClick={submit}>
-        Подписать
-      </div>
+      <Form onSubmit={submit}>
+        <Input
+          value={formData.password}
+          autoComplete="new-password"
+          label="Пароль"
+          type="password"
+          set={update('password')}
+          {...validation.password}
+          {...{ showErrors }}
+        />
+        <div className={clsx(st.submit, st.sign)} onClick={submit}>
+          Подписать
+        </div>
+      </Form>
     </div>
   )
 }
@@ -73,25 +76,27 @@ const RejectModal: React.FC<RejectModalProps> = ({ close }) => {
   }
   return (
     <div className={st.rejectModal}>
-      <Input
-        value={formData.password}
-        autoComplete="new-password"
-        label="Пароль"
-        type="password"
-        set={update('password')}
-        {...validation.password}
-        {...{ showErrors }}
-      />
-      <Textarea
-        value={formData.rejectReason}
-        label="Причина"
-        set={update('rejectReason')}
-        {...validation.rejectReason}
-        {...{ showErrors }}
-      />
-      <div className={clsx(st.submit, st.reject)} onClick={submit}>
-        Отклонить
-      </div>
+      <Form onSubmit={submit}>
+        <Input
+          value={formData.password}
+          autoComplete="new-password"
+          label="Пароль"
+          type="password"
+          set={update('password')}
+          {...validation.password}
+          {...{ showErrors }}
+        />
+        <Textarea
+          value={formData.rejectReason}
+          label="Причина"
+          set={update('rejectReason')}
+          {...validation.rejectReason}
+          {...{ showErrors }}
+        />
+        <div className={clsx(st.submit, st.reject)} onClick={submit}>
+          Отклонить
+        </div>
+      </Form>
     </div>
   )
 }
