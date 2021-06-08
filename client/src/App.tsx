@@ -12,7 +12,6 @@ import { MyDocumentsPage } from 'pages/mydocuments'
 import { ArchivePage } from 'pages/archive'
 import { DocumentPage } from 'pages/document'
 import { Notifications } from 'components/Notifications'
-import { notify } from 'utils/notify'
 
 export const App: React.FC = () => (
   <Provider store={store}>
@@ -48,8 +47,3 @@ export const App: React.FC = () => (
     <Notifications />
   </Provider>
 )
-
-setTimeout(() => notify.info({ content: 'Info' }), 200)
-setTimeout(() => notify.success({ content: 'Success' }), 400)
-setTimeout(() => notify.warning({ content: 'Warning' }), 600)
-setTimeout(() => notify.error({ content: 'Error' }), 800)

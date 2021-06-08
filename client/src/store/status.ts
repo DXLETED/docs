@@ -31,7 +31,7 @@ const initialState: StatusState = {
 export const getStatus = createAsyncThunk('status/get', async (_, thunkAPI) => {
   thunkAPI.dispatch(
     slice.actions.setSubscribeStatus(
-      !!(await navigator.serviceWorker.getRegistrations()).length && window.Notification.permission === 'granted'
+      !!(await navigator.serviceWorker?.getRegistrations())?.length && window.Notification?.permission === 'granted'
     )
   )
   const res = await request.withToken({ url: `${process.env.REACT_APP_API_URL}/status` }, thunkAPI)

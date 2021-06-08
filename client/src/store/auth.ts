@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { request } from 'utils/request'
 import { loadState } from 'utils/localStorage'
 import { notifyApiError } from 'utils/apiError'
+import { notify } from 'utils/notify'
+import { errors } from 'dictionary.json'
 
 const API_URL = process.env.REACT_APP_API_URL
 
@@ -26,7 +28,10 @@ export const login = createAsyncThunk(
     return await request
       .withoutToken({ method: 'POST', url: `${API_URL}/auth/login`, data: { username, password } })
       .then(res => thunkAPI.dispatch(slice.actions.set(res)))
-      .catch(notifyApiError)
+      .catch(err => {
+        if (err.response?.status === 400) return notify.error({ content: errors.no_user })
+        notifyApiError(err)
+      })
   }
 )
 

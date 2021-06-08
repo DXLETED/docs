@@ -113,7 +113,7 @@ export const DocumentCreatePage: React.FC = () => {
                   </div>
                 </div>
                 <div className={st.buttons}>
-                  {process.env.NODE_ENV === 'development' && !isSaving && (
+                  {/* process.env.NODE_ENV === 'development' && */!isSaving && (
                     <div className={st.generate} onClick={generate}>
                       Сгенерировать данные
                     </div>
