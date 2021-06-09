@@ -21,6 +21,7 @@ import { DocumentSigners } from 'components/document/DocumentSigners'
 import { useHistory } from 'react-router'
 import { Document } from 'store/document'
 import clsx from 'clsx'
+import { useTranslation } from 'react-i18next'
 
 const validateField: {
   [key in BlankFieldType]: (data: any, el: BlankField) => boolean
@@ -37,6 +38,7 @@ const validateFields = (data: any, fields: BlankFields | undefined): boolean =>
   )
 
 export const DocumentCreatePage: React.FC = () => {
+  const { t } = useTranslation()
   const dispatch = useDispatchTyped()
   const [blanks, blanksStatus, blanksError] = useRequest(
     s => s.blanks,
@@ -94,7 +96,7 @@ export const DocumentCreatePage: React.FC = () => {
                   <div className={st.container}>
                     <div className={st.blank}>
                       <Select
-                        label="Бланк"
+                        label={t('document.blank')}
                         selected={selectedBlank !== -1 ? selectedBlank : null}
                         options={blanksList}
                         set={blankSelect}
@@ -102,20 +104,20 @@ export const DocumentCreatePage: React.FC = () => {
                       />
                     </div>
                     <Input
-                      label="Название"
+                      label={t('document.title')}
                       value={document.title}
                       set={n => dispatch(documentCreateActions.setTitle(n))}
                       {...validate(document.title, ['required'])}
                       {...{ showErrors }}
                     />
-                    <Textarea label="Описание" set={n => dispatch(documentCreateActions.setDescription(n))} />
+                    <Textarea label={t('document.description')} set={n => dispatch(documentCreateActions.setDescription(n))} />
                     <DocumentSigners users={users} />
                   </div>
                 </div>
                 <div className={st.buttons}>
                   {/* process.env.NODE_ENV === 'development' && */!isSaving && (
                     <div className={st.generate} onClick={generate}>
-                      Сгенерировать данные
+                      {t('document.generateData')}
                     </div>
                   )}
                   <div className={st.send} onClick={send}>
@@ -124,10 +126,10 @@ export const DocumentCreatePage: React.FC = () => {
                         <div className={st.loading}>
                           <Loading size={10} />
                         </div>
-                        Документ создается
+                        {t('document.createLoading')}
                       </>
                     ) : (
-                      'Создать документ'
+                      t('document.create')
                     )}
                   </div>
                 </div>
@@ -139,7 +141,7 @@ export const DocumentCreatePage: React.FC = () => {
             <div className={st.inner}>
               <div className={st.label}>
                 <FontAwesomeIcon className={st.icon} icon={faFile} size="lg" />
-                Выберите бланк документа
+                {t('document.selectBlank')}
               </div>
               <Select
                 selected={selectedBlank !== -1 ? selectedBlank : null}

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import i18n from 'i18n'
 import { notifyApiError } from 'utils/apiError'
 import { request } from 'utils/request'
 import { urlBase64ToUint8Array } from 'utils/urlBase64ToUint8Array'
@@ -41,7 +42,7 @@ export const getStatus = createAsyncThunk('status/get', async (_, thunkAPI) => {
 
 export const subscribe = createAsyncThunk('webpush/subscribe', async (_, thunkAPI) => {
   thunkAPI.dispatch(slice.actions.setSubscribeStatus('loading'))
-  const register = await navigator.serviceWorker.register('sw.js', { scope: '/' })
+  const register = await navigator.serviceWorker.register('sw.js?lang=' + i18n.language, { scope: '/' })
   const subscription = await register.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: urlBase64ToUint8Array(process.env.REACT_APP_PUBLIC_VAPID_KEY as string),
@@ -61,9 +62,10 @@ export const subscribe = createAsyncThunk('webpush/subscribe', async (_, thunkAP
 })
 
 export const unsubscribe = createAsyncThunk('webpush/subscribe', async (_, thunkAPI) => {
-  thunkAPI.dispatch(slice.actions.setSubscribeStatus('loading'))
   const register = (await navigator.serviceWorker.getRegistrations())[0]
-  await register?.unregister()
+  if (!register) return
+  thunkAPI.dispatch(slice.actions.setSubscribeStatus('loading'))
+  await register.unregister()
   request
     .withToken(
       {

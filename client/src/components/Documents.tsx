@@ -12,6 +12,7 @@ import { Error } from 'components/Error'
 import { TableFilter } from 'components/table/TableFilter'
 import { TableSearch } from 'components/table/TableSearch'
 import { TableSwitch } from 'components/table/TableSwitch'
+import { useTranslation } from 'react-i18next'
 
 const statusColors: { [key in keyof typeof dict.documentStatus]: string } = {
   IN_PROGRESS: '#cdca1d',
@@ -36,6 +37,7 @@ export const Documents: React.FC<DocumentsProps> = ({
   statusFilter: statusFilterEnabled,
   onlyWaitingSwitch,
 }) => {
+  const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [onlyWaiting, setOnlyWaiting] = useState(true)
   const [statusFilter, setStatusFilter] = useState<{ [el: string]: boolean }>({})
@@ -56,12 +58,13 @@ export const Documents: React.FC<DocumentsProps> = ({
           id: d._id.slice(-8),
           author: users.find(u => u.userId === d.userId)?.username || d.userId,
           title: d.title,
-          status: { d: dict.documentStatus[d.status], color: statusColors[d.status] },
+          status: { d: t('document.status', { returnObjects: true })[d.status], color: statusColors[d.status] },
           creationDate: moment(d.createdAt).format(`DD.MM.YYYY`),
           updateDate: d.updatedAt ? moment(d.updatedAt).format(`DD.MM.YYYY`) : '-----',
         },
         link: `/documents/${d._id}`,
       })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [documents, users]
   )
   const status = requestsStatus(documentsStatus, usersStatus)
@@ -81,10 +84,15 @@ export const Documents: React.FC<DocumentsProps> = ({
           menu={
             <>
               {onlyWaitingSwitch && (
-                <TableSwitch enabled={onlyWaiting} set={setOnlyWaiting} label="Только документы, ожидающие решение" />
+                <TableSwitch enabled={onlyWaiting} set={setOnlyWaiting} label={t('documents.filter')} />
               )}
               {statusFilterEnabled && (
-                <TableFilter label="Статус" options={dict.documentStatus} filter={statusFilter} set={setStatusFilter} />
+                <TableFilter
+                  label={t('documents.head.status')}
+                  options={dict.documentStatus}
+                  filter={statusFilter}
+                  set={setStatusFilter}
+                />
               )}
               <TableSearch value={search} set={setSearch} />
             </>

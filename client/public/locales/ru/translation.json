@@ -1,0 +1,86 @@
+{
+  "login": "Войти",
+  "username": "Имя пользователя",
+  "password": "Пароль",
+  "reason": "Причина",
+  "search": "Поиск",
+  "notChosen": "Не выбрано",
+  "main": {
+    "links": {
+      "createDocument": "Создать документ",
+      "myDocuments": "Мои документы",
+      "newDocuments": "Новые документы"
+    },
+    "subscribe": "Подписаться на уведомления",
+    "notifications": {
+      "title": "Уведомления",
+      "head": {
+        "author": "Автор",
+        "description": "Описание",
+        "title": "Название документа",
+        "id": "ID документа",
+        "date": "Время"
+      }
+    }
+  },
+  "document": {
+    "blank": "Бланк",
+    "title": "Название",
+    "description": "Описание",
+    "signers": "Подписанты",
+    "selectUser": "Выбрать пользователя",
+    "generateData": "Сенерировать данные",
+    "create": "Создать документ",
+    "createLoading": "Документ создается",
+    "selectBlank": "Выберите бланк документа",
+    "sign": "Подписать",
+    "reject": "Отклонить",
+    "archive": "Архивировать",
+    "actions": {
+      "sign": "Документ подписан",
+      "reject": "Документ отклонен",
+      "archive": "Документ перемещен в архив"
+    },
+    "status": {
+      "IN_PROGRESS": "На рассмотрении",
+      "RESOLVED": "Подписан всеми",
+      "REJECTED": "Отклонен",
+      "ARCHIVED": "В архиве"
+    }
+  },
+  "documents": {
+    "documents": "Документы",
+    "myDocuments": "Мои документы",
+    "archive": "Архив",
+    "filter": "Только документы, ожидающие решение",
+    "head": {
+      "id": "ID",
+      "title": "Название",
+      "author": "Автор",
+      "status": "Статус",
+      "creationDate": "Дата создания",
+      "updateDate": "Дата обновления"
+    }
+  },
+  "signer": {
+    "status": {
+      "RESOLVED": "Подписал",
+      "REJECTED": "Отклонил",
+      "WAITING": "Ожидание",
+      "CANCELED": "Отменено"
+    }
+  },
+  "notificationType": {
+    "CREATE": "Создал документ",
+    "SIGN": "Подписал документ",
+    "REJECT": "Отклонил документ",
+    "ARCHIVE": "Переместил в архив"
+  },
+  "errors": {
+    "no_user": "Неверное имя пользователя или пароль",
+    "invalid_password": "Неверный пароль",
+    "no_document": "Документ не существует",
+    "document_no_access": "Нет доступа к документу",
+    "unknown": "Неизвестная ошибка"
+  }
+}

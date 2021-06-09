@@ -7,8 +7,10 @@ import { useHistory, useLocation } from 'react-router'
 import { login } from 'store/auth'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { Form } from 'components/Form'
+import { useTranslation } from 'react-i18next'
 
 export const LoginPage: React.FC = () => {
+  const { t } = useTranslation()
   const [formData, update] = useForm({ username: '', password: '' })
   const dispatch = useDispatchTyped()
   const history = useHistory()
@@ -24,10 +26,10 @@ export const LoginPage: React.FC = () => {
       </Helmet>
       <div className={st.form}>
         <Form onSubmit={submit}>
-          <Input label="Имя пользователя" value={formData.username} set={update('username')} />
-          <Input label="Пароль" type="password" value={formData.password} set={update('password')} />
+          <Input label={t('username')} value={formData.username} set={update('username')} />
+          <Input label={t('password')} type="password" value={formData.password} set={update('password')} />
           <div className={st.submit} onClick={submit}>
-            Вход
+            {t('login')}
           </div>
         </Form>
       </div>

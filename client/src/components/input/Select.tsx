@@ -5,6 +5,7 @@ import { Label } from './Label'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 import { faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useTranslation } from 'react-i18next'
 
 interface SelectProps {
   label?: string
@@ -15,6 +16,7 @@ interface SelectProps {
   open?: boolean
 }
 export const Select: React.FC<SelectProps> = ({ label, selected, options, set, empty, open }) => {
+  const { t } = useTranslation()
   const ref = useRef<HTMLDivElement | any>(null)
   const [isOpen, setIsOpen] = useState(open || false)
   useOnClickOutside<HTMLDivElement>(ref, () => !open && setIsOpen(false))
@@ -26,13 +28,13 @@ export const Select: React.FC<SelectProps> = ({ label, selected, options, set, e
     <div className={clsx(st.select, { [st.open]: isOpen })} ref={ref}>
       <Label text={label} />
       <div className={st.inner} onClick={() => setIsOpen(!isOpen)}>
-        <div className={st.label}>{typeof selected === 'number' ? options[selected] : 'Не выбрано'}</div>
+        <div className={st.label}>{typeof selected === 'number' ? options[selected] : t('notChosen')}</div>
         <FontAwesomeIcon className={st.arrow} icon={faChevronDown} />
         {isOpen && (
           <div className={st.dropdown}>
             {empty && (
               <div className={st.el} onClick={() => change(null)}>
-                Не выбрано
+                {t('notChosen')}
               </div>
             )}
             {options.map((o, i) => (

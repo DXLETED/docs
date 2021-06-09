@@ -1,0 +1,86 @@
+{
+  "login": "Log in",
+  "username": "Username",
+  "password": "Password",
+  "reason": "Reason",
+  "search": "Search",
+  "notChosen": "Not chosen",
+  "main": {
+    "links": {
+      "createDocument": "Create document",
+      "myDocuments": "My documents",
+      "newDocuments": "New documents"
+    },
+    "subscribe": "Subscribe to notifications",
+    "notifications": {
+      "title": "Notifications",
+      "head": {
+        "author": "Author",
+        "description": "Description",
+        "title": "Document title",
+        "id": "Document ID",
+        "date": "Date"
+      }
+    }
+  },
+  "document": {
+    "blank": "Blank",
+    "title": "Title", 
+    "description": "Description",
+    "signers": "Signers",
+    "selectUser": "Select user",
+    "generateData": "Generate data",
+    "create": "Create document",
+    "createLoading": "Document is creating",
+    "selectBlank": "Select a document form",
+    "sign": "Sign",
+    "reject": "Reject",
+    "archive": "Archive",
+    "actions": {
+      "sign": "Document signed",
+      "reject": "Document rejected",
+      "archive": "Document archived"
+    },
+    "status": {
+      "IN_PROGRESS": "In progress",
+      "RESOLVED": "Resolved",
+      "REJECTED": "Rejected",
+      "ARCHIVED": "Archived"
+    }
+  },
+  "documents": {
+    "documents": "Documents",
+    "myDocuments": "My documents",
+    "archive": "Archive",
+    "filter": "Only documents pending",
+    "head": {
+      "id": "ID",
+      "title": "Title",
+      "author": "Author",
+      "status": "Status",
+      "creationDate": "Creation date",
+      "updateDate": "Update date"
+    }
+  },
+  "signer": {
+    "status": {
+      "RESOLVED": "Resolved",
+      "REJECTED": "Rejected",
+      "WAITING": "Waiting",
+      "CANCELED": "Canceled"
+    }
+  },
+  "notificationType": {
+    "CREATE": "Created a document",
+    "SIGN": "Signed the document",
+    "REJECT": "Rejected the document",
+    "ARCHIVE": "Moved to archive"
+  },
+  "errors": {
+    "no_user": "Неверное имя пользователя или пароль",
+    "invalid_password": "Неверный пароль",
+    "no_document": "Документ не существует",
+    "document_no_access": "Нет доступа к документу",
+    "unknown": "Неизвестная ошибка"
+  }
+}

@@ -1,8 +1,10 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Documents } from 'components/Documents'
+import { useTranslation } from 'react-i18next'
 
 export const MyDocumentsPage: React.FC = () => {
+  const { t } = useTranslation()
   return (
     <>
       <Helmet>
@@ -10,15 +12,15 @@ export const MyDocumentsPage: React.FC = () => {
       </Helmet>
       <Documents
         id="mydocuments"
-        label="Мои документы"
+        label={t('documents.myDocuments')}
         path="/documents/my"
         head={{
-          id: 'ID',
-          title: 'Название',
-          author: 'Автор',
-          status: 'Статус',
-          creationDate: 'Дата создания',
-          updateDate: 'Дата обновления',
+          id: t('documents.head.id'),
+          title: t('documents.head.title'),
+          author: t('documents.head.author'),
+          status: t('documents.head.status'),
+          creationDate: t('documents.head.creationDate'),
+          updateDate: t('documents.head.updateDate'),
         }}
         statusFilter
       />

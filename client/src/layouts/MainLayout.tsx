@@ -8,10 +8,9 @@ import { Redirect, useLocation } from 'react-router'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 
 interface MainLayoutProps {
-  title?: string
   children: React.ReactNode
 }
-export const MainLayout: React.FC<MainLayoutProps> = ({ title, children }) => {
+export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation()
   const { isAuthorized } = useAuth()
   const isNavOpen = useSelectorTyped(s => s.switches.nav)
@@ -19,7 +18,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ title, children }) => {
     <>
       <Nav />
       <div className={clsx(st.page, { [st.navOpen]: isNavOpen })}>
-        <Header title={title} />
+        <Header />
         <div className={st.main}>{children}</div>
       </div>
     </>

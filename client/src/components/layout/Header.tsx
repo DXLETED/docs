@@ -5,6 +5,15 @@ import { useAuth } from 'hooks/auth.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { Container } from '../Container'
+import { useTranslation } from 'react-i18next'
+import { Select } from 'components/input/Select'
+import { unsubscribe } from 'store/status'
+import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
+
+const languages = {
+  en: 'English',
+  ru: 'Russian',
+}
 
 interface HeaderLinkProps {
   to: string
@@ -17,28 +26,35 @@ const HeaderLink: React.FC<HeaderLinkProps> = ({ to, children, exact }) => (
   </NavLink>
 )
 
-interface HeaderProps {
-  title?: string
-}
-export const Header: React.FC<HeaderProps> = ({ title = '' }) => {
+export const Header: React.FC = () => {
+  const dispatch = useDispatchTyped()
   const { user, logout } = useAuth()
+  const { i18n } = useTranslation()
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng)
+    dispatch(unsubscribe())
+  }
   return (
     <header className={st.header}>
-      <div className={st.title}>{title}</div>
-      <div className={st.r}>
-        {user ? (
-          <div className={st.user}>
-            <Container classes={['mv-20', 'aic']}>{user.username}</Container>
-            <div className={st.logout} onClick={logout}>
-              <FontAwesomeIcon icon={faSignOutAlt} />
-            </div>
-          </div>
-        ) : (
-          <HeaderLink to="/login" exact>
-            LOG IN
-          </HeaderLink>
-        )}
+      <div className={st.language}>
+        <Select
+          selected={Object.keys(languages).findIndex(l => l === i18n.language)}
+          options={Object.values(languages)}
+          set={n => changeLanguage(Object.keys(languages)[n as number])}
+        />
       </div>
+      {user ? (
+        <div className={st.user}>
+          <Container classes={['mv-20', 'aic']}>{user.username}</Container>
+          <div className={st.logout} onClick={logout}>
+            <FontAwesomeIcon icon={faSignOutAlt} />
+          </div>
+        </div>
+      ) : (
+        <HeaderLink to="/login" exact>
+          LOG IN
+        </HeaderLink>
+      )}
     </header>
   )
 }

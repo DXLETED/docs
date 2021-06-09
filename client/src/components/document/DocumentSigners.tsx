@@ -11,8 +11,10 @@ import { useAuth } from 'hooks/auth.hook'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 import { validateMultiple } from 'utils/validate'
 import { ValidationErrors } from 'components/input/ValidationErrors'
+import { useTranslation } from 'react-i18next'
 
 const UsersSelect: React.FC = () => {
+  const { t } = useTranslation()
   const ref = useRef<HTMLDivElement | any>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [selected, setSelected] = useState<string | null>(null)
@@ -34,7 +36,7 @@ const UsersSelect: React.FC = () => {
     <div className={st.usersSelect}>
       <div className={clsx(st.select, { [st.open]: isOpen })} onClick={() => setIsOpen(true)} ref={ref}>
         <div className={st.label}>
-          {selected ? users.find(u => u.userId === selected)?.username : 'Выбрать пользователя'}
+          {selected ? users.find(u => u.userId === selected)?.username : t('document.selectUser')}
         </div>
         <FontAwesomeIcon className={st.arrow} icon={faChevronDown} />
         {isOpen && (
@@ -60,6 +62,7 @@ interface DocumentSignersProps {
   users: { userId: string; username: string }[]
 }
 export const DocumentSigners: React.FC<DocumentSignersProps> = ({ users }) => {
+  const { t } = useTranslation()
   const dispatch = useDispatchTyped()
   const signers = useSelectorTyped(s => s.documentCreate.document.signers)
   const showErrors = useSelectorTyped(s => s.documentCreate.showErrors)
@@ -84,7 +87,7 @@ export const DocumentSigners: React.FC<DocumentSignersProps> = ({ users }) => {
   )
   return (
     <div className={st.signers}>
-      <div className={st.label}>Подписанты</div>
+      <div className={st.label}>{t('document.signers')}</div>
       <DragDropContext onDragEnd={move}>
         <Droppable droppableId="signers">
           {provided => (

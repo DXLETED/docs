@@ -4,6 +4,7 @@ import dict from 'dictionary.json'
 import { RootState } from 'store'
 import { apiError, notifyApiError } from 'utils/apiError'
 import { notify } from 'utils/notify'
+import i18n from 'i18n'
 
 export type Document = {
   _id: string
@@ -51,7 +52,7 @@ export const resolveDocument = createAsyncThunk(
       )
       .then(res => {
         thunkAPI.dispatch(documentActions.set(res))
-        notify.success({ content: 'Документ подписан' })
+        notify.success({ content: i18n.t('document.actions.sign') })
       })
       .catch(notifyApiError)
   }
@@ -72,7 +73,7 @@ export const rejectDocument = createAsyncThunk(
       )
       .then(res => {
         thunkAPI.dispatch(documentActions.set(res))
-        notify.success({ content: 'Документ отозван' })
+        notify.success({ content: i18n.t('document.actions.reject') })
       })
       .catch(notifyApiError)
   }
@@ -84,7 +85,7 @@ export const archiveDocument = createAsyncThunk('document/archive', async (_, th
     .withToken<Document>({ method: 'POST', url: `${process.env.REACT_APP_API_URL}/documents/${id}/archive` }, thunkAPI)
     .then(res => {
       thunkAPI.dispatch(documentActions.set(res))
-      notify.success({ content: 'Документ перемещен в архив' })
+      notify.success({ content: i18n.t('document.actions.archive') })
     })
     .catch(notifyApiError)
 })

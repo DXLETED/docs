@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import st from 'styles/pages/DocumentPage.module.sass'
 import clsx from 'clsx'
 import moment from 'moment'
-import dict from 'dictionary.json'
 import { useRequest } from 'hooks/request.hook'
 import { useParams } from 'react-router'
 import { archiveDocument, getDocument, getPDF, rejectDocument, resolveDocument } from 'store/document'
@@ -24,11 +23,13 @@ import { validate } from 'utils/validate'
 import { notify } from 'utils/notify'
 import { formErrors } from 'utils/formErrors'
 import { Form } from 'components/Form'
+import { useTranslation } from 'react-i18next'
 
 interface SignModalProps {
   close: () => void
 }
 const SignModal: React.FC<SignModalProps> = ({ close }) => {
+  const { t } = useTranslation()
   const dispatch = useDispatchTyped()
   const [formData, update] = useForm({ password: '' })
   const [showErrors, setShowErrors] = useState(false)
@@ -45,14 +46,14 @@ const SignModal: React.FC<SignModalProps> = ({ close }) => {
         <Input
           value={formData.password}
           autoComplete="new-password"
-          label="Пароль"
+          label={t('password')}
           type="password"
           set={update('password')}
           {...validation.password}
           {...{ showErrors }}
         />
         <div className={clsx(st.submit, st.sign)} onClick={submit}>
-          Подписать
+        {t('document.sign')}
         </div>
       </Form>
     </div>
@@ -63,6 +64,7 @@ interface RejectModalProps {
   close: () => void
 }
 const RejectModal: React.FC<RejectModalProps> = ({ close }) => {
+  const { t } = useTranslation()
   const dispatch = useDispatchTyped()
   const [formData, update] = useForm({ rejectReason: '', password: '' })
   const [showErrors, setShowErrors] = useState(false)
@@ -80,7 +82,7 @@ const RejectModal: React.FC<RejectModalProps> = ({ close }) => {
         <Input
           value={formData.password}
           autoComplete="new-password"
-          label="Пароль"
+          label={t('password')}
           type="password"
           set={update('password')}
           {...validation.password}
@@ -88,13 +90,13 @@ const RejectModal: React.FC<RejectModalProps> = ({ close }) => {
         />
         <Textarea
           value={formData.rejectReason}
-          label="Причина"
+          label={t('reason')}
           set={update('rejectReason')}
           {...validation.rejectReason}
           {...{ showErrors }}
         />
         <div className={clsx(st.submit, st.reject)} onClick={submit}>
-          Отклонить
+          {t('document.reject')}
         </div>
       </Form>
     </div>
@@ -102,6 +104,7 @@ const RejectModal: React.FC<RejectModalProps> = ({ close }) => {
 }
 
 export const DocumentPage: React.FC = () => {
+  const { t } = useTranslation()
   const dispatch = useDispatchTyped()
   const { id } = useParams<{ id: string }>()
   const { user } = useAuth()
@@ -155,7 +158,7 @@ export const DocumentPage: React.FC = () => {
                   </span>
                   <span>
                     <FontAwesomeIcon className={st.icon} icon={faInfoCircle} />
-                    {dict.documentStatus[doc.status]}
+                    {t('document.status', { returnObjects: true })[doc.status]}
                   </span>
                   <span>
                     <FontAwesomeIcon className={st.icon} icon={faCalendarPlus} size="sm" />
@@ -169,7 +172,7 @@ export const DocumentPage: React.FC = () => {
                   )}
                 </div>
                 <div className={st.signers}>
-                  <div className={st.label}>Подписанты</div>
+                  <div className={st.label}>{t('document.signers')}</div>
                   <div className={st.inner}>
                     {doc.signers.map(s => (
                       <div
@@ -177,11 +180,11 @@ export const DocumentPage: React.FC = () => {
                         key={s.userId}>
                         <div className={st.username}>{users.find(u => u.userId === s.userId)?.username}</div>
                         <div className={st.d}>
-                          <span>{dict.signerStatus[s.status]}</span>
+                          <span>{t('signer.status', { returnObjects: true })[s.status]}</span>
                           {!!s.updatedAt && <span>{moment(s.updatedAt).format('YYYY-MM-DD HH:mm')}</span>}
                         </div>
                         {s.status === 'REJECTED' && (
-                          <div className={st.rejectReason}>{s.rejectReason || 'Причина не указана'}</div>
+                          <div className={st.rejectReason}>{s.rejectReason}</div>
                         )}
                         {s.status === 'RESOLVED' && <FontAwesomeIcon className={st.resolved} icon={faCheck} />}
                       </div>
@@ -194,10 +197,10 @@ export const DocumentPage: React.FC = () => {
               {currentSigner?.userId === user?.userId && (
                 <>
                   <div className={st.sign} onClick={() => setIsSignModalOpen(true)}>
-                    Подписать
+                    {t('document.sign')}
                   </div>
                   <div className={st.reject} onClick={() => setIsRejectModalOpen(true)}>
-                    Отклонить
+                    {t('document.reject')}
                   </div>
                 </>
               )}
@@ -205,7 +208,7 @@ export const DocumentPage: React.FC = () => {
                 doc.signers.every(s => s.status !== 'WAITING') &&
                 doc.status !== 'ARCHIVED' && (
                   <div className={st.archive} onClick={archive}>
-                    Архивировать
+                    {t('document.archive')}
                   </div>
                 )}
             </div>

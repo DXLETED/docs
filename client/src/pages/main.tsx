@@ -16,8 +16,10 @@ import { Error } from 'components/Error'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 import { Switch } from 'components/Switch'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
+import { useTranslation } from 'react-i18next'
 
 export const MainPage: React.FC = () => {
+  const { t } = useTranslation()
   const dispatch = useDispatchTyped()
   const subscribed = useSelectorTyped(s => s.status.subscribed)
   const newDocuments = useSelectorTyped(s => s.status.newDocuments)
@@ -57,35 +59,35 @@ export const MainPage: React.FC = () => {
           <div className={st.links}>
             <NavLink className={st.button} to="/newdocument">
               <FontAwesomeIcon className={st.icon} icon={faFileUpload} />
-              Создать документ
+              {t('main.links.createDocument')}
             </NavLink>
             <NavLink className={st.button} to="/mydocuments">
               <FontAwesomeIcon className={st.icon} icon={faFolderOpen} />
-              Мои документы<div className={st.count}>{myDocuments}</div>
+              {t('main.links.myDocuments')}<div className={st.count}>{myDocuments}</div>
             </NavLink>
             <NavLink className={st.button} to="/documents">
               <FontAwesomeIcon className={st.icon} icon={faListAlt} />
-              Новые документы<div className={st.count}>{newDocuments}</div>
+              {t('main.links.newDocuments')}<div className={st.count}>{newDocuments}</div>
             </NavLink>
           </div>
           <div className={st.subscribe}>
             <Switch
               enabled={!!subscribed}
               set={n => dispatch(n ? subscribe() : unsubscribe())}
-              label="Подписаться на уведомления"
+              label={t('main.subscribe')}
               loading={subscribed === 'loading'}
             />
           </div>
           <div className={st.notifications}>
             <Table
               id="notificaitons"
-              label="Уведомления"
+              label={t('main.notifications.title')}
               head={{
-                author: 'Автор',
-                description: 'Описание',
-                title: 'Название документа',
-                id: 'ID документа',
-                date: 'Время',
+                author: t('main.notifications.head.author'),
+                description: t('main.notifications.head.description'),
+                title: t('main.notifications.head.author'),
+                id: t('main.notifications.head.id'),
+                date: t('main.notifications.head.date'),
               }}
               els={els}
             />
