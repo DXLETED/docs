@@ -51,18 +51,20 @@ export const MainPage: React.FC = () => {
     [notifications, users]
   )
   const createInterval = () => (interval.current = setInterval(() => dispatch(getStatus()), 3500))
+  const removeInterval = () => {
+    interval.current && clearInterval(interval.current)
+    interval.current = null
+  }
   useEffect(() => {
     createInterval()
     window.addEventListener('focus', () => {
       dispatch(getStatus())
       !interval.current && createInterval()
     })
-    window.addEventListener('blur', () => {
-      if (interval.current) {
-        clearInterval(interval.current)
-        interval.current = null
-      }
-    })
+    window.addEventListener('blur', () => interval.current && removeInterval())
+    return () => {
+      removeInterval()
+    }
   }, [])
   return (
     <>
