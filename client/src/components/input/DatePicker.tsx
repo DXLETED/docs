@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight, faCalendar, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { useOnClickOutside } from 'hooks/onClickOutside.hook'
 import { capitalize } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 import 'moment/locale/ru'
 
@@ -20,6 +21,7 @@ interface DatePickerProps {
   showErrors?: boolean
 }
 export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, errors = [], required, showErrors }) => {
+  const { t } = useTranslation()
   const ref = useRef<HTMLDivElement | any>(null)
   const [isOpen, setIsOpen] = useState(false)
   useOnClickOutside<HTMLDivElement>(ref, () => setIsOpen(false))
@@ -70,7 +72,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, value, set, error
       <Label text={label} required={required} />
       <div className={st.inner}>
         <div className={st.value}>
-          <div className={st.date}>{value ? moment(value).format('DD MMMM YYYY') : 'Выбрать дату'}</div>
+          <div className={st.date}>{value ? moment(value).format('DD MMMM YYYY') : t('selectDate')}</div>
           <div className={st.button}>
             <FontAwesomeIcon icon={faCalendar} />
           </div>

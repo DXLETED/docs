@@ -5,12 +5,15 @@
   "reason": "Причина",
   "search": "Поиск",
   "notChosen": "Не выбрано",
+  "selectDate": "Выбрать дату",
+  "nav": {
+    "main": "Главная",
+    "myDocuments": "Мои документы",
+    "newDocuments": "Новые документы",
+    "archive": "Архив",
+    "createDocument": "Создать документ"
+  },
   "main": {
-    "links": {
-      "createDocument": "Создать документ",
-      "myDocuments": "Мои документы",
-      "newDocuments": "Новые документы"
-    },
     "subscribe": "Подписаться на уведомления",
     "notifications": {
       "title": "Уведомления",

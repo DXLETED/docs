@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import st from 'styles/pages/MainPage.module.sass'
 import moment from 'moment'
 import dict from 'dictionary.json'
@@ -6,7 +6,7 @@ import { Table } from 'components/table/Table'
 import { Helmet } from 'react-helmet'
 import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFileUpload, faFolderOpen, faListAlt } from '@fortawesome/free-solid-svg-icons'
+import { faFileUpload, faFolderOpen, faListAlt, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import { useRequest } from 'hooks/request.hook'
 import { getStatus, subscribe, unsubscribe } from 'store/status'
 import { getUsers } from 'store/users'
@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 export const MainPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatchTyped()
+  const interval = useRef<NodeJS.Timeout | null>(null)
   const subscribed = useSelectorTyped(s => s.status.subscribed)
   const newDocuments = useSelectorTyped(s => s.status.newDocuments)
   const myDocuments = useSelectorTyped(s => s.status.myDocuments)
@@ -49,6 +50,20 @@ export const MainPage: React.FC = () => {
         : [],
     [notifications, users]
   )
+  const createInterval = () => (interval.current = setInterval(() => dispatch(getStatus()), 3500))
+  useEffect(() => {
+    createInterval()
+    window.addEventListener('focus', () => {
+      dispatch(getStatus())
+      !interval.current && createInterval()
+    })
+    window.addEventListener('blur', () => {
+      if (interval.current) {
+        clearInterval(interval.current)
+        interval.current = null
+      }
+    })
+  }, [])
   return (
     <>
       <Helmet>
@@ -59,24 +74,29 @@ export const MainPage: React.FC = () => {
           <div className={st.links}>
             <NavLink className={st.button} to="/newdocument">
               <FontAwesomeIcon className={st.icon} icon={faFileUpload} />
-              {t('main.links.createDocument')}
+              {t('nav.createDocument')}
             </NavLink>
             <NavLink className={st.button} to="/mydocuments">
               <FontAwesomeIcon className={st.icon} icon={faFolderOpen} />
-              {t('main.links.myDocuments')}<div className={st.count}>{myDocuments}</div>
+              {t('nav.myDocuments')}
+              <div className={st.count}>{myDocuments}</div>
             </NavLink>
             <NavLink className={st.button} to="/documents">
               <FontAwesomeIcon className={st.icon} icon={faListAlt} />
-              {t('main.links.newDocuments')}<div className={st.count}>{newDocuments}</div>
+              {t('nav.newDocuments')}
+              <div className={st.count}>{newDocuments}</div>
             </NavLink>
           </div>
-          <div className={st.subscribe}>
+          <div className={st.menu}>
             <Switch
               enabled={!!subscribed}
               set={n => dispatch(n ? subscribe() : unsubscribe())}
               label={t('main.subscribe')}
               loading={subscribed === 'loading'}
             />
+            <div className={st.refresh} onClick={() => dispatch(getStatus())}>
+              <FontAwesomeIcon icon={faSyncAlt} />
+            </div>
           </div>
           <div className={st.notifications}>
             <Table

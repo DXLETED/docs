@@ -1,87 +1,143 @@
 [
   {
     "id": 1,
-    "name": "Резюме",
+    "name": {
+      "en": "Resume",
+      "ru": "Резюме"
+    },
     "fields": [
       {
         "id": 1,
         "name": "fio",
-        "label": "ФИО",
+        "label": {
+          "en": "Full name",
+          "ru": "ФИО"
+        },
         "type": "text",
         "multiple": false,
-        "validations": ["required", "notContainWhiteSpaces", "notContainNumbers"]
+        "validations": [
+          "required",
+          "notContainWhiteSpaces",
+          "notContainNumbers"
+        ]
       },
       {
         "id": 2,
         "name": "dateOfBirth",
-        "label": "Дата рождения",
+        "label": {
+          "en": "Date of birth",
+          "ru": "Дата рождения"
+        },
         "type": "date",
         "multiple": false,
-        "validations": ["required"]
+        "validations": [
+          "required"
+        ]
       },
       {
         "id": 4,
         "name": "contacts",
-        "label": "Контакты",
+        "label": {
+          "en": "Contacts",
+          "ru": "Контакты"
+        },
         "type": "group",
         "multiple": false,
         "fields": [
           {
             "id": 5,
             "name": "phone",
-            "label": "Номер телефона",
+            "label": {
+              "en": "Phone number",
+              "ru": "Номер телефона"
+            },
             "type": "text",
             "multiple": false,
-            "validations": ["required", "phone"]
+            "validations": [
+              "required",
+              "phone"
+            ]
           },
           {
             "id": 6,
             "name": "email",
-            "label": "Email",
+            "label": {
+              "en": "Email",
+              "ru": "Email"
+            },
             "type": "text",
             "multiple": false,
-            "validations": ["required", "email"]
+            "validations": [
+              "required",
+              "email"
+            ]
           }
         ]
       },
       {
         "id": 7,
         "name": "skills",
-        "label": "Скиллы",
+        "label": {
+          "en": "Skills",
+          "ru": "Скиллы"
+        },
         "type": "text",
         "multiple": true,
-        "validations": ["required", "notContainWhiteSpaces", "notContainNumbers"]
+        "validations": [
+          "required",
+          "notContainWhiteSpaces",
+          "notContainNumbers"
+        ]
       },
       {
         "id": 8,
         "name": "workExpirience",
-        "label": "Опыт работы",
+        "label": {
+          "en": "Work expirience",
+          "ru": "Опыт работы"
+        },
         "type": "group",
         "multiple": true,
         "fields": [
           {
             "id": 9,
             "name": "nameOfCompany",
-            "label": "Название компании",
+            "label": {
+              "en": "Name of company",
+              "ru": "название компании"
+            },
             "type": "text",
             "multiple": false,
-            "validations": ["required"]
+            "validations": [
+              "required"
+            ]
           },
           {
             "id": 10,
             "name": "occupation",
-            "label": "Должность",
+            "label": {
+              "en": "Occupation",
+              "ru": "Должность"
+            },
             "type": "text",
             "multiple": false,
-            "validations": ["required", "notContainNumbers"]
+            "validations": [
+              "required",
+              "notContainNumbers"
+            ]
           },
           {
             "id": 11,
             "name": "description",
-            "label": "Описание",
+            "label": {
+              "en": "Description",
+              "ru": "Описание"
+            },
             "type": "text",
             "multiple": false,
-            "validations": ["required"]
+            "validations": [
+              "required"
+            ]
           }
         ]
       }
@@ -90,15 +146,23 @@
   },
   {
     "id": 2,
-    "name": "Расчетная накладная",
+    "name": {
+      "en": "Sales invoice",
+      "ru": "Расчетная накладная"
+    },
     "fields": [
       {
         "id": 1,
         "name": "organization",
-        "label": "Организация",
+        "label": {
+          "en": "Organization",
+          "ru": "Организация"
+        },
         "type": "text",
         "multiple": false,
-        "validations": ["required"]
+        "validations": [
+          "required"
+        ]
       },
       {
         "id": 2,
@@ -106,97 +170,157 @@
         "label": "Дата",
         "type": "date",
         "multiple": false,
-        "validations": ["required"]
+        "validations": [
+          "required"
+        ]
       },
       {
         "id": 3,
         "name": "number",
-        "label": "Номер накладной",
+        "label": {
+          "en": "Invoce number",
+          "ru": "Номер накладной"
+        },
         "type": "text",
         "multiple": false,
-        "validations": ["required"]
+        "validations": [
+          "required"
+        ]
       },
       {
         "id": 4,
         "name": "from",
-        "label": "От кого",
+        "label": {
+          "en": "From",
+          "ru": "От кого"
+        },
         "type": "text",
         "multiple": false,
-        "validations": ["required", "notContainNumbers"]
+        "validations": [
+          "required",
+          "notContainNumbers"
+        ]
       },
       {
         "id": 5,
         "name": "to",
-        "label": "Кому",
+        "label": {
+          "en": "To",
+          "ru": "Кому"
+        },
         "type": "text",
         "multiple": false,
-        "validations": ["required", "notContainNumbers"]
+        "validations": [
+          "required",
+          "notContainNumbers"
+        ]
       },
       {
         "id": 6,
         "name": "reason",
-        "label": "Основание",
+        "label": {
+          "en": "Reason",
+          "ru": "Основание"
+        },
         "type": "text",
         "multiple": false,
-        "validations": ["required", "notContainNumbers"]
+        "validations": [
+          "required",
+          "notContainNumbers"
+        ]
       },
       {
         "id": 7,
         "name": "list",
-        "label": "Список наименований",
+        "label": {
+          "en": "List of titles",
+          "ru": "Список наименований"
+        },
         "type": "group",
         "multiple": true,
-        "validations": ["required"],
+        "validations": [
+          "required"
+        ],
         "fields": [
           {
             "id": 8,
             "name": "name",
-            "label": "Наименование",
+            "label": {
+              "en": "Name",
+              "ru": "Yfbvtyjdfybt"
+            },
             "type": "text",
             "multiple": false,
-            "validations": ["required"]
+            "validations": [
+              "required"
+            ]
           },
           {
             "id": 9,
             "name": "units",
-            "label": "Единица измерения",
+            "label": {
+              "en": "Units",
+              "ru": "Единица измерения"
+            },
             "type": "text",
             "multiple": false,
-            "validations": ["required"]
+            "validations": [
+              "required"
+            ]
           },
           {
             "id": 10,
             "name": "count",
-            "label": "Количество",
+            "label": {
+              "en": "Count",
+              "ru": "Количество"
+            },
             "type": "text",
             "multiple": false,
-            "validations": ["required"]
+            "validations": [
+              "required"
+            ]
           },
           {
             "id": 11,
             "name": "price",
-            "label": "Цена",
+            "label": {
+              "en": "Price",
+              "ru": "Цена"
+            },
             "type": "text",
             "multiple": false,
-            "validations": ["required"]
+            "validations": [
+              "required"
+            ]
           },
           {
             "id": 12,
             "name": "sum",
-            "label": "Сумма",
+            "label": {
+              "en": "Sum",
+              "ru": "Сумма"
+            },
             "type": "text",
             "multiple": false,
-            "validations": ["required"]
+            "validations": [
+              "required"
+            ]
           }
         ]
       },
       {
         "id": 13,
         "name": "totalSum",
-        "label": "Итого",
+        "label": {
+          "en": "Total",
+          "ru": "Итого"
+        },
         "type": "text",
         "multiple": false,
-        "validations": ["required"]
+        "validations": [
+          "required"
+        ]
       }
     ],
     "template": "<table style='width: 100%; border-spacing: 0;'><tbody><tr><td>Организация:</td><td style='border-bottom: 1px solid black; width: 100%'>$organization</td></tr></tbody></table><p style='border-bottom: 1px solid black; margin-left: 33%'>$date</p><h1 style='text-align: center; font-size: 28px'>НАКЛАДНАЯ № $number</h1><table style='width: 100%; border-spacing: 0;'><tbody><tr><td>От кого:</td><td style='border-bottom: 1px solid black; width: 100%'>$from</td></tr><tr><td>Кому:</td><td style='border-bottom: 1px solid black; width: 100%'>$to</td></tr><tr><td>Основание:</td><td style='border-bottom: 1px solid black; width: 100%'>$reason</td></tr></tbody></table><table style='margin-top: 15px; width: 100%; border-collapse: collapse'><thead><tr><td style='border: 1px solid black; border-left: 0; text-align: center; vertical-align: middle; padding: 7px'> Наименование товара </td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px; width: 80px'> Единица измере- ния </td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px; width: 70px'> Коли- чество </td><td style='border: 1px solid black; text-align: center; vertical-align: middle; padding: 7px'>Цена</td><td style='border: 1px solid black; border-right: 0; text-align: center; vertical-align: middle; padding: 7px' > Сумма </td></tr></thead><tbody> $$list <tr><td style='border: 1px solid black; border-left: 0; padding: 7px'>$name</td><td style='border: 1px solid black; padding: 7px'>$units</td><td style='border: 1px solid black; padding: 7px'>$count</td><td style='border: 1px solid black; padding: 7px'>$price</td><td style='border: 1px solid black; border-right: 0; padding: 7px'>$sum</td></tr> $$list </tbody></table><table style='width: calc(100% / 3); border-spacing: 0; margin-left: calc(100% / 3 * 2); margin-top: 15px;'><tbody><tr><td>Итого:</td><td style='border-bottom: 1px solid black; width: 100%'>$totalSum</td></tr></tbody></table>"

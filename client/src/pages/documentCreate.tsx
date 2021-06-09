@@ -38,7 +38,7 @@ const validateFields = (data: any, fields: BlankFields | undefined): boolean =>
   )
 
 export const DocumentCreatePage: React.FC = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const dispatch = useDispatchTyped()
   const [blanks, blanksStatus, blanksError] = useRequest(
     s => s.blanks,
@@ -50,7 +50,7 @@ export const DocumentCreatePage: React.FC = () => {
   )
   const status = requestsStatus(blanksStatus, usersStatus)
   const [isSaving, setIsSaving] = useState(false)
-  const blanksList = blanks.map(b => b.name)
+  const blanksList = blanks.map(b => b.name[i18n.language])
   const blankId = useSelectorTyped(s => s.documentCreate.document.blankId)
   const blank = blanks?.find(b => b.id === blankId)
   const showErrors = useSelectorTyped(s => s.documentCreate.showErrors)
@@ -73,14 +73,13 @@ export const DocumentCreatePage: React.FC = () => {
   }
   useEffect(() => {
     return () => {
-      dispatch(documentCreateActions.clear({}))
+      dispatch(documentCreateActions.clear(null))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
     <>
       <Helmet>
-        <title>Document - Docs</title>
+        <title>New document - Docs</title>
       </Helmet>
       {status === 'done' &&
         (blank ? (

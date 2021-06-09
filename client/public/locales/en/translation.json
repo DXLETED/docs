@@ -5,12 +5,15 @@
   "reason": "Reason",
   "search": "Search",
   "notChosen": "Not chosen",
+  "selectDate": "Select date",
+  "nav": {
+    "main": "Main",
+    "myDocuments": "My documents",
+    "newDocuments": "New documents",
+    "archive": "Archive",
+    "createDocument": "Create document"
+  },
   "main": {
-    "links": {
-      "createDocument": "Create document",
-      "myDocuments": "My documents",
-      "newDocuments": "New documents"
-    },
     "subscribe": "Subscribe to notifications",
     "notifications": {
       "title": "Notifications",

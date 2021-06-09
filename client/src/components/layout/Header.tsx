@@ -11,8 +11,8 @@ import { unsubscribe } from 'store/status'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 
 const languages = {
-  en: 'English',
-  ru: 'Russian',
+  en: 'EN | English',
+  ru: 'RU | Русский',
 }
 
 interface HeaderLinkProps {
@@ -38,7 +38,7 @@ export const Header: React.FC = () => {
     <header className={st.header}>
       <div className={st.language}>
         <Select
-          selected={Object.keys(languages).findIndex(l => l === i18n.language)}
+          selected={Object.keys(languages).findIndex(l => l === (i18n.language || '').slice(0, 2))}
           options={Object.values(languages)}
           set={n => changeLanguage(Object.keys(languages)[n as number])}
         />

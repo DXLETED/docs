@@ -8,7 +8,7 @@ export type BlankFieldType = 'text' | 'date' | 'group'
 export type BlankField = {
   id: number
   name: string
-  label: string
+  label: { [key: string]: string } | undefined,
   type: BlankFieldType
   multiple: boolean
   validations?: Validations
@@ -17,7 +17,7 @@ export type BlankField = {
 export type BlankFields = BlankField[]
 export type Blank = {
   id: number
-  name: string
+  name: { [key: string]: string }
   fields: BlankFields
   template: string
 }

@@ -64,7 +64,6 @@ export const Documents: React.FC<DocumentsProps> = ({
         },
         link: `/documents/${d._id}`,
       })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [documents, users]
   )
   const status = requestsStatus(documentsStatus, usersStatus)
@@ -72,7 +71,6 @@ export const Documents: React.FC<DocumentsProps> = ({
     () => () => {
       dispatch(documentsActions.reset())
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
   const load = () => dispatch(getNextDocuments({ path, search, statusFilter, onlyWaiting }))

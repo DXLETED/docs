@@ -15,6 +15,7 @@ import {
   faListAlt,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from 'react-i18next'
 
 interface NavItemProps {
   to: string
@@ -29,6 +30,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, title, icon }) => (
 )
 
 export const Nav: React.FC = () => {
+  const { t } = useTranslation()
   const dispatch = useDispatchTyped()
   const isOpen = useSelectorTyped(s => s.switches.nav)
   const switchIsOpen = () => dispatch(switchesActions.switch({ key: 'nav' }))
@@ -39,11 +41,11 @@ export const Nav: React.FC = () => {
           <FontAwesomeIcon icon={faBars} />
         </div>
       </div>
-      <NavItem to="/" title="Главная" icon={faHome} />
-      <NavItem to="/documents" title="Новые документы" icon={faListAlt} />
-      <NavItem to="/mydocuments" title="Мои документы" icon={faFolderOpen} />
-      <NavItem to="/archive" title="Архив" icon={faArchive} />
-      <NavItem to="/newdocument" title="Создать документ" icon={faFileUpload} />
+      <NavItem to="/" title={t('nav.main')} icon={faHome} />
+      <NavItem to="/documents" title={t('nav.newDocuments')} icon={faListAlt} />
+      <NavItem to="/mydocuments" title={t('nav.myDocuments')} icon={faFolderOpen} />
+      <NavItem to="/archive" title={t('nav.archive')} icon={faArchive} />
+      <NavItem to="/newdocument" title={t('nav.createDocument')} icon={faFileUpload} />
     </nav>
   )
 }

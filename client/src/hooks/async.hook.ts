@@ -7,6 +7,5 @@ export const useAsync = <T>(asyncFn: () => Promise<T>, onSuccess: (data: T) => v
     return () => {
       isMounted = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)
 }
