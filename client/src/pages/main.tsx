@@ -17,9 +17,11 @@ import { useSelectorTyped } from 'hooks/selectorTyped.hook'
 import { Switch } from 'components/Switch'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
 import { useTranslation } from 'react-i18next'
+import { useLanguage } from 'hooks/language.hook'
 
 export const MainPage: React.FC = () => {
   const { t } = useTranslation()
+  const lang = useLanguage()
   const dispatch = useDispatchTyped()
   const interval = useRef<NodeJS.Timeout | null>(null)
   const subscribed = useSelectorTyped(s => s.status.subscribed)
@@ -92,7 +94,7 @@ export const MainPage: React.FC = () => {
           <div className={st.menu}>
             <Switch
               enabled={!!subscribed}
-              set={n => dispatch(n ? subscribe() : unsubscribe())}
+              set={n => (n ? dispatch(subscribe({ lang })) : dispatch(unsubscribe()))}
               label={t('main.subscribe')}
               loading={subscribed === 'loading'}
             />

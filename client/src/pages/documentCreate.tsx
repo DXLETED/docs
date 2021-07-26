@@ -22,6 +22,7 @@ import { useHistory } from 'react-router'
 import { Document } from 'store/document'
 import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
+import { useLanguage } from 'hooks/language.hook'
 
 const validateField: {
   [key in BlankFieldType]: (data: any, el: BlankField) => boolean
@@ -38,7 +39,8 @@ const validateFields = (data: any, fields: BlankFields | undefined): boolean =>
   )
 
 export const DocumentCreatePage: React.FC = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+  const lang = useLanguage()
   const dispatch = useDispatchTyped()
   const [blanks, blanksStatus, blanksError] = useRequest(
     s => s.blanks,
@@ -50,7 +52,7 @@ export const DocumentCreatePage: React.FC = () => {
   )
   const status = requestsStatus(blanksStatus, usersStatus)
   const [isSaving, setIsSaving] = useState(false)
-  const blanksList = blanks.map(b => b.name[i18n.language])
+  const blanksList = blanks.map(b => b.name[lang])
   const blankId = useSelectorTyped(s => s.documentCreate.document.blankId)
   const blank = blanks?.find(b => b.id === blankId)
   const showErrors = useSelectorTyped(s => s.documentCreate.showErrors)

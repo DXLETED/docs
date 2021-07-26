@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { Select } from 'components/input/Select'
 import { unsubscribe } from 'store/status'
 import { useDispatchTyped } from 'hooks/dispatchTyped.hook'
+import { useLanguage } from 'hooks/language.hook'
 
 const languages = {
   en: 'EN | English',
@@ -30,6 +31,7 @@ export const Header: React.FC = () => {
   const dispatch = useDispatchTyped()
   const { user, logout } = useAuth()
   const { i18n } = useTranslation()
+  const lang = useLanguage()
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng)
     dispatch(unsubscribe())
@@ -38,7 +40,7 @@ export const Header: React.FC = () => {
     <header className={st.header}>
       <div className={st.language}>
         <Select
-          selected={Object.keys(languages).findIndex(l => l === (i18n.language || '').slice(0, 2))}
+          selected={Object.keys(languages).findIndex(l => l === lang)}
           options={Object.values(languages)}
           set={n => changeLanguage(Object.keys(languages)[n as number])}
         />

@@ -6,7 +6,7 @@ import { BlankField, BlankFields, BlankFieldType } from 'store/blanks'
 import { documentCreateActions, DocumentPath } from 'store/documentCreate'
 import { validate } from 'utils/validate'
 import { useSelectorTyped } from 'hooks/selectorTyped.hook'
-import { useTranslation } from 'react-i18next'
+import { useLanguage } from 'hooks/language.hook'
 
 const update = (path: DocumentPath) => (value: string | number) =>
   store.dispatch(documentCreateActions.update({ path, value }))
@@ -57,7 +57,7 @@ interface FieldProps {
   data: any
 }
 export const DocumentFormField: React.FC<FieldProps> = ({ el, label, path, data }) => {
-  const { i18n } = useTranslation()
+  const lang = useLanguage()
   const showErrors = useSelectorTyped(s => s.documentCreate.showErrors)
-  return <>{formFields[el.type](el, label, data, path, i18n.language, showErrors)}</>
+  return <>{formFields[el.type](el, label, data, path, lang, showErrors)}</>
 }
